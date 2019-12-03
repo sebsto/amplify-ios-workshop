@@ -21,6 +21,8 @@ This workshop requires [Swift 5.1](https://swift.org) and [Swift UI](https://dev
 
 You need different command line tools to be installed : `aws`, `amplify`, `cocoapods` and `jq`.  These tools have themselves requirements on `python`, `pip`, `nodejs` and `npm`.  To install and configure these, open a Terminal on your laptop and type the following commands:
 
+{{% tabs %}}
+{{% tab "install" "Install" %}}
 
 Follow these instructions to install the prerequisites using [HomeBrew](https://brew.sh/) package manager. 
 
@@ -48,12 +50,11 @@ brew install jq
 # install cocoa pods
 sudo gem install cocoapods
 ```
-
-{{% notice note %}}
-These commands will take a few minutes to finish.
-{{% /notice %}}
+{{% /tab  %}}
+{{% tab "verify" "Version" %}}
 
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
+
 
 ```bash
 brew --version
@@ -78,6 +79,12 @@ amplify --version
 pod --version
 # 1.8.4
 ```
+{{% /tab  %}}
+{{% /tabs %}}
+
+{{% notice note %}}
+These commands will take a few minutes to finish.
+{{% /notice %}}
 
 To learn more about the tools we are instaling, you can follow the following links:
 

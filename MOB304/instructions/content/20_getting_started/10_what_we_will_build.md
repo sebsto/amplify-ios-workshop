@@ -12,7 +12,7 @@ Landing View | Authentication View | Main View
 
 The application will use :
 
-- [AWS Cognito](https://docs.aws.amazon.com/en_pv/cognito/latest/developerguide/what-is-amazon-cognito.html) to authenticate users
+- [Amazon Cognito](https://docs.aws.amazon.com/en_pv/cognito/latest/developerguide/what-is-amazon-cognito.html) to authenticate users
 - [AWS AppSync](https://docs.aws.amazon.com/en_pv/appsync/latest/devguide/welcome.html) to call a GraphQL API to access its data set
 - [Amazon S3](https://docs.aws.amazon.com/en_pv/AmazonS3/latest/gsg/GetStartedWithS3.html) to access images
 

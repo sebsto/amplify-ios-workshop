@@ -96,10 +96,6 @@ Build and launch the application to verify everything is working as expected. **
 After a few seconds, you should see the application running in the iOS simulator.
 ![First run](/images/20-10-app-start.png)
 
-{{% notice info %}}
-You will notice ~150 compiler warning due to null type management in the Amplify libraries.  These will be addressed in a future release (or you can send us [a pull request](https://github.com/aws-amplify/aws-sdk-ios) :-) ) 
-{{% /notice %}}
-
 ## Add authentication code
 
 Now that the dependencies are installed, let's modify the application code to add a user authentication flow.

@@ -2,6 +2,9 @@ This is the source code for [https://amplify-ios-workshop.go-aws.com/](https://a
 
 ## Status
 
+**June 7 2020**
+Create `amplifylibs` branch to host version based on new [Amplify iOS Library](https://docs.amplify.aws/start/q/integration/ios)
+
 **Dec 2**
 First delivery at re:Invent 2019
 
@@ -30,13 +33,13 @@ Final application is working and demo-able.  Some tweaks and improvements can be
 - [ ] add instruction to use other IDP (apple, google, amazon)
 - [ ] use Hugo page resource to load images
 
-### Done 
+### Done
 
 - [X] use curl to download ZIP file
 - [X] test presence of ~/.aws directory in setup instructions
 - [X] refactor code to download images asynchronously (GitHub only)
 - [X] add permissions to view Cognito in the console
-- [X] debug ../../scripts/get_app_client.sh 
+- [X] debug ../../scripts/get_app_client.sh
 - [X] test and dry run
 - [X] refactor IAM permissions to use least priviledge
 - [X] add reinvent specific instructions to use event engine accounts
@@ -45,7 +48,7 @@ Final application is working and demo-able.  Some tweaks and improvements can be
 - [X] write the workshop instructions
 - [X] add instructions for identity federation (section 6)
 - [X] add instruction to use a custom GUI screen (section 7)
-- [X] Fix landmark details page 
+- [X] Fix landmark details page
 - [X] code : cache downloaded images
 
 ### Dir Structure

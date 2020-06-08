@@ -19,9 +19,7 @@ struct UserBadge: View {
                 Circle()
                     .frame(width:geometry.size.width, height:geometry.size.width, alignment: .center)
                     .foregroundColor(.blue)
-                    .offset(x:0, y:geometry.size.width/3.0)
-
-                
+                    .offset(x:0, y:geometry.size.width/3.0) 
             }
         }
         .clipShape(Circle())

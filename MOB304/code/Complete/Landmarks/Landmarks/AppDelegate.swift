@@ -12,57 +12,57 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
                 
         
-    do {
-        Amplify.Logging.logLevel = .info
-        try Amplify.add(plugin: AWSCognitoAuthPlugin())
-        try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
-        try Amplify.add(plugin: AWSS3StoragePlugin())
-        
-        try Amplify.configure()
-        print("Amplify initialized")
-        
-        // load data when user is signedin
-        self.checkUserSignedIn()
+        do {
+            Amplify.Logging.logLevel = .info
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSS3StoragePlugin())
+            
+            try Amplify.configure()
+            print("Amplify initialized")
+            
+            // load data when user is signedin
+            self.checkUserSignedIn()
 
-        // listen to auth events.
-        // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
-        _ = Amplify.Hub.listen(to: .auth) { (payload) in
+            // listen to auth events.
+            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
+            _ = Amplify.Hub.listen(to: .auth) { (payload) in
 
-            switch payload.eventName {
+                switch payload.eventName {
 
-            case HubPayload.EventName.Auth.signedIn:
-                print("==HUB== User signed In, update UI")
+                case HubPayload.EventName.Auth.signedIn:
+                    print("==HUB== User signed In, update UI")
 
-                self.updateUI(forSignInStatus: true)
+                    self.updateUI(forSignInStatus: true)
 
-                // if you want to get user attributes
-                _ = Amplify.Auth.fetchUserAttributes() { (result) in
-                    switch result {
-                    case .success(let attributes):
-                        print("User attribtues - \(attributes)")
-                    case .failure(let error):
-                        print("Fetching user attributes failed with error \(error)")
+                    // if you want to get user attributes
+                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
+                        switch result {
+                        case .success(let attributes):
+                            print("User attribtues - \(attributes)")
+                        case .failure(let error):
+                            print("Fetching user attributes failed with error \(error)")
+                        }
                     }
+
+
+                case HubPayload.EventName.Auth.signedOut:
+                    print("==HUB== User signed Out, update UI")
+                    self.updateUI(forSignInStatus: false)
+                    
+                case HubPayload.EventName.Auth.sessionExpired:
+                    print("==HUB== Session expired, show sign in aui")
+                    self.updateUI(forSignInStatus: false)
+
+                default:
+                    //print("==HUB== \(payload)")
+                    break
                 }
-
-
-            case HubPayload.EventName.Auth.signedOut:
-                print("==HUB== User signed Out, update UI")
-                self.updateUI(forSignInStatus: false)
-                
-            case HubPayload.EventName.Auth.sessionExpired:
-                print("==HUB== Session expired, show sign in aui")
-                self.updateUI(forSignInStatus: false)
-
-            default:
-                //print("==HUB== \(payload)")
-                break
             }
-        }
 
-    } catch {
-        print("Failed to configure Amplify \(error)")
-    }
+        } catch {
+            print("Failed to configure Amplify \(error)")
+        }
     
         return true
     }
@@ -98,6 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    // when user is signed in, fetch its details
     func checkUserSignedIn() {
 
         // every time auth status changes, let's check if user is signedIn or not
@@ -127,6 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    // signin with Cognito web user interface
     public func authenticateWithHostedUI() {
 
         print("hostedUI()")
@@ -140,6 +142,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    // signout globally
     public func signOut() {
 
         // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios

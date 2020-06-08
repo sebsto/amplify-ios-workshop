@@ -1,4 +1,9 @@
-// Landmarks/AppDelegate.swift
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+The application delegate.
+*/
 
 import UIKit
 import Amplify
@@ -84,7 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
       
-    // MARK: AWSMobileClient - Authentication
+    // MARK: Amplify - Authentication
 
     // change our internal state, this triggers an UI update on the main thread
     func updateUI(forSignInStatus : Bool) {

@@ -72,8 +72,8 @@ echo "Importing Data"
 # prepare the payload
 GRAPHQL_PAYLOAD='{
     "query" :
-      "mutation CreateLandmark($input: CreateLandmarkInput!) {
-          createLandmark(input: $input) {
+      "mutation CreateLandmark($input: CreateLandmarkDataInput!) {
+          createLandmarkData(input: $input) {
             id
           }
        }",

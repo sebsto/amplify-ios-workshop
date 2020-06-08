@@ -22,7 +22,7 @@ graph LR;
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
 
-## Add the Amplify library to the iOS project
+## Add the Amplify library to XCode project
 
 We are using [CocoaPods](https://cocoapods.org/), a MacOS package manager, to add the Amplify library to your project.
 The instructions below assume CocoaPod is already installed.  If not, refer to the instructions provided in the [pre-requisites section](/10_prerequisites/20_installs.html#installing-or-updating).
@@ -56,7 +56,7 @@ end
 
 Without changing directory, let `pod` download and install the dependencies:
 
-```bash 
+```bash
 pod install --repo-update
 ```
 
@@ -65,7 +65,7 @@ After one or two minutes, you shoud see the below (it is safe to ignore the thre
 
 If your XCode project is open, **close XCode** and re-open the project *workspace* that `pod` just created.
 
-```bash 
+```bash
 open HandlingUserInput.xcworkspace/
 ```
 
@@ -291,10 +291,10 @@ Before proceeding to the next steps, **build** (&#8984;B) the project to ensure 
 
 In this section, we're going to add a new application entry point: the LandingView.  This view will check if the user is authenticated and will display either the authentication view or the main application view.
 
-Let's create two new Swift classes in `$PROJECT_DIRECTORY/Landmarks` (same directory as `AppDelegate.swift` or `LandmarkList,swift`)
+Let's create two new Swift classes in `$PROJECT_DIRECTORY/Landmarks` (same directory as `AppDelegate.swift` or `LandmarkList.swift`)
 
 - **UserBadge.swift** is the view to use when user is not authenticated
-- **LandingView.swift** is the application entry point.  It displays either LoginViewControler or LandmarkList based on user's authentication status.
+- **LandingView.swift** is the application entry point.  It displays either `UserBadge` or `LandmarkList` based on user's authentication status.
 
 To add a new Swift class to your project, use XCode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name.
 

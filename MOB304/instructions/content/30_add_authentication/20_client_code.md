@@ -22,7 +22,7 @@ graph LR;
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
 
-## Add the amplify library to the iOS project
+## Add the Amplify library to the iOS project
 
 We are using [CocoaPods](https://cocoapods.org/), a MacOS package manager, to add the Amplify library to your project.
 The instructions below assume CocoaPod is already installed.  If not, refer to the instructions provided in the [pre-requisites section](/10_prerequisites/20_installs.html#installing-or-updating).
@@ -46,10 +46,11 @@ target 'Landmarks' do
   use_frameworks!
 
   # Pods for Landmarks
-  pod 'AWSMobileClient', '~> 2.12.1'      # Required dependency
-  pod 'AWSAuthUI', '~> 2.12.1'            # Optional dependency required to use drop-in UI
-  pod 'AWSUserPoolsSignIn', '~> 2.12.1'   # Optional dependency required to use drop-in UI
-
+  pod 'Amplify', '~> 1.0.1'                            # required amplify dependency
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within XCode
+  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
+  pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
+  pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0.1'   # support for Amazon S3 storage
 end
 ```
 
@@ -72,9 +73,9 @@ open HandlingUserInput.xcworkspace/
 It is important to open the XCode **workspace** and not the XCode project.
 {{% /notice %}}
 
-### Add awsconfiguration.json to the project 
+### Add Amplify configuration files to the project 
 
-Rather than configuring each service through a constructor or constants file, the AWS SDKs for iOS support configuration through a centralized file called `awsconfiguration.json` which defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, this file is automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` will be placed into the root directory and you will need to add it to your XCode project.
+Rather than configuring each service through a constructor or constants file, the Amplify and the underlying AWS SDKs for iOS support configuration through centralized files called `awsconfiguration.json` and `amplifyconfiguration.json`. They defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, these files are automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` and `amplifyconfiguration.json` are located at the root project directory. You have to add them manually to your XCode project.
 
 In the Finder, drag `awsconfiguration.json` into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
 
@@ -82,6 +83,13 @@ In the Finder, drag `awsconfiguration.json` into Xcode under the top Project Nav
 - Choose **Create groups**, and then choose **Finish**.
 
 ![Add awsconfiguration](/images/30-20-add-awsconfiguration.gif)
+
+Repeat the process for `amplifyconfiguration.json`.
+
+Before proceeding to the next step, ensure you have both files added to your project, like one the screenshot below.
+
+![Two configuration files added](/images/30-20-two-configuration-files.png)
+
 
 ### Update Target Configurations for CocoaPods
 
@@ -116,11 +124,17 @@ final class UserData: ObservableObject {
 
 Add user authentication logic to *Landmarks/AppDelegate.swift*:
 
-{{< highlight swift "hl_lines=4-4 9-9 13-50 53-63 85-122 125" >}}
-// Landmarks/AppDelegate.swift
+{{< highlight swift "hl_lines=9-10 15-15 19-67 89-142" >}}
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+The application delegate.
+*/
 
 import UIKit
-import AWSMobileClient
+import Amplify
+import AmplifyPlugins
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -128,56 +142,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     public let userData = UserData()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-                
-        AWSMobileClient.default().addUserStateListener(self) { (userState, info) in
+
+        do {
+            Amplify.Logging.logLevel = .info
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
             
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
+            try Amplify.configure()
+            print("Amplify initialized")
+            
+            // load data when user is signedin
+            self.checkUserSignedIn()
 
-            switch (userState) {
-            case .guest:
-                print("user is in guest mode.")
-                
-            case .signedOut:
-                print("user just signed out")
-                
-            case .signedIn:
-                print("user just signed in.")
-                print("username : \(String(describing: AWSMobileClient.default().username))")
+            // listen to auth events.
+            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
+            _ = Amplify.Hub.listen(to: .auth) { (payload) in
 
-                AWSMobileClient.default().getUserAttributes(completionHandler: { (attributes, error) in
-                    print("error : \(String(describing: error))")
-                    print("attributes: \(String(describing: attributes))")
-                    print("")
+                switch payload.eventName {
+
+                case HubPayload.EventName.Auth.signedIn:
+                    print("==HUB== User signed In, update UI")
+
+                    self.updateUI(forSignInStatus: true)
+
+                    // if you want to get user attributes
+                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
+                        switch result {
+                        case .success(let attributes):
+                            print("User attribtues - \(attributes)")
+                        case .failure(let error):
+                            print("Fetching user attributes failed with error \(error)")
+                        }
+                    }
+
+
+                case HubPayload.EventName.Auth.signedOut:
+                    print("==HUB== User signed Out, update UI")
+                    self.updateUI(forSignInStatus: false)
                     
-                    AWSMobileClient.default().getTokens({ (tokens, error) in
-                        print("error : \(String(describing: error))")
-                        print("token : \(String(describing: tokens))")
-                        print("")
-                    })
-                })
-                                
-            case .signedOutUserPoolsTokenInvalid:
-                print("need to login again.")
+                case HubPayload.EventName.Auth.sessionExpired:
+                    print("==HUB== Session expired, show sign in aui")
+                    self.updateUI(forSignInStatus: false)
 
-            case .signedOutFederatedTokensInvalid:
-                print("user logged in via federation, but currently needs new tokens")
-
-            default:
-                print("unsupported")
+                default:
+                    //print("==HUB== \(payload)")
+                    break
+                }
             }
-        }
-        
-        AWSMobileClient.default().initialize { (userState, error) in
 
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
-            
-            if let userState = userState {
-                print("UserState: \(userState.rawValue)")
-            } else if let error = error {
-                print("error: \(error.localizedDescription)")
-            }
+        } catch {
+            print("Failed to configure Amplify \(error)")
         }
 
         return true
@@ -199,44 +212,60 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-      
-    // MARK: AWSMobileClient - Authentication
     
-    public func authenticateWithDropinUI(navigationController : UINavigationController) {
-        print("dropinUI()")
-        
-        // Option to launch sign in directly
-        let signinUIOptions = SignInUIOptions(canCancel: false)
-
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, signInUIOptions: signinUIOptions, { (signInState, error) in
-            if let signInState = signInState {
-                print("Sign in flow completed: \(signInState)")
-            } else if let error = error {
-                print("error logging in: \(error.localizedDescription)")
-            }
-        })
+    // MARK: -- Authentication code
+    
+    // change our internal state, this triggers an UI update on the main thread
+    func updateUI(forSignInStatus : Bool) {
+        DispatchQueue.main.async() {
+            self.userData.isSignedIn = forSignInStatus
+        }
     }
+    
+    // when user is signed in, fetch its details
+    func checkUserSignedIn() {
 
-    public func authenticateWithHostedUI(navigationController : UINavigationController) {
-        
-        print("hostedUI()")
-        // Optionally override the scopes based on the usecase.
-        let hostedUIOptions = HostedUIOptions(scopes: ["openid", "email", "profile", "aws.cognito.signin.user.admin"])
+        // every time auth status changes, let's check if user is signedIn or not
+        // updating userData will automatically update the UI
+        _ = Amplify.Auth.fetchAuthSession { (result) in
 
-        // Present the Hosted UI sign in.
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, hostedUIOptions: hostedUIOptions) { (userState, error) in
-            if let error = error as? AWSMobileClientError {
-                print(error.localizedDescription)
+            do {
+                let session = try result.get()
+                self.updateUI(forSignInStatus: session.isSignedIn)
+            } catch {
+                print("Fetch auth session failed with error - \(error)")
             }
-            if let userState = userState {
-                print("Status: \(userState.rawValue)")
 
+        }
+    }
+    
+    // signin with Cognito web user interface
+    public func authenticateWithHostedUI() {
+
+        print("hostedUI()")
+        _ = Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!) { result in
+            switch result {
+            case .success(_):
+                print("Sign in succeeded")
+            case .failure(let error):
+                print("Sign in failed \(error)")
             }
         }
     }
     
+    // signout globally
     public func signOut() {
-        AWSMobileClient.default().signOut()
+
+        // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
+        let options = AuthSignOutRequest.Options(globalSignOut: true)
+        _ = Amplify.Auth.signOut(options: options) { (result) in
+            switch result {
+            case .success:
+                print("Successfully signed out")
+            case .failure(let error):
+                print("Sign out failed with error \(error)")
+            }
+        }
     }
 
 }
@@ -244,15 +273,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 What did we add ?
 
-- we moved `userData` object to `AppDelegate` to be able to access it from anywhere in the app.
+- line 9-10 : we import Amplify libraries
 
-- we added an `AWSMobileClient.addUserStateListener` to listen for changes in authentication status. That code updates the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
+- line 15 : we move `userData` object from `SceneDelegate` to `AppDelegate` to be able to access it from anywhere in the app (we'll delete it from `SceneDelegate` in a minute)
 
-- we addedd an `authenticateWithDropinUI()` method to trigger the UI flow using Amplify's [drop in component](https://aws-amplify.github.io/docs/ios/authentication).
+- line 20-24 : we initialize Amplify
 
-- we added an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/). (not used during this workshop)
+- line 31-63 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
 
-- we added a `signOut()` method to sign the user out.
+- line 116 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
+
+- line 130 : we add a `signOut()` method to sign the user out.
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 
@@ -260,10 +291,9 @@ Before proceeding to the next steps, **build** (&#8984;B) the project to ensure 
 
 In this section, we're going to add a new application entry point: the LandingView.  This view will check if the user is authenticated and will display either the authentication view or the main application view.
 
-Let's create three new Swift classes in `$PROJECT_DIRECTORY/Landmarks` (same directory as `AppDelegate.swift` or `LandmarkList,swift`)
+Let's create two new Swift classes in `$PROJECT_DIRECTORY/Landmarks` (same directory as `AppDelegate.swift` or `LandmarkList,swift`)
 
 - **UserBadge.swift** is the view to use when user is not authenticated
-- **LoginViewController.swift** is the View Controller to host the Amplify drop in UI component
 - **LandingView.swift** is the application entry point.  It displays either LoginViewControler or LandmarkList based on user's authentication status.
 
 To add a new Swift class to your project, use XCode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name.
@@ -314,60 +344,9 @@ struct UserBadge_Previews: PreviewProvider {
 }
 {{< /highlight >}}
 
-### LoginViewController.swift
-
-Despite we are using SwiftUI for this project, an UIKit ViewController is required by Amplify's drop in UI component.  This `LoginViewController` class has two purposes:
-
-1. it creates a bridge between SwiftUI and the UIKit world, as described in [Apple's Developer tutorial](https://developer.apple.com/tutorials/swiftui/interfacing-with-uikit).
-
-2. the `authenticate()` method triggers the user authentication flow.  It is used in `LandingView` when user click on the `UserBadge` button.
-
-{{< highlight swift >}}
-//
-//  LoginViewControler.swift
-//  Landmarks
-
-import SwiftUI
-import UIKit
-
-struct LoginViewController: UIViewControllerRepresentable {
-    
-    let navController =  UINavigationController()
-    
-    
-    func makeUIViewController(context: Context) -> UINavigationController {
-        navController.setNavigationBarHidden(true, animated: false)
-        let viewController = UIViewController()
-        navController.addChild(viewController)
-        return navController
-    }
-
-    func updateUIViewController(_ pageViewController: UINavigationController, context: Context) {
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
-    }
-
-    class Coordinator: NSObject {
-        var parent: LoginViewController
-
-        init(_ loginViewController: LoginViewController) {
-            self.parent = loginViewController
-        }
-    }
-    
-    func authenticate() {
-        let app = UIApplication.shared.delegate as! AppDelegate        
-        app.authenticateWithDropinUI(navigationController: navController)
-    }
-    
-}
-{{< /highlight >}}
-
 ### LandingView.swift
 
-This `LandingView` creates the `LoginViewController`.  When user is not authenticated, it creates a stack with the `loginView`, (provided by Amplify) and the `UserBadge`.  Clicking on the `UserBadge` triggers the `authenticate()` method. When user is authenticated, it passes the user object to `LandmarkList`.
+This `LandingView` selects the view to present based on authentication status.  When user is not authenticated, it shows the `UserBadge`.  Clicking on the `UserBadge` triggers the `authenticate()` method. When user is authenticated, it passes the user object to `LandmarkList`.
 
 Pay attention to the `@ObservedObject` annotation.  This tells SwiftUI to invalidate and redraw the View when the state of the object changes.  When user signs in or signs out, `LandingView` will automatically adjust and render the `UserBadge` or the `LandmarkList` view.
 
@@ -382,20 +361,18 @@ import SwiftUI
 
 struct LandingView: View {
     @ObservedObject public var user : UserData
-    
+
     var body: some View {
         
-        let loginView = LoginViewController()
-
         return VStack {
             // .wrappedValue is used to extract the Bool from Binding<Bool> type
             if (!$user.isSignedIn.wrappedValue) {
                 
-                ZStack {
-                    loginView
-                    Button(action: { loginView.authenticate() } ) {
-                        UserBadge().scaleEffect(0.5)
-                    }
+                Button(action: {
+                            let app = UIApplication.shared.delegate as! AppDelegate
+                            app.authenticateWithHostedUI()
+                        }) {
+                    UserBadge().scaleEffect(0.5)
                 }
 
             } else {
@@ -551,8 +528,39 @@ What we did just change ?
 
 - we added that button as trailing item in the navigation bar.
 
+## Configure URI for redirection after authentication
+
+Uppon sucessful authentication, the Cognito server redirects to the URI we provided when we configured Amplify authentication in [step 3.1](/30_add_authentication/10_amplify.html#add-an-authentication-backend).  We used the `landmarks://` URI.  We need to tell iOS to launch our app when a request is made for this URI.
+
+To do this, we add `landmarks://` to the app’s URL schemes:
+
+1. In XCode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
+
+1. Add the following entry in URL scheme:
+{{< highlight xml "hl_lines=6-16" >}}
+<plist version="1.0">
+
+     <dict>
+     <!-- YOUR OTHER PLIST ENTRIES HERE -->
+
+     <!-- ADD AN ENTRY TO CFBundleURLTypes for Cognito Auth -->
+     <!-- IF YOU DO NOT HAVE CFBundleURLTypes, YOU CAN COPY THE WHOLE BLOCK BELOW -->
+     <key>CFBundleURLTypes</key>
+     <array>
+         <dict>
+             <key>CFBundleURLSchemes</key>
+             <array>
+                 <string>landmarks</string>
+             </array>
+         </dict>
+     </array>
+
+     <!-- ... -->
+     </dict>
+{{< /highlight >}}
+
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 
 ## Summary
 
-The list of all changes we made to the code is visible in [this commit](https://github.com/aws-samples/aws-reinvent-2019-mobile-workshops/commit/5c2813864e6824fec55953bb40a848cd87fb7f9c).
+The list of all changes we made to the code is visible in [this commit]() TODO.

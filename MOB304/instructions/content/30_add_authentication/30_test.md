@@ -8,24 +8,23 @@ weight = 30
   src = "images/30-20-test-1.png"
 +++
 
-You just add a bit of logic in `AppDelegate` class to sign in and to sign out users.  You also modified the screen flow to start the app with a `LandingView` that controls the routing towards a `LoginViewController` or the `LandmarkList` view based on the user authentication status.
+You just add a bit of logic in `AppDelegate` class to sign in and to sign out users.  You also modified the screen flow to start the app with a `LandingView` that controls the routing towards a `UserBadge` or the `LandmarkList` view based on the user authentication status.
 
 Let's now verify everythign works as expected.  Start the application using XCode's menu and click **Product**, then **Run** (or press **&#8984;R**).
 
-The application starts and shows the `LandingView`.  Click on the user icon in the middle of the screen to trigger the Amplify Login View. Click on **Create new account** to signup a new user.
+The application starts and shows the `LandingView`.  Click on the user icon in the middle of the screen to trigger the Amplify Login. Click on **Create new account** to signup a new user.
 
-Landing View | Authentication View | Signup View
+Landing View | Authorization View | Signup View
 :---: | :---: | :---: |
-!![Landing View](/images/30-20-test-1.png) | ![App Login Screen](/images/30-20-test-2.png) | ![App Login Screen](/images/30-20-test-3.png) |
-
+![Landing View](/images/30-20-test-1.png) | ![App Login Screen](/images/30-20-test-2.png) | ![App Login Screen](/images/30-20-test-3.png) |
 
 After clicking **Sign Up**, check your email.  Cognito sends you a confirmation code.
 
-Code View | Registration View | Landmarks List View
+Code View | Confirmation View | Landmarks List View
 :---: | :---: | :---: |
-!![Confirmation Code](/images/30-20-test-4.png) | ![Registration](/images/30-20-test-5.png) | ![Landmark list](/images/30-20-test-6.png) |
+![Confirmation Code](/images/30-20-test-4.png) | ![Registration](/images/30-20-test-5.png) | ![Landmark list](/images/30-20-test-6.png) |
 
-Click **Sign Out** to end the session and return to the `LandingView`.
+Click **Sign Out** to end the session and, after a short redirection to Cognito's signout page, you return to the `LandingView`.
 
 In the XCode console, you see some application debugging information: the username and profile of the signed in user as well as its Cognito token.  
 

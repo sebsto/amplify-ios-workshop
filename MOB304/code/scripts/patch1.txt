@@ -1,0 +1,19 @@
+diff -ruN ./Pods/Amplify/Amplify/Categories/DataStore/Model/Schema/ModelSchema+Definition.swift /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/MOB304/code/Complete/Landmarks/Pods/Amplify/Amplify/Categories/DataStore/Model/Schema/ModelSchema+Definition.swift
+--- ./Pods/Amplify/Amplify/Categories/DataStore/Model/Schema/ModelSchema+Definition.swift	2020-06-08 21:08:13.000000000 +0200
++++ /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/MOB304/code/Complete/Landmarks/Pods/Amplify/Amplify/Categories/DataStore/Model/Schema/ModelSchema+Definition.swift	2020-06-08 21:00:52.000000000 +0200
+@@ -32,6 +32,15 @@
+         }
+     }
+ 
++    public var isCustomType: Bool {
++        switch self {
++        case .customType:
++            return true
++        default:
++            return false
++        }
++    }
++    
+     public static func from(type: Any.Type) -> ModelFieldType {
+         if type is String.Type {
+             return .string

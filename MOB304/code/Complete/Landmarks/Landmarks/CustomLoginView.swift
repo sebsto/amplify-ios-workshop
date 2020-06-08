@@ -1,4 +1,47 @@
 import SwiftUI
+import Combine
+
+// Scroll the view when the keyboard appears
+// thanks to https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/
+struct KeyboardAdaptive: ViewModifier {
+    @State private var keyboardHeight: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.bottom, keyboardHeight)
+            .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
+            .animation(.easeOut(duration: 0.5))
+    }
+}
+
+extension View {
+    func keyboardAdaptive() -> some View {
+        ModifiedContent(content: self, modifier: KeyboardAdaptive())
+    }
+}
+
+extension Publishers {
+    // 1.
+    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
+        // 2.
+        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
+            .map { $0.keyboardHeight }
+        
+        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
+            .map { _ in CGFloat(0) }
+        
+        // 3.
+        return MergeMany(willShow, willHide)
+            .eraseToAnyPublisher()
+    }
+}
+
+extension Notification {
+    var keyboardHeight: CGFloat {
+        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
+    }
+}
+
 
 struct CustomLoginView : View {
     
@@ -33,36 +76,18 @@ struct CustomLoginView : View {
             .background(Color(UIColor.systemFill))
             .padding(.bottom, 10)
 
-            HStack() {
-                
-                Button(action: { self.app.signIn(username: self.username, password: self.password) }) {
-                    HStack() {
-                        Spacer()
-                        Text("Login with Facebook")
-                            .foregroundColor(Color.white)
-                            .bold()
-                            .multilineTextAlignment(.center)
-                        Spacer()
-                    }
-                                    
-                }.padding().background(Color.blue).cornerRadius(4.0)
-                
-                Spacer()
-                
-                Button(action: { self.app.signIn(username: self.username, password: self.password) }) {
-                    HStack() {
-                        Spacer()
-                        Text("Signin with Cognito")
-                            .foregroundColor(Color.white)
-                            .bold()
-                            .multilineTextAlignment(.center)
-                        Spacer()
-                    }
-                                    
-                }.padding().background(Color.green).cornerRadius(4.0)
-                
-            }
+            Button(action: { self.app.signIn(username: self.username, password: self.password) }) {
+                HStack() {
+                    Spacer()
+                    Text("Signin")
+                        .foregroundColor(Color.white)
+                        .bold()
+                    Spacer()
+                }
+                                
+            }.padding().background(Color.green).cornerRadius(4.0)
         }.padding()
+        .keyboardAdaptive() // Apply the scroll on keyboard height
     }
 }
 

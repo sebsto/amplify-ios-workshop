@@ -1,0 +1,49 @@
+--- /Users/stormacq/Documents/amazon/code/amplify/amplify-ios//Amplify/Categories/DataStore/Model/Schema/ModelSchema+Definition.swift	2020-06-06 08:29:27.000000000 +0200
++++ ./Pods/Amplify/Amplify/Categories/DataStore/Model/Schema/ModelSchema+Definition.swift	2020-06-06 08:49:47.000000000 +0200
+@@ -31,6 +31,15 @@
+             return false
+         }
+     }
++
++    public var isCustomType: Bool {
++        switch self {
++        case .customType:
++            return true
++        default:
++            return false
++        }
++    }
+
+     public static func from(type: Any.Type) -> ModelFieldType {
+         if type is String.Type {
+
+--- /Users/stormacq/Documents/amazon/code/amplify/amplify-ios//AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-06 08:29:27.000000000 +0200
++++ ./Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-06 16:50:01.000000000 +0200
+@@ -33,12 +33,27 @@
+        withModelFields(fields)
+    }
+
++    func withCodable(_ field: ModelField) {
++        switch field.type {
++        case let .customType(codableType):
++            print(codableType)
++            self.addChild(settingParentOf: .init(value: .init(name: "latitude", fieldType: .value)))
++            self.addChild(settingParentOf: .init(value: .init(name: "longitude", fieldType: .value)))
++        default:
++            preconditionFailure("This should not happen")
++        }
++    }
++
+    func withModelFields(_ fields: [ModelField]) {
+        fields.forEach { field in
+            if field.isAssociationOwner, let associatedModel = field.associatedModel {
+                let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
+                child.withModelFields(associatedModel.schema.graphQLFields)
+                self.addChild(settingParentOf: child)
++            } else if field.type.isCustomType {
++                let child = SelectionSet(value: .init(name: field.name, fieldType: SelectionSetFieldType.model))
++                child.withCodable(field)
++                self.addChild(settingParentOf: child)
+            } else {
+                self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
+            }

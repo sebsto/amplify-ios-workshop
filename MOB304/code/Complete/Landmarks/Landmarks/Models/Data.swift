@@ -34,70 +34,59 @@ func load<T: Decodable>(_ filename: String, as type: T.Type = T.self) -> T {
     }
 }
 
-final class ImageStore {
-    
-    // a cache for my images
-    typealias _ImageDictionary = [String: CGImage]
-    fileprivate var images: _ImageDictionary = [:]
-
-    fileprivate static var scale = 2
-    static var shared = ImageStore()
-    
-    init() {
-        // create a placeholder image at initialization time
-        guard
-            let url = Bundle.main.url(forResource: "white", withExtension: "jpg"),
-            let imageSource = CGImageSourceCreateWithURL(url as NSURL, nil),
-            let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
-        else {
-            fatalError("Couldn't load image white.jpg from main bundle.")
-        }
-        
-        // and cache it
-        images["placeholder"] = image
-    }
-    
-    // return the placeholder
-    func placeholder() -> Image {
-        return self.image(name: "placeholder", landmark: nil)
-    }
-    
-    // return the image
-    func image(name: String, landmark : Landmark?) -> Image {
-        
-        // first check if CGImage is in the cache, return the image when it is in the cache
-        if let index = images.index(forKey: name) {
-            
-            // create an image from CGImage at the correct size
-            let image =  Image(images.values[index], scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
-    
-            // set the landmark image
-            // this will trigger the update of the View (hence switching to GUI thread)
-            DispatchQueue.main.async() {
-                if let l = landmark {
-                    l.image = image
-                }
-            }
-            
-            return image
-
-        } else {
-        
-            // asynchronously load image, pass a callback to be notified when loaded
-            let app = UIApplication.shared.delegate as! AppDelegate
-            app.image(name, dataAvailable: { (data) -> Void in
-                
-                // image is loaded, store it in the cache
-                self.images[name] = UIImage(data: data)?.cgImage
-                
-                // recursive call to trigger an update on Landmark object
-                let _ = self.image(name: name, landmark: landmark)
-                
-            })
-        
-            // return any image, it will not be used.
-            return self.placeholder()
-        }
+// allow to create image with uniform color
+// https://gist.github.com/isoiphone/031da3656d69c0d85805
+extension UIImage {
+    class func imageWithColor(color: UIColor, size: CGSize=CGSize(width: 1, height: 1)) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        color.setFill()
+        UIRectFill(CGRect(origin: CGPoint.zero, size: size))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
     }
 }
 
+// manage iage cache and download
+final class ImageStore {
+    typealias _ImageDictionary = [String: Image]
+    
+    fileprivate let placeholderName = "circle"
+    fileprivate var images: _ImageDictionary
+    fileprivate static var scale = 2
+    
+    static var shared = ImageStore()
+
+    init() {
+        images = [:]
+        images[self.placeholderName] = Image(uiImage: UIImage.imageWithColor(color: UIColor.white, size: CGSize(width:300, height: 300)))
+    }
+    
+    func image(name: String) -> Image {
+        guard
+            let img = images[name]
+        else {
+            // should not happen
+            fatalError("Request non existent image")
+        }
+        return img
+    
+    }
+    
+    func placeholder() -> Image {
+        if let img = images[self.placeholderName] {
+            return img
+        } else {
+            fatalError("Image cache is incorrectly initialized")
+        }
+    }
+
+    func addImage(name: String, image : Data) {
+        guard
+            let i = UIImage(data: image)
+        else {
+            fatalError("Couldn't convert image data \(name)")
+        }
+        images[name] = Image(i.cgImage!, scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
+    }
+}

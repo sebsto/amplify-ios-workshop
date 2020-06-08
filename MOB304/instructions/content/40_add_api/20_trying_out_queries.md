@@ -62,8 +62,8 @@ You should now be able to try out the following mutations and queries. Press the
 **Add a new Landmark** by copy/pasting the following and running the query:
 
 ```graphql
-mutation CreateLandmark($input: CreateLandmarkInput!) {
-    createLandmark(input: $input) {
+mutation CreateLandmark($input: CreateLandmarkDataInput!) {
+    createLandmarkData(input: $input) {
         id
     }
 }
@@ -98,7 +98,7 @@ Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="
 
 ```graphql
 query GetLandmark {
-    getLandmark(id: 9999) {
+    getLandmarkData(id: 9999) {
         id
         name
         category
@@ -122,7 +122,7 @@ Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="
 
 ```graphql
 query ListLandmarks {
-    listLandmarks {
+    listLandmarkDatas {
         items {
             id
             name
@@ -149,7 +149,7 @@ Finally, **delete the landmark** we created with this query:
 
 ```graphql
 mutation DeleteLandmark {
-  deleteLandmark(input: { id: 9999 }) {
+  deleteLandmarkData(input: { id: 9999 }) {
     id
     name
     category
@@ -168,6 +168,5 @@ mutation DeleteLandmark {
 ```
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
-
 
 As you can see, we're able to read and write data through GraphQL queries and mutations and AppSync takes care of reading and persisting data (in this case, to DynamoDB).

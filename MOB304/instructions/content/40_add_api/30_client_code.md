@@ -8,9 +8,9 @@ Now that we have a GraphQL API to support access our data model from the cloud, 
 
 At high level, here is how we gonna proceed
 
-- first, we're going [to add](#add-the-aws-appsync-client-library) the `pod` dependency to access the AWS AppSync client library
+- first, we're going [to add](#add-the-aws-appsync-client-library) the `pod` dependency to access the Amplify API client library
 
-- the [app sync client code is contained](#add-client-code-in-the-application-delegate) in `AppDelegate` class, as we did for authentication.
+- then we will add the [app sync client code](#add-client-code-in-the-application-delegate) in `AppDelegate` class, as we did for authentication.
 
 - `UserData` class holds a hard code reference to the list of Landmarks loaded at application startup time.  [We are going to replace with an empty list](#modify-userdata-class) (`[]`) and we're going to add code to query the API and populate the list after sucesfull sign in.
 
@@ -27,12 +27,12 @@ target 'Landmarks' do
   use_frameworks!
 
   # Pods for Landmarks
-  pod 'AWSMobileClient', '~> 2.12.0'      # Required dependency
-  pod 'AWSAuthUI', '~> 2.12.0'            # Optional dependency required to use drop-in UI
-  pod 'AWSUserPoolsSignIn', '~> 2.12.0'   # Optional dependency required to use drop-in UI
-  pod 'AWSAppSync', '~> 2.15.0'           # For AppSync GraphQL API
-  
+  pod 'Amplify', '~> 1.0.1'                             # required amplify dependency
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within XCode
+  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
+  pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
 end
+
 {{< /highlight >}}
 
 In a Terminal, type the following commands to download and install the dependencies:
@@ -76,96 +76,107 @@ final class UserData: ObservableObject {
 
 On line 13, we initialise the list of landmarks with an empty array, while preserving the type of the variable.
 
-## Add the generated code to the project 
+## Generate code and add it to the XCode project 
 
-Thanks to the strongly typed nature of GraphQL, Amplify generated Swift code to access the data types, the queries and the mutations of the API.  Remember?  The file was generated when you last type `amplify push`.  Now it's time to add the generated file in your project.  In the Finder, drag `API.swift` into Xcode under the *Landmarks* folder, where the rest of the code is. When the *Options* dialog box appears, do the following:
+Thanks to the strongly typed nature of GraphQL, Amplify generates Swift code to access the data types, the queries and the mutations of the API. 
+
+In a Terminal, type the following commands to generate Swift code based on your GraphQL model:
+
+```bash
+cd $PROJECT_DIRECTORY
+amplify codegen models
+```
+
+Wait for the generation to complete and check there is no error.
+
+![amplify codegen](/images/40-30-amplify-codegen-1.png)
+
+Now it's time to add the generated file in your project.  In the Finder, locate 4 files in *amplify/generated/models* into XCode, and drag them into your project.
+
+![amplify codegen files](/images/40-30-amplify-codegen-2.png)
+
+When the *Options* dialog box appears, do the following:
 
 - Clear the **Copy items if needed** check box.
 - Choose **Create groups**, and then choose **Finish**.
+
+![add amplify codegen files](/images/40-30-amplify-codegen-3.png)
 
 ## Add client code in the application delegate 
 
 We modify `AppDelegate` to add code to call the GraphQL API.  You can safely copy/paste the entire file from below. 
 
-{{< highlight swift "hl_lines=5 11 15-16 29 35-36 73-76 140-155 157-178 180-193" >}}
-// Landmarks/AppDelegate.swift
+{{< highlight swift "hl_lines=23-23 98-101 151-177" >}}
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+The application delegate.
+*/
 
 import UIKit
-import AWSMobileClient
-import AWSAppSync
+import Amplify
+import AmplifyPlugins
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public let userData = UserData()
-    var appSyncClient: AWSAppSyncClient?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                
         
-        //init appsync
-        self.appSyncInit()
-        
-        AWSMobileClient.default().addUserStateListener(self) { (userState, info) in
+        do {
+            Amplify.Logging.logLevel = .info
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
+            try Amplify.configure()
+            print("Amplify initialized")
+            
+            // load data when user is signedin
+            self.checkUserSignedIn()
 
-            switch (userState) {
-            case .guest:
-                print("user is in guest mode.")
-                
-            case .signedOut:
-                print("user just signed out")
-                self.userData.landmarks = []
-                
-            case .signedIn:
-                print("user just signed in.")
-                print("username : \(String(describing: AWSMobileClient.default().username))")
-                
-                print("Loading data")
-                self.queryLandmarks()
+            // listen to auth events.
+            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
+            _ = Amplify.Hub.listen(to: .auth) { (payload) in
 
-                AWSMobileClient.default().getUserAttributes(completionHandler: { (attributes, error) in
-                    print("error : \(String(describing: error))")
-                    print("attributes: \(String(describing: attributes))")
-                    print("")
+                switch payload.eventName {
+
+                case HubPayload.EventName.Auth.signedIn:
+                    print("==HUB== User signed In, update UI")
+
+                    self.updateUI(forSignInStatus: true)
+
+                    // if you want to get user attributes
+                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
+                        switch result {
+                        case .success(let attributes):
+                            print("User attribtues - \(attributes)")
+                        case .failure(let error):
+                            print("Fetching user attributes failed with error \(error)")
+                        }
+                    }
+
+
+                case HubPayload.EventName.Auth.signedOut:
+                    print("==HUB== User signed Out, update UI")
+                    self.updateUI(forSignInStatus: false)
                     
-                    AWSMobileClient.default().getTokens({ (tokens, error) in
-                        print("error : \(String(describing: error))")
-                        print("token : \(String(describing: tokens))")
-                        print("")                        
-                    })
-                })
-                                
-            case .signedOutUserPoolsTokenInvalid:
-                print("need to login again.")
+                case HubPayload.EventName.Auth.sessionExpired:
+                    print("==HUB== Session expired, show sign in aui")
+                    self.updateUI(forSignInStatus: false)
 
-            case .signedOutFederatedTokensInvalid:
-                print("user logged in via federation, but currently needs new tokens")
-
-            default:
-                print("unsupported")
+                default:
+                    //print("==HUB== \(payload)")
+                    break
+                }
             }
-        }
-        
-        AWSMobileClient.default().initialize { (userState, error) in
 
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
-            
-            if let userState = userState {
-                print("UserState: \(userState.rawValue)")
-            } else if let error = error {
-                print("error: \(error.localizedDescription)")
-            }
+        } catch {
+            print("Failed to configure Amplify \(error)")
         }
-
-        if (self.userData.isSignedIn) {
-            print("Loading data")
-            self.queryLandmarks()
-        }
-
-        
+    
         return true
     }
 
@@ -186,117 +197,209 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
       
-    // MARK: AWSMobileClient - Authentication
-    
-    public func authenticateWithDropinUI(navigationController : UINavigationController) {
-        print("dropinUI()")
-        
-        // Option to launch sign in directly
-        let signinUIOptions = SignInUIOptions(canCancel: false)
+    // MARK: Amplify - Authentication
 
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, signInUIOptions: signinUIOptions, { (signInState, error) in
-            if let signInState = signInState {
-                print("Sign in flow completed: \(signInState)")
-            } else if let error = error {
-                print("error logging in: \(error.localizedDescription)")
+    // change our internal state, this triggers an UI update on the main thread
+    func updateUI(forSignInStatus : Bool) {
+        DispatchQueue.main.async() {
+            self.userData.isSignedIn = forSignInStatus
+            
+            // only load landmarks at start of app, when user signed in
+            if (forSignInStatus && self.userData.landmarks.isEmpty) {
+                self.queryLandmarks()
             }
-        })
+        }
+    }
+    
+    // when user is signed in, fetch its details
+    func checkUserSignedIn() {
+
+        // every time auth status changes, let's check if user is signedIn or not
+        // updating userData will automatically update the UI
+        _ = Amplify.Auth.fetchAuthSession { (result) in
+
+            do {
+                let session = try result.get()
+                self.updateUI(forSignInStatus: session.isSignedIn)
+            } catch {
+                print("Fetch auth session failed with error - \(error)")
+            }
+
+        }
     }
 
-    public func authenticateWithHostedUI(navigationController : UINavigationController) {
-        
+    // signin with Cognito web user interface
+    public func authenticateWithHostedUI() {
+
         print("hostedUI()")
-        // Optionally override the scopes based on the usecase.
-        let hostedUIOptions = HostedUIOptions(scopes: ["openid", "email", "profile", "aws.cognito.signin.user.admin"])
-
-        // Present the Hosted UI sign in.
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, hostedUIOptions: hostedUIOptions) { (userState, error) in
-            if let error = error as? AWSMobileClientError {
-                print(error.localizedDescription)
-            }
-            if let userState = userState {
-                print("Status: \(userState.rawValue)")
-
+        _ = Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!) { result in
+            switch result {
+            case .success(_):
+                print("Sign in succeeded")
+            case .failure(let error):
+                print("Sign in failed \(error)")
             }
         }
     }
     
+    // signout globally
     public func signOut() {
-        AWSMobileClient.default().signOut()
-    }
-    
-    // MARK: AWSAppSync
-        
-    func appSyncInit() {
-        do {
-            // You can choose the directory in which AppSync stores its persistent cache databases
-            let cacheConfiguration = try AWSAppSyncCacheConfiguration()
 
-            // AppSync configuration & client initialization
-            let appSyncServiceConfig = try AWSAppSyncServiceConfig()
-            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncServiceConfig: appSyncServiceConfig,
-                                                                  userPoolsAuthProvider: AWSMobileClient.default() as AWSCognitoUserPoolsAuthProvider,
-                                                                  cacheConfiguration: cacheConfiguration)
-            self.appSyncClient = try AWSAppSyncClient(appSyncConfig: appSyncConfig)
-            print("Initialized appsync client.")
-        } catch {
-            print("Error initializing appsync client. \(error)")
+        // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
+        let options = AuthSignOutRequest.Options(globalSignOut: true)
+        _ = Amplify.Auth.signOut(options: options) { (result) in
+            switch result {
+            case .success:
+                print("Successfully signed out")
+            case .failure(let error):
+                print("Sign out failed with error \(error)")
+            }
         }
     }
+    
+    // MARK: API Access
     
     func queryLandmarks() {
         print("Query landmarks")
-        self.appSyncClient?.fetch(query: ListLandmarksQuery(limit:100), cachePolicy: .fetchIgnoringCacheData) {(result, error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "")
-                    return
-                }
+        
+        _ = Amplify.API.query(request: .list(LandmarkData.self)) { event in
+            switch event {
+            case .success(let result):
                 print("Landmarks query complete.")
-                result?.data?.listLandmarks?.items!.forEach {
+                switch result {
+                case .success(let landmarksData):
+                    print("Successfully retrieved list of landmarks")
+                    for f in landmarksData {
+                        let landmark = Landmark.init(from: f)
+                        DispatchQueue.main.async() {
+                            self.userData.landmarks.append(landmark);
+                        }
+                    }
                     
-                    // convert the AppSync jsonObject (aka Dictionary<String, Any> to Data
-                    // the code below assumes there is no casting / nil error
-                    // TODO should add guard statement and handle errors
-                    // https://nacho4d-nacho4d.blogspot.com/2016/05/dictionary-to-json-string-and-json.html
-                    let jsonData = try! JSONSerialization.data(withJSONObject: $0?.jsonObject as Any, options: [])
-                    // this allows to create a Landmark object using the Decodable protocol
-                    let l : Landmark = try! JSONDecoder().decode(Landmark.self, from: jsonData)
-                    self.userData.landmarks.append(l);
-                    
+                case .failure(let error):
+                    print("Can not retrieve result : error  \(error.errorDescription)")
                 }
-            }
-    }
-}
-
-// Make sure AWSMobileClient is a Cognito User Pool credentails providers
-// this makes it easy to AWSMobileClient shared instance with AppSync Client
-// read https://github.com/awslabs/aws-mobile-appsync-sdk-ios/issues/157 for details
-extension AWSMobileClient: AWSCognitoUserPoolsAuthProviderAsync {
-    public func getLatestAuthToken(_ callback: @escaping (String?, Error?) -> Void) {
-        getTokens { (tokens, error) in
-            if error != nil {
-                callback(nil, error)
-            } else {
-                callback(tokens?.idToken?.tokenString, nil)
+            case .failure(let error):
+                print("Can not retrieve landmarks : error \(error)")
             }
         }
     }
-}
+}    
 {{< /highlight >}}
 
 What we did change ?
 
-- import `AWSAppSync` framework and define a private reference to it.
+- line 22 : add the API Amplify plugin.
 
-- initialize the `AWSAppSyncClient` client in the function `func appSyncInit()`.  Notice that to make things easier, we extends `AWSMobileClient` to implement the `AWSCognitoUserPoolsAuthProviderAsync` protocol.  This protocol allows to obtain Cognito tokens for the currently authenticated user.  We pass the `AWSMobileClient` to the `AWSAppSyncClient` through its configuration object (`AWSAppSyncClientConfiguration`).
+- line 98-100 : when authentication status changes to 'signed in' and no landmark data is loaded, trigger the API call.
 
-- we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the AppSync client.  `self.appSyncClient?.fetch()` is asynchronous and returns immediately.   We pass a callback inline function `(result, error) in ...` to be notified when the data are available.  When data are available, the code transforms the JSON obect received in `Landmark` object (as defined in *Landmarks/Models/Landmark.swift*).  Newly created objects are added to the array of Landmarks in `UserData` with this line of code `self.userData.landmarks.append(l)`.
+- line 152 : we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the API Query method.  `Amplify.API.query` is asynchronous and returns immediately.   We pass a callback inline function `(event) in ...` to be notified when the data are available.  When data are available, the code transforms the JSON object received in `Landmark` object (as defined in *Landmarks/Models/Landmark.swift*).  Newly created objects are added to the array of Landmarks in `UserData` with this line of code `self.userData.landmarks.append(l)`.
 
-- finally, we added code to query the API and to populate the Landmrk list (`self.queryLandmarks()`) at two places.  First in the Authentication Listener Hub, when the app receives the `.signedIn` event, second in `AWSMobileClient.default().initialize` to ensure the application lods the list at startup, when the user is already authenticated. 
+To allow the creation of the application *Landmark* model object from the API *LandmarkData* generated code, we add the following code to `Landmarks/Models/Landmark.swift`
 
-The list of all changes we made to the code is visible in [this commit](https://github.com/aws-samples/aws-reinvent-2019-mobile-workshops/commit/9ec7a9a76395f49e324781fb2cad055d9e7d087a).
+Open `Landmarks/Models/Landmark.swift` and copy/paste the code below.
 
-## Launch the app 
+{{< highlight swift "hl_lines=52-68" >}}
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+The model for an individual landmark.
+*/
+
+import SwiftUI
+import CoreLocation
+
+struct Landmark: Hashable, Codable, Identifiable {
+    var id: Int
+    var name: String
+    fileprivate var imageName: String
+    fileprivate var coordinates: Coordinates
+    var state: String
+    var park: String
+    var category: Category
+    var isFavorite: Bool
+
+    var locationCoordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude)
+    }
+
+    enum Category: String, CaseIterable, Codable, Hashable {
+        case featured = "Featured"
+        case lakes = "Lakes"
+        case rivers = "Rivers"
+        case mountains = "Mountains"
+    }
+}
+
+extension Landmark {
+    var image: Image {
+        ImageStore.shared.image(name: imageName)
+    }
+}
+
+struct Coordinates: Hashable, Codable {
+    var latitude: Double
+    var longitude: Double
+}
+
+// assume all fields are non null.
+// real life project must spend more time thinking about null values and
+// maybe convert the above code (original Landmark class) to optionals
+// I am not doing it for this workshop as this would imply too many changes in UI code
+// MARK: - TODO
+
+extension Landmark {
+    init(from : LandmarkData) {
+        
+        guard let i = Int(from.id) else {
+            preconditionFailure("Can not create Landmark, Invalid ID : \(from.id) (expected Int)")
+        }
+        
+        id = i
+        name = from.name
+        imageName = from.imageName!
+        coordinates = Coordinates(latitude: from.coordinates!.latitude!, longitude: from.coordinates!.longitude!)
+        state = from.state!
+        park = from.park!
+        category = Category(rawValue: from.category!)!
+        isFavorite = from.isFavorite!
+
+    }
+}
+{{< /highlight >}}
+
+What did we change ?
+
+- line 52: we created an extension to the provided *Landmark* data object, allowing to initialize an instance of it from a *LandmarkData* object returned by the API.
+
+The list of all changes we made to the code is visible in [this commit]() TODO .
+
+## Patch Amplify API Library
+
+{{% notice warning %}}
+This is a temporary workaround !
+{{% /notice %}}
+
+During the development of this workshop, we discovered [a bug in the Amplify API library](https://github.com/aws-amplify/amplify-ios/issues/529).  As of today, the library does not support non-model type associations between objects, such as between *LandmarkData* and *CoordinateData*.
+
+You can follow the progress on this issue, or contribute with your comments or code at https://github.com/aws-amplify/amplify-ios/issues/529
+
+We implemented a **specific patch for this data model**, before to proceed and run the app, patch the Pods with the following command. 
+
+In your terminal, type the following code:
+
+```bash
+cd $PROJECT_DIRECTORY
+patch -p0 < ../../scripts/patch1.txt
+patch -p0 < ../../scripts/patch2.txt 
+```
+
+Clean the project before proceeding to the next step. In XCode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679; &#8984;K**). 
+
+## Launch the app
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
 ![build](/images/20-10-xcode.png)
@@ -305,7 +408,7 @@ After a few seconds, you should see the application running in the iOS simulator
 ![run](/images/40-30-appsync-code-2.png)
 
 {{% notice tip %}}
-If you did not sign out last time you started the application, you are still signed in.  This is expected as the `AWSMobileClient` library stores the token locally and automatically refresh the token when it expires.
+If you did not sign out last time you started the application, you are still signed in.  This is expected as the Amplify` library stores the token locally and automatically refresh the token when it expires.
 {{% /notice %}}
 
 At this stage, we have hybrid data sources.  The Landmark list is loaded from the GraphQL API, but the images are still loaded from the local bundle.  In the next section, we are going to move the images to Amazon S3.

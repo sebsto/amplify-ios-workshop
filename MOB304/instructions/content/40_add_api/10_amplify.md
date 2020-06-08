@@ -29,7 +29,9 @@ amplify add api
 
 1. Do you want to configure advanced settings for the GraphQL API.  Select **Yes, I want to make some additional changes** and press enter.
 
-1. Choose the additional authorization types you want to configure for the API.  We do not need additional authorization types, just **press enter** without selecting any.
+1. Configure additional auth types? Accept the default (**No**) and press enter.
+
+1. Configure conflict detection? Accept the default (**No**) and press enter
 
 1. Do you have an annotated GraphQL schema? Accept the default (**No**) and press enter.
 
@@ -52,26 +54,26 @@ Below is a schema that will suit our needs for storing and querying Landmarks.
 1. **Paste this into `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`**, replacing the example schema content. Remember to save the file.
 
 ```graphql
-    type Landmark
-        @model
-        @auth(rules: [ {allow: private, provider: userPools, operations: [ read ] } ])
-    {
-        id: Int!
-        name: String!
-        category: String
-        city: String
-        state: String
-        isFeatured: Boolean
-        isFavorite: Boolean
-        park: String
-        coordinates: Coordinate
-        imageName: String
-    }
+type LandmarkData
+    @model
+    @auth(rules: [ {allow: private, provider: userPools, operations: [ read ] } ])
+{
+    id: ID!
+    name: String!
+    category: String
+    city: String
+    state: String
+    isFeatured: Boolean
+    isFavorite: Boolean
+    park: String
+    coordinates: CoordinateData
+    imageName: String
+}
 
-    type Coordinate {
-        longitude: Float
-        latitude: Float
-    }
+type CoordinateData {
+    longitude: Float
+    latitude: Float
+}
 ```
 
 There are a few things to notice about the schema:

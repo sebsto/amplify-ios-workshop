@@ -16,7 +16,7 @@ At high level, here is how we gonna proceed
 
 ## Add the AWS AppSync client library
 
-Edit `$PROJECT_DIRECTORY/Podfile` to add the AppSync dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from belowpwd):
+Edit `$PROJECT_DIRECTORY/Podfile` to add the AppSync dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
 {{< highlight text "hl_lines=12">}}
 # Uncomment the next line to define a global platform for your project
@@ -91,7 +91,7 @@ Wait for the generation to complete and check there is no error.
 
 ![amplify codegen](/images/40-30-amplify-codegen-1.png)
 
-Now it's time to add the generated file in your project.  In the Finder, locate 4 files in *amplify/generated/models* into XCode, and drag them into your project.
+Add the generated files in your project.  In the Finder, locate 4 files in *amplify/generated/models* and drag them into your XCode project.
 
 ![amplify codegen files](/images/40-30-amplify-codegen-2.png)
 
@@ -104,7 +104,7 @@ When the *Options* dialog box appears, do the following:
 
 ## Add client code in the application delegate 
 
-We modify `AppDelegate` to add code to call the GraphQL API.  You can safely copy/paste the entire file from below. 
+We modify `AppDelegate.swift` to add code to call the GraphQL API.  You can safely copy/paste the entire file from below. 
 
 {{< highlight swift "hl_lines=23-23 98-101 151-177" >}}
 /*
@@ -293,9 +293,9 @@ What we did change ?
 
 - line 98-100 : when authentication status changes to 'signed in' and no landmark data is loaded, trigger the API call.
 
-- line 152 : we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the API Query method.  `Amplify.API.query` is asynchronous and returns immediately.   We pass a callback inline function `(event) in ...` to be notified when the data are available.  When data are available, the code transforms the JSON object received in `Landmark` object (as defined in *Landmarks/Models/Landmark.swift*).  Newly created objects are added to the array of Landmarks in `UserData` with this line of code `self.userData.landmarks.append(l)`.
+- line 152 : we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the API Query method.  `Amplify.API.query` is asynchronous and returns immediately.   We pass a callback inline function `(event) in ...` to be notified when the data are available.  When data are available, the code transforms the JSON object received in `Landmark` object (as defined in `Landmarks/Models/Landmark.swift`).  Newly created objects are added to the array of Landmarks in `UserData` with this line of code `self.userData.landmarks.append(l)`.
 
-To allow the creation of the application *Landmark* model object from the API *LandmarkData* generated code, we add the following code to `Landmarks/Models/Landmark.swift`
+To allow the creation of the application `Landmark` model object from the API `LandmarkData` generated code, we add the following code to `Landmarks/Models/Landmark.swift`
 
 Open `Landmarks/Models/Landmark.swift` and copy/paste the code below.
 
@@ -373,7 +373,7 @@ extension Landmark {
 
 What did we change ?
 
-- line 52: we created an extension to the provided *Landmark* data object, allowing to initialize an instance of it from a *LandmarkData* object returned by the API.
+- line 52: we created an extension to the provided `Landmark` data object, allowing to initialize an instance of it from a `LandmarkData` object returned by the API.
 
 The list of all changes we made to the code is visible in [this commit]() TODO .
 
@@ -397,7 +397,7 @@ patch -p0 < ../../scripts/patch1.txt
 patch -p0 < ../../scripts/patch2.txt 
 ```
 
-Clean the project before proceeding to the next step. In XCode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679; &#8984;K**). 
+Clean the project before proceeding to the next step. In XCode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
 
 ## Launch the app
 

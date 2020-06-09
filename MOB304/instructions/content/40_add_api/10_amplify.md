@@ -103,7 +103,7 @@ amplify push
 
 1. Enter maximum statement depth [increase from default if your schema is deeply nested].  Accept the default (**2**) and press enter.
 
-1. Enter the file name for the generated code. Accept the default (**API.swift**) and press enter.
+1. Enter the file name for the generated code. Accept the default (**API.swift**) and press enter. This file is used by the AWS SDK for Mobile, Amplify is not using it.
 
 ![amplify push](/images/40-10-amplify-2.png)
 

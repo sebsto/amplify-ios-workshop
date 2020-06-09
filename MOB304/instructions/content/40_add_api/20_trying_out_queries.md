@@ -44,7 +44,7 @@ cd $PROJECT_DIRECTORY
 
     1.  Click on the link to open the Cognito console in your Region: [Northern America](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=us-east-1#/) or [Europe](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=eu-central-1#/)
     2.  Select the User Pool named **amplifyiosworkshopxxxxx_userpool_xxxx-dev** (the xxx is generated randomly and will vary)
-    3. Click **App Clients** on the left menu, select the client named **amplifyxxxx_app_clientWeb** and click **Show Details** to reveal both the App client id and the App client secret.  Copy the **App client id**.  The correct app client has (no secret key) as "App client secret".  
+    3. Click **App Clients** on the left menu, select the client named **amplifyxxxx_app_clientWeb** and click **Show Details** to reveal both the App client id and the App client secret.  Copy the **App client id**.  The correct app client has no secret key as "App client secret".  
     ![app client id](/images/40-20-appsync-2.png)
 
 1. Go back to the **AppSync console**, in the **Query** section Paste the value into the **ClientId** field
@@ -72,7 +72,7 @@ mutation CreateLandmark($input: CreateLandmarkDataInput!) {
 Open the **Query Variables** section on the bottom and copy / paste the following data:
 
 ```json
-{ "input" : 
+{ "input" :
     {
         "name": "Lake Umbagog",
         "category": "Lakes",
@@ -92,7 +92,6 @@ Open the **Query Variables** section on the bottom and copy / paste the followin
 ```
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
-
 
 **Get the Landmark**  we just created by running this query:
 
@@ -114,7 +113,7 @@ query GetLandmark {
         imageName
     }
 }
-```   
+```
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
 

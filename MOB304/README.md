@@ -30,7 +30,7 @@ Final application is working and demo-able.  Some tweaks and improvements can be
 
 - [ ] add instruction to use other IDP (apple, google, amazon)
 - [ ] use Hugo page resource to load images
-- [ ] unify XCode screenshots (bright vs dark theme) 
+- [ ] unify Xcode screenshots (bright vs dark theme) 
 - [ ] add commits at end of each steps
 - [ ] add amplify build script to project as per [official doc](https://docs.amplify.aws/start/getting-started/setup/q/integration/ios), and remove 'add configuration files' steps in 30.20.
 

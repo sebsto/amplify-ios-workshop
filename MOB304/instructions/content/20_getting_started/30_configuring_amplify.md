@@ -1,18 +1,20 @@
 +++
 title = "Configuring Amplify"
 chapter = false
-weight = 20
+weight = 30
 +++
 
-TODO : Adjust to Amplify CLI 4.21 ans Amplify iOS Libs 1.0.x
+This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/) to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code. You installed the CLI as part of the [prerequisites instructions](/10_prerequisites/20_installs.html#installing-or-updating).  Now we integrate Amplify tools with your Xcode project.
 
-This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/) to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code.
+## Add Amplify to your application
 
+Amplify for iOS is distribued through Cocoapods as a Pod. In this section, you’ll setup cocoa pods and add the required Amplify packages.
 
-## Initialise Amplify command line
+1. Before starting this step, please make sure that **please close Xcode**.
 
-The first time you use AWS Amplify in a project, Amplify needs to initialise your project directory and the cloud environment.  We assume *$PROJECT_DIRECTORY* is set and unchanged from [previous step](/20_getting_started/20_bootstrapping_the_app.html).
-
+{{% notice warning %}}
+Did you really close Xcode ?
+{{% /notice %}}
 In a Terminal, type the following commands:
 
 ```bash

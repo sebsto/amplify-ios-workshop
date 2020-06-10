@@ -10,7 +10,7 @@ weight = 30
 
 You just add a bit of logic in `AppDelegate` class to sign in and to sign out users.  You also modified the screen flow to start the app with a `LandingView` that controls the routing towards a `UserBadge` or the `LandmarkList` view based on the user authentication status.
 
-Let's now verify everythign works as expected.  Start the application using XCode's menu and click **Product**, then **Run** (or press **&#8984;R**).
+Let's now verify everythign works as expected.  Start the application using Xcode's menu and click **Product**, then **Run** (or press **&#8984;R**).
 
 The application starts and shows the `LandingView`.  Click on the user icon in the middle of the screen to trigger the user authentication, using Cognito's web user interface. Click on **Sign up** at the bottom of the screen to signup a new user.
 
@@ -26,7 +26,7 @@ Code View (Cognito) | Landmarks List View
 
 Click **Sign Out** to end the session and, after a short redirection to Cognito's signout page, you return to the `LandingView`.
 
-In the XCode console, you see some application debugging information: the username and profile of the signed in user as well as its Cognito token.  
+In the Xcode console, you see some application debugging information: the username and profile of the signed in user as well as its Cognito token.  
 
 ```text 
 2020-06-08 17:11:26.908420+0200 Landmarks[86260:7126165] [Amplify] Configuring

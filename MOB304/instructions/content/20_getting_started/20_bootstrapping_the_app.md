@@ -12,7 +12,7 @@ The file has the following directory structure
 
 1. This workshop will start from the *Complete* version of the tutorial project.  In the remaining part of this workshop, `$PROJECT_DIRECTORY` will refer to `~/Downloads/amplify-ios-workshop/Complete/Landmarks`.  
 
-    Unzip the file and open the XCode project:
+    Unzip the file and open the Xcode project:
 
  ```bash
  # download the workshop ZIP file
@@ -32,10 +32,10 @@ The file has the following directory structure
  open HandlingUserInput.xcodeproj
  ```
 
-    You can safely ackowledge XCode's message informing you this app has been downloaded from Internet.
-![XCode warning](/images/20-20-xcode-warning.png)
+    You can safely ackowledge Xcode's message informing you this app has been downloaded from Internet.
+![Xcode warning](/images/20-20-xcode-warning.png)
 
-1. In XCode, **Choose** the iOS Simulator you want to use (I am using iPhone 11) and click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
+1. In Xcode, **Choose** the iOS Simulator you want to use (I am using iPhone 11) and click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
 ![First build](/images/20-10-xcode.png)
 
 After a few seconds, you should see the application running in the iOS simulator.

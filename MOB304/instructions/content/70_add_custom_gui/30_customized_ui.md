@@ -232,7 +232,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 ## Add a Custom Login Screen
 
-We implement our own custom login screen as a View.  To add a new Swift class to your project, use XCode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name : *CustomLoginView.swift*:
+We implement our own custom login screen as a View.  To add a new Swift class to your project, use Xcode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name : *CustomLoginView.swift*:
 
 Copy / paste the code from below:
 
@@ -337,7 +337,7 @@ extension Notification {
 #if DEBUG
 struct ContentView_Previews : PreviewProvider {
 static var previews: some View {
-        CustomLoginView() // Renders your UI View on the XCode preview
+        CustomLoginView() // Renders your UI View on the Xcode preview
     }
 }
 #endif

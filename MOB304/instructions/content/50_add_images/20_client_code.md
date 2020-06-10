@@ -32,7 +32,7 @@ target 'Landmarks' do
 
   # Pods for Landmarks
   pod 'Amplify', '~> 1.0.1'                             # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within XCode
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
   pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
   pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0.1'   # support for Amazon S3 storage

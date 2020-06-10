@@ -28,7 +28,7 @@ target 'Landmarks' do
 
   # Pods for Landmarks
   pod 'Amplify', '~> 1.0.1'                             # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within XCode
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
   pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
 end
@@ -76,7 +76,7 @@ final class UserData: ObservableObject {
 
 On line 13, we initialise the list of landmarks with an empty array, while preserving the type of the variable.
 
-## Generate code and add it to the XCode project 
+## Generate code and add it to the Xcode project 
 
 Thanks to the strongly typed nature of GraphQL, Amplify generates Swift code to access the data types, the queries and the mutations of the API. 
 
@@ -91,7 +91,7 @@ Wait for the generation to complete and check there is no error.
 
 ![amplify codegen](/images/40-30-amplify-codegen-1.png)
 
-Add the generated files in your project.  In the Finder, locate 4 files in *amplify/generated/models* and drag them into your XCode project.
+Add the generated files in your project.  In the Finder, locate 4 files in *amplify/generated/models* and drag them into your Xcode project.
 
 ![amplify codegen files](/images/40-30-amplify-codegen-2.png)
 
@@ -397,7 +397,7 @@ patch -p0 < ../../scripts/patch1.txt
 patch -p0 < ../../scripts/patch2.txt 
 ```
 
-Clean the project before proceeding to the next step. In XCode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
+Clean the project before proceeding to the next step. In Xcode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
 
 ## Launch the app
 

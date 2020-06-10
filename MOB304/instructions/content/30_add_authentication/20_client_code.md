@@ -22,7 +22,7 @@ graph LR;
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
 
-## Add the Amplify library to XCode project
+## Add the Amplify library to Xcode project
 
 We are using [CocoaPods](https://cocoapods.org/), a MacOS package manager, to add the Amplify library to your project.
 The instructions below assume CocoaPod is already installed.  If not, refer to the instructions provided in the [pre-requisites section](/10_prerequisites/20_installs.html#installing-or-updating).
@@ -47,7 +47,7 @@ target 'Landmarks' do
 
   # Pods for Landmarks
   pod 'Amplify', '~> 1.0.1'                            # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within XCode
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
   pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
   pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0.1'   # support for Amazon S3 storage
@@ -63,19 +63,19 @@ pod install --repo-update
 After one or two minutes, you shoud see the below (it is safe to ignore the three warnings, we're going to fix that in a minute):
 ![pod install](/images/30-20-pod-install-1.png)
 
-If your XCode project is open, **close XCode** and re-open the project *workspace* that `pod` just created.
+If your Xcode project is open, **close Xcode** and re-open the project *workspace* that `pod` just created.
 
 ```bash
 open HandlingUserInput.xcworkspace/
 ```
 
 {{% notice info %}}
-It is important to open the XCode **workspace** and not the XCode project.
+It is important to open the Xcode **workspace** and not the Xcode project.
 {{% /notice %}}
 
 ### Add Amplify configuration files to the project 
 
-Rather than configuring each service through a constructor or constants file, the Amplify and the underlying AWS SDKs for iOS support configuration through centralized files called `awsconfiguration.json` and `amplifyconfiguration.json`. They defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, these files are automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` and `amplifyconfiguration.json` are located at the root project directory. You have to add them manually to your XCode project.
+Rather than configuring each service through a constructor or constants file, the Amplify and the underlying AWS SDKs for iOS support configuration through centralized files called `awsconfiguration.json` and `amplifyconfiguration.json`. They defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, these files are automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` and `amplifyconfiguration.json` are located at the root project directory. You have to add them manually to your Xcode project.
 
 In the Finder, drag `awsconfiguration.json` into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
 
@@ -93,7 +93,7 @@ Before proceeding to the next step, ensure you have both files added to your pro
 
 ### Update Target Configurations for CocoaPods
 
-In your XCode project, click on **HandleUserInput** on the top left part of the screen, then **Info**.  Select **HandlingUserInput** under **Project**.  Open **Configurations**, **Debug**.  For the **landmarks** target, replace the configuration by **Pods-landmarks.debug**. Repeat the operation for the **release** target, using **Pods-landmarks.release** configuration.  Your project should look like this:  
+In your Xcode project, click on **HandleUserInput** on the top left part of the screen, then **Info**.  Select **HandlingUserInput** under **Project**.  Open **Configurations**, **Debug**.  For the **landmarks** target, replace the configuration by **Pods-landmarks.debug**. Repeat the operation for the **release** target, using **Pods-landmarks.release** configuration.  Your project should look like this:  
 ![pod install](/images/30-20-pod-install-2.png)
 
 ### Build & Verify 
@@ -296,7 +296,7 @@ Let's create two new Swift classes in `$PROJECT_DIRECTORY/Landmarks` (same direc
 - **UserBadge.swift** is the view to use when user is not authenticated
 - **LandingView.swift** is the application entry point.  It displays either `UserBadge` or `LandmarkList` based on user's authentication status.
 
-To add a new Swift class to your project, use XCode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name.
+To add a new Swift class to your project, use Xcode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name.
 
 ![add classes to xcode](/images/30-20-xcode-add-class.gif)
 
@@ -534,7 +534,7 @@ Uppon sucessful authentication, the Cognito server redirects to the URI we provi
 
 To do this, we add `landmarks://` to the app’s URL schemes:
 
-1. In XCode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
+1. In Xcode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
 
 1. Add the following entry in URL scheme:
 {{< highlight xml "hl_lines=6-16" >}}

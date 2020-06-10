@@ -22,93 +22,9 @@ graph LR;
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
 
-## Add the Amplify library to Xcode project
-
-We are using [CocoaPods](https://cocoapods.org/), a MacOS package manager, to add the Amplify library to your project.
-The instructions below assume CocoaPod is already installed.  If not, refer to the instructions provided in the [pre-requisites section](/10_prerequisites/20_installs.html#installing-or-updating).
-
-In a Terminal, type the following commands to create a `Pod` file:
-
-```bash
-cd $PROJECT_DIRECTORY
-pod init
-```
-
-It is safe to ignore the `PBXNativeTarget` warning, we’re going to fix that in a minute.  
-Edit `$PROJECT_DIRECTORY/Podfile` to add the Amplify dependencies.  Your `Podfile` must look like this:
-
-```text
-# Uncomment the next line to define a global platform for your project
-platform :ios, '13.0'
-
-target 'Landmarks' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for Landmarks
-  pod 'Amplify', '~> 1.0.1'                            # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
-  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
-  pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
-  pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0.1'   # support for Amazon S3 storage
-end
-```
-
-Without changing directory, let `pod` download and install the dependencies:
-
-```bash
-pod install --repo-update
-```
-
-After one or two minutes, you shoud see the below (it is safe to ignore the three warnings, we're going to fix that in a minute):
-![pod install](/images/30-20-pod-install-1.png)
-
-If your Xcode project is open, **close Xcode** and re-open the project *workspace* that `pod` just created.
-
-```bash
-open HandlingUserInput.xcworkspace/
-```
-
-{{% notice info %}}
-It is important to open the Xcode **workspace** and not the Xcode project.
-{{% /notice %}}
-
-### Add Amplify configuration files to the project 
-
-Rather than configuring each service through a constructor or constants file, the Amplify and the underlying AWS SDKs for iOS support configuration through centralized files called `awsconfiguration.json` and `amplifyconfiguration.json`. They defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, these files are automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` and `amplifyconfiguration.json` are located at the root project directory. You have to add them manually to your Xcode project.
-
-In the Finder, drag `awsconfiguration.json` into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
-
-- Clear the **Copy items if needed** check box.
-- Choose **Create groups**, and then choose **Finish**.
-
-![Add awsconfiguration](/images/30-20-add-awsconfiguration.gif)
-
-Repeat the process for `amplifyconfiguration.json`.
-
-Before proceeding to the next step, ensure you have both files added to your project, like one the screenshot below.
-
-![Two configuration files added](/images/30-20-two-configuration-files.png)
-
-
-### Update Target Configurations for CocoaPods
-
-In your Xcode project, click on **HandleUserInput** on the top left part of the screen, then **Info**.  Select **HandlingUserInput** under **Project**.  Open **Configurations**, **Debug**.  For the **landmarks** target, replace the configuration by **Pods-landmarks.debug**. Repeat the operation for the **release** target, using **Pods-landmarks.release** configuration.  Your project should look like this:  
-![pod install](/images/30-20-pod-install-2.png)
-
-### Build & Verify 
-
-Build and launch the application to verify everything is working as expected. **Choose** the iOS Simulator you want to use (I am using iPhone 11) and click the **build** icon <i class="far fa-caret-square-right"></i>  or press **&#8984;R**.
-![First build](/images/20-10-xcode.png)
-
-After a few seconds, you should see the application running in the iOS simulator.
-![First run](/images/20-10-app-start.png)
-
 ## Add authentication code
 
-Now that the dependencies are installed, let's modify the application code to add a user authentication flow.
-
-Add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
+Let's start to add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
 
 {{< highlight swift "hl_lines=8-8 10">}}
 // Landmarks/Models/UserData.swift

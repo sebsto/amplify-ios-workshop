@@ -93,3 +93,37 @@ Now that we’ve added Amplify tools to the build process, it will run when you 
 - `awsconfiguration.json` - this configuration file will also be added to your poject and shipped with your bundle. This is also requried by the amplify libraries.
 
 You are ready to start building with Amplify! 🎉
+
+## Fix issues caused by Amplify Tools
+
+Amplify Tools is fairly recent and still has some issues.  For example, after the building the project above, it removes the `Landmarks/Resources` folder containing the images.  We are tracking this issue on https://github.com/aws-amplify/amplify-cli/issues/4518.
+
+Let's add these images again.
+
+1. In Xcode, delete the `Recovered References` folder.
+
+1. In the Finder, under `Landmarks` folder, locate the `Landmarks/Resources` folder containing the `.jpg` image files and drag and drop it to your project.
+
+1. Be sure **Copy items if needed** is **NOT checked**
+
+1. Click Finish
+You should see a project structure similar to :
+![Fix Project](/images/20-30-fix-project.png)
+
+1. Rebuild the project, clicking **Product** menu and select  **Build**, or typing **&#8984;B**, to ensure there is no error left.
+
+## Create the backend infrastructure
+
+The last step is to ask Amplify Tools to create the backend infrastructure to host our project.
+
+1. In Xcode, open the `AmplifyConfig/amplifytools.xconfig` file and set `push=true` on the first line.
+```text
+push=true
+modelgen=false
+profile=default
+envName=amplify
+```
+
+1. Rebuild the project, clicking **Product** menu and select  **Build** or typing **&#8984;B**
+
+1. To speed up subsequent builds, revert the change and set `push=false`

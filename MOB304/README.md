@@ -28,13 +28,16 @@ Final application is working and demo-able.  Some tweaks and improvements can be
 
 ### Workshop Instructions
 
-- [ ] remove re:invent specific instructions
-- [ ] add s3 async download code to workshop instructions
 - [ ] add instruction to use other IDP (apple, google, amazon)
 - [ ] use Hugo page resource to load images
+- [ ] unify XCode screenshots (bright vs dark theme) 
+- [ ] add commits at end of each steps
+- [ ] add amplify build script to project as per [official doc](https://docs.amplify.aws/start/getting-started/setup/q/integration/ios), and remove 'add configuration files' steps in 30.20.
 
 ### Done
 
+- [X] add s3 async download code to workshop instructions
+- [X] remove re:invent specific instructions
 - [X] use curl to download ZIP file
 - [X] test presence of ~/.aws directory in setup instructions
 - [X] refactor code to download images asynchronously (GitHub only)

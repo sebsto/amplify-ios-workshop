@@ -8,11 +8,11 @@ Before we begin coding, there are a few things we need to install, update, and c
 
 ### Apple Software
 
-In order to develop native applications for iOS, you need to have [XCode](https://apple.com/xcode) installed on your laptop.
-You can download and install XCode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~2Gb, so it might take up to one hour depending on your network connection.
+In order to develop native applications for iOS, you need to have [Xcode](https://apple.com/xcode) installed on your laptop.
+You can download and install Xcode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~2Gb, so it might take up to one hour depending on your network connection.
 
 {{% notice note %}}
-This workshop requires at least [Swift 5.1](https://swift.org) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework.  These are provided by [XCode 11](https://apple.com/xcode) or more recent.
+This workshop requires at least [Swift 5.1](https://swift.org) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework.  These are provided by [Xcode 11](https://apple.com/xcode) or more recent.
 {{% /notice %}}
 
 ### Installing or updating

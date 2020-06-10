@@ -8,13 +8,11 @@ Nowadays, most applications allow users to sign-in using a third-party identity,
 
 Just as for regular signin flow, you can chose to present to your customers with the Cognito Hosted UI or to build your own.  In this workshop, we chose to use the hosted UI because it handles most of the complexities of the OAuth flow for you.
 
-In this last section, we're going to add a "Login With Facebook" button to our application.  This is a three steps process:
+In this section, we're going to add a "Login With Facebook" button to our application.  Because we are using the Cognito hosted web user interface, there is no code change required to add "Login With xxx". This is a two steps process:
 
 - we create a developer account on Facebook's developer web site and we create a Facebook app
 
 - we update the Amplify configuration to add Facebook as an identity provider 
-
-- we revert back the application code to the Hosted UI (the one we used [in section 6.2](/60_add_custom_gui/20_hosted_ui.html)
 
 ## Create a Facebook app
 

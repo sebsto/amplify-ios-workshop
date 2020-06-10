@@ -1,5 +1,5 @@
 +++
-title = "Add Identity Federation (optional)"
+title = "Customize the Login UI"
 chapter = true
 weight = 70
 pre = "<b>7. </b>"
@@ -7,6 +7,6 @@ pre = "<b>7. </b>"
 
 ### Section 7
 
-## Add Identity Federation (optional)
+## Customize the Login User Interface
 
 {{% children showhidden="false" %}}

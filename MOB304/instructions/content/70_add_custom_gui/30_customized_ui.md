@@ -4,17 +4,17 @@ chapter = false
 weight = 30
 +++
 
-Amazon Cognito provides low level API allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://aws-amplify.github.io/docs/ios/authentication#working-with-the-api).
+Amazon Cognito provides low level API allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://docs.amplify.aws/lib/auth/signin/q/platform/ios).
 
-In this section, we are going to implement our own Login user interface (a custom SwiftUI View) and interact with the `AWSMobileClient.SignIn()` API instead of using the Cognito dropin or hosted UI.
+In this section, we are going to implement our own Login user interface (a custom SwiftUI View) and interact with the `Amplify.Auth.signIn()` API instead of using the Cognito hosted UI.
 
 ## Add API based signin in Application Delegate
 
-We start by adding a new method in the Application Delegate to sign in through the API instead of using the drop-in or hosted UI.
+We start by adding a new method in the Application Delegate to sign in through the API instead of using the hosted UI.
 
 Add the `signIn()` function in file *Landmarks/AppDelegate.swift* (you can safely copy/paste the whole file below, modified lines are highlighted):
 
-{{< highlight swift "hl_lines=142-159">}}
+{{< highlight swift "hl_lines=122-133">}}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -23,82 +23,68 @@ The application delegate.
 */
 
 import UIKit
-import AWSMobileClient
-import AWSAppSync
-import AWSS3
+import Amplify
+import AmplifyPlugins
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public let userData = UserData()
-    var appSyncClient: AWSAppSyncClient?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        //init appsync
-        self.appSyncInit()
-        
-        AWSMobileClient.default().addUserStateListener(self) { (userState, info) in
+
+        do {
+            Amplify.Logging.logLevel = .info
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSS3StoragePlugin())
+
+            try Amplify.configure()
+            print("Amplify initialized")
             
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
+            // load data when user is signedin
+            self.checkUserSignedIn()
 
-            switch (userState) {
-            case .guest:
-                print("user is in guest mode.")
-                
-            case .signedOut:
-                print("user just signed out")
-                self.userData.landmarks = []
-                
-            case .signedIn:
-                print("user just signed in.")
-                print("username : \(String(describing: AWSMobileClient.default().username))")
-                
-                print("Loading data")
-                self.queryLandmarks()
+            // listen to auth events.
+            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
+            _ = Amplify.Hub.listen(to: .auth) { (payload) in
 
-                AWSMobileClient.default().getUserAttributes(completionHandler: { (attributes, error) in
-                    print("error : \(String(describing: error))")
-                    print("attributes: \(String(describing: attributes))")
-                    print("")
+                switch payload.eventName {
+
+                case HubPayload.EventName.Auth.signedIn:
+                    print("==HUB== User signed In, update UI")
+
+                    self.updateUI(forSignInStatus: true)
+
+                    // if you want to get user attributes
+                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
+                        switch result {
+                        case .success(let attributes):
+                            print("User attribtues - \(attributes)")
+                        case .failure(let error):
+                            print("Fetching user attributes failed with error \(error)")
+                        }
+                    }
+
+
+                case HubPayload.EventName.Auth.signedOut:
+                    print("==HUB== User signed Out, update UI")
+                    self.updateUI(forSignInStatus: false)
                     
-                    AWSMobileClient.default().getTokens({ (tokens, error) in
-                        print("error : \(String(describing: error))")
-                        print("token : \(String(describing: tokens))")
-                        print("")                        
-                    })
-                })
-                                
-            case .signedOutUserPoolsTokenInvalid:
-                print("need to login again.")
+                case HubPayload.EventName.Auth.sessionExpired:
+                    print("==HUB== Session expired, show sign in aui")
+                    self.updateUI(forSignInStatus: false)
 
-            case .signedOutFederatedTokensInvalid:
-                print("user logged in via federation, but currently needs new tokens")
-
-            default:
-                print("unsupported")
+                default:
+                    //print("==HUB== \(payload)")
+                    break
+                }
             }
-        }
-        
-        AWSMobileClient.default().initialize { (userState, error) in
 
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
-            
-            if let userState = userState {
-                print("UserState: \(userState.rawValue)")
-            } else if let error = error {
-                print("error: \(error.localizedDescription)")
-            }
+        } catch {
+            print("Failed to configure Amplify \(error)")
         }
 
-        if (self.userData.isSignedIn) {
-            print("Loading data")
-            self.queryLandmarks()
-        }
-
-        
         return true
     }
 
@@ -118,160 +104,128 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-      
-    // MARK: AWSMobileClient - Authentication
     
-    public func authenticateWithDropinUI(navigationController : UINavigationController) {
-        print("dropinUI()")
-        
-        // Option to launch sign in directly
-        let signinUIOptions = SignInUIOptions(canCancel: false,
-                                              logoImage: UIImage(named: "turtlerock"),
-                                              backgroundColor: .black)
-
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, signInUIOptions: signinUIOptions, { (signInState, error) in
-            if let signInState = signInState {
-                print("Sign in flow completed: \(signInState)")
-            } else if let error = error {
-                print("error logging in: \(error.localizedDescription)")
+    // MARK: -- Authentication code
+    
+    // change our internal state, this triggers an UI update on the main thread
+    func updateUI(forSignInStatus : Bool) {
+        DispatchQueue.main.async() {
+            self.userData.isSignedIn = forSignInStatus
+            
+            // only load landmarks at start of app, when user signed in
+            if (forSignInStatus && self.userData.landmarks.isEmpty) {
+                self.queryLandmarks()
             }
-        })
+        }
     }
+    
+    // when user is signed in, fetch its details
+    func checkUserSignedIn() {
 
-    public func authenticateWithHostedUI(navigationController : UINavigationController) {
-        
-        print("hostedUI()")
-        // Optionally override the scopes based on the usecase.
-        let hostedUIOptions = HostedUIOptions(scopes: ["openid", "email", "profile", "aws.cognito.signin.user.admin"])
+        // every time auth status changes, let's check if user is signedIn or not
+        // updating userData will automatically update the UI
+        _ = Amplify.Auth.fetchAuthSession { (result) in
 
-        // Present the Hosted UI sign in.
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, hostedUIOptions: hostedUIOptions) { (userState, error) in
-            if let error = error as? AWSMobileClientError {
-                print(error.localizedDescription)
+            do {
+                let session = try result.get()
+                self.updateUI(forSignInStatus: session.isSignedIn)
+            } catch {
+                print("Fetch auth session failed with error - \(error)")
             }
-            if let userState = userState {
-                print("Status: \(userState.rawValue)")
 
-            }
         }
     }
     
     public func signIn(username: String, password: String) {
-        AWSMobileClient.default().signIn(username: username, password: password) { (signInResult, error) in
-
-            if let error = error  {
-                print("\(error)")
-                // in real life, present an error message to user
-            } else if let signInResult = signInResult {
-                switch (signInResult.signInState) {
-                case .signedIn:
-                    print("User is signed in.")
-                case .smsMFA:
-                    print("SMS message sent to \(signInResult.codeDetails!.destination!)")
-                default:
-                    print("Sign In needs info which is not et supported.")
-                }
+        _ = Amplify.Auth.signIn(username: username, password: password) { result in
+            switch result {
+            case .success(_):
+                print("Sign in succeeded")
+                // nothing else required, the event HUB will trigger the UI refresh
+            case .failure(let error):
+                print("Sign in failed \(error)")
+                // in real life present a message to the user
             }
         }
     }
     
-    public func signOut() {
-        AWSMobileClient.default().signOut()
-    }
-    
-    // MARK: AWSAppSync
-        
-    func appSyncInit() {
-        do {
-            // You can choose the directory in which AppSync stores its persistent cache databases
-            let cacheConfiguration = try AWSAppSyncCacheConfiguration()
+    // signin with Cognito web user interface
+    public func authenticateWithHostedUI() {
 
-            // AppSync configuration & client initialization
-            let appSyncServiceConfig = try AWSAppSyncServiceConfig()
-            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncServiceConfig: appSyncServiceConfig,
-                                                                  userPoolsAuthProvider: AWSMobileClient.default() as AWSCognitoUserPoolsAuthProvider,
-                                                                  cacheConfiguration: cacheConfiguration)
-            self.appSyncClient = try AWSAppSyncClient(appSyncConfig: appSyncConfig)
-            print("Initialized appsync client.")
-        } catch {
-            print("Error initializing appsync client. \(error)")
+        print("hostedUI()")
+        _ = Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!) { result in
+            switch result {
+            case .success(_):
+                print("Sign in succeeded")
+            case .failure(let error):
+                print("Sign in failed \(error)")
+            }
         }
     }
+    
+    // signout globally
+    public func signOut() {
+
+        // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
+        let options = AuthSignOutRequest.Options(globalSignOut: true)
+        _ = Amplify.Auth.signOut(options: options) { (result) in
+            switch result {
+            case .success:
+                print("Successfully signed out")
+            case .failure(let error):
+                print("Sign out failed with error \(error)")
+            }
+        }
+    }
+    
+    // MARK: API Access
     
     func queryLandmarks() {
         print("Query landmarks")
-        self.appSyncClient?.fetch(query: ListLandmarksQuery(limit:100), cachePolicy: .fetchIgnoringCacheData) {(result, error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "")
-                    return
-                }
+        
+        _ = Amplify.API.query(request: .list(LandmarkData.self)) { event in
+            switch event {
+            case .success(let result):
                 print("Landmarks query complete.")
-                result?.data?.listLandmarks?.items!.forEach {
+                switch result {
+                case .success(let landmarksData):
+                    print("Successfully retrieved list of landmarks")
+                    for f in landmarksData {
+                        let landmark = Landmark.init(from: f)
+                        DispatchQueue.main.async() {
+                            self.userData.landmarks.append(landmark);
+                        }
+                    }
                     
-                    // convert the AppSync jsonObject (aka Dictionary<String, Any> to Data
-                    // the code below assumes there is no casting / nil error
-                    // TODO should add guard statement and handle errors
-                    // https://nacho4d-nacho4d.blogspot.com/2016/05/dictionary-to-json-string-and-json.html
-                    let jsonData = try! JSONSerialization.data(withJSONObject: $0?.jsonObject as Any, options: [])
-                    // this allows to create a Landmark object using the Decodable protocol
-                    let l : Landmark = try! JSONDecoder().decode(Landmark.self, from: jsonData)
-                    self.userData.landmarks.append(l);
-                    
+                case .failure(let error):
+                    print("Can not retrieve result : error  \(error.errorDescription)")
                 }
-            }
-    }
-
-    // MARK: AWS S3 & Image Loading
-
-    /**
-        Asynchronously load the image from S3.  This method blocks until the S3 download is completed.
-        https://stackoverflow.com/questions/42484281/waiting-until-the-task-finishes
-     */
-    func image(_ imageName : String) -> Data? {
-        
-        print("Downloading image : \(imageName)")
-        
-        var result : Data?
-        
-        let group = DispatchGroup()
-        group.enter()
-        
-        let transferUtility = AWSS3TransferUtility.default()
-        transferUtility.downloadData(
-            forKey: "public/\(imageName).jpg",
-              expression: nil,
-              completionHandler: { (task, URL, data, error) -> Void in
-                
-                if let e = error {
-                    print("Can not download image : \(e)")
-                } else {
-                    print("Image \(imageName) loaded")
-                    result = data!
-                }
-                
-                group.leave()
-              }
-        )
-        
-        // wait for image to be downloaded
-        group.wait()
-        
-        return result
-    }
-}
-
-// Make sure AWSMobileClient is a Cognito User Pool credentails providers
-// this makes it easy to AWSMobileClient shared instance with AppSync Client
-// read https://github.com/awslabs/aws-mobile-appsync-sdk-ios/issues/157 for details
-extension AWSMobileClient: AWSCognitoUserPoolsAuthProviderAsync {
-    public func getLatestAuthToken(_ callback: @escaping (String?, Error?) -> Void) {
-        getTokens { (tokens, error) in
-            if error != nil {
-                callback(nil, error)
-            } else {
-                callback(tokens?.idToken?.tokenString, nil)
+            case .failure(let error):
+                print("Can not retrieve landmarks : error \(error)")
             }
         }
+    }
+    
+    // MARK: AWS S3 & Image Loading
+
+    func image(_ name: String, callback: @escaping (Data) -> Void ) {
+        
+        print("Downloading image : \(name)")
+
+        _ = Amplify.Storage.downloadData(key: "\(name).jpg",
+            progressListener: { progress in
+                // in case you want to monitor progress
+//                    print("Progress: \(progress)")
+            }, resultListener: { (event) in
+                switch event {
+                case let .success(data):
+                    print("Image \(name) loaded")
+                    callback(data)
+                case let .failure(storageError):
+                    print("Can not download image: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+                }
+            }
+        )
     }
 }
 {{< /highlight >}}
@@ -284,7 +238,11 @@ Copy / paste the code from below:
 
 {{< highlight swift >}}
 import SwiftUI
+import Combine
 
+//
+// this is a custom view to capture username and password
+//
 struct CustomLoginView : View {
     
     @State private var username: String = ""
@@ -329,6 +287,50 @@ struct CustomLoginView : View {
                                 
             }.padding().background(Color.green).cornerRadius(4.0)
         }.padding()
+        .keyboardAdaptive() // Apply the scroll on keyboard height
+    }
+}
+
+
+// The code below
+// scrolls the view when the keyboard appears
+// thanks to https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/
+struct KeyboardAdaptive: ViewModifier {
+    @State private var keyboardHeight: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.bottom, keyboardHeight)
+            .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
+            .animation(.easeOut(duration: 0.5))
+    }
+}
+
+extension View {
+    func keyboardAdaptive() -> some View {
+        ModifiedContent(content: self, modifier: KeyboardAdaptive())
+    }
+}
+
+extension Publishers {
+    // 1.
+    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
+        // 2.
+        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
+            .map { $0.keyboardHeight }
+        
+        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
+            .map { _ in CGFloat(0) }
+        
+        // 3.
+        return MergeMany(willShow, willHide)
+            .eraseToAnyPublisher()
+    }
+}
+
+extension Notification {
+    var keyboardHeight: CGFloat {
+        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
     }
 }
 
@@ -347,7 +349,9 @@ The code is straigthforward:
 
 - the Login button as an `action` code block.  The code calls the `AppDelegate.signIn()` function we added in the previous step.
 
-The last step consists of using this `CustomLoginView` instead of the dropin or hosted UI.
+- the last part of the code is shamelessy [copied from a blog post I found](https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/). It allows to scroll the View up when the keyboard appears.
+
+The last step consists of using this `CustomLoginView` instead of the the hosted UI.
 
 ## Update LandingView 
 
@@ -377,13 +381,21 @@ import SwiftUI
 
 struct LandingView: View {
     @ObservedObject public var user : UserData
-    
+
     var body: some View {
         
         return VStack {
             // .wrappedValue is used to extract the Bool from Binding<Bool> type
             if (!$user.isSignedIn.wrappedValue) {
+                
+//                Button(action: {
+//                            let app = UIApplication.shared.delegate as! AppDelegate
+//                            app.authenticateWithHostedUI()
+//                        }) {
+//                    UserBadge().scaleEffect(0.5)
+//                }
                 CustomLoginView()
+                
             } else {
                 LandmarkList().environmentObject(user)
             }
@@ -399,7 +411,7 @@ struct LandingView_Previews: PreviewProvider {
 }
 {{< /highlight >}}
 
-You can view the whole code changes for this section [from this commit](https://github.com/aws-samples/aws-reinvent-2019-mobile-workshops/commit/bf43285a9ea3eec85fb7d4a3cc33a4acebdbf1d9).
+You can view the whole code changes for this section [from this commit]() TODO.
 
 ## Build and Test 
 
@@ -408,6 +420,10 @@ Build and launch the application to verify everything is working as expected. Cl
 
 If you are still authenticated, click **Sign Out** and click the user badge to sign in again. You should see this:
 
-![customized drop in UI](/images/60-30-1.png)
+![customized drop in UI](/images/70-30-1.png)
 
 Enter the username and password that you created in section 3 and try to authenticated.  After a second or two, you will see the Landmark list. 
+
+{{% notice info %}}
+Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (here is [the one for Facebook](https://developers.facebook.com/docs/facebook-login/ios)) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the most advanced readers.
+{{% /notice %}}

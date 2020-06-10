@@ -119,6 +119,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    public func signIn(username: String, password: String) {
+        _ = Amplify.Auth.signIn(username: username, password: password) { result in
+            switch result {
+            case .success(_):
+                print("Sign in succeeded")
+                // nothing else required, the event HUB will trigger the UI refresh
+            case .failure(let error):
+                print("Sign in failed \(error)")
+                // in real life present a message to the user
+            }
+        }
+    }
+
     // signin with Cognito web user interface
     public func authenticateWithHostedUI() {
 

@@ -22,6 +22,37 @@ graph LR;
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
 
+## Add the AWS Authentication client library
+
+Edit `$PROJECT_DIRECTORY/Podfile` to add the Amplify Authentication dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
+
+{{< highlight bash "hl_lines=11 ">}}
+cd $PROJECT_DIRECTORY
+echo "platform :ios, '13.0'
+
+target 'Landmarks' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Landmarks
+  pod 'Amplify', '~> 1.0.1'                             # required amplify dependency
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
+  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
+  
+end" > Podfile
+{{< /highlight >}}
+
+In a Terminal, type the following commands to download and install the dependencies:
+
+```bash
+cd $PROJECT_DIRECTORY
+pod install --repo-update
+```
+
+After one minute, you shoud see the below:
+
+![Pod update](/images/30-20-pod-install-1.png)
+
 ## Add authentication code
 
 Let's start to add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :

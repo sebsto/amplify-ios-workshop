@@ -27,9 +27,10 @@ pod init
 You can safely ignore the "PBXNativeTarget name=`Landmarks` UUID=`B7394861229F194000C47603" warning, we will fix this in a minute.
 {{% /notice %}}
 
-1. **Update the file** to include the following pods:
-{{< highlight text >}}
-platform :ios, '13.0'
+1. **Type the below command** to include the following pods in the Podfile:
+{{< highlight bash >}}
+cd $PROJECT_DIRECTORY
+echo "platform :ios, '13.0'
 
 target 'Landmarks' do
     # Comment the next line if you don't want to use dynamic frameworks
@@ -39,11 +40,12 @@ target 'Landmarks' do
     pod 'Amplify', '~> 1.0.1'           # required amplify dependency
     pod 'Amplify/Tools', '~> 1.0.1'     # allows to cal amplify CLI from within Xcode
 
-end
+end" > Podfile
 {{< /highlight >}}
 
 1. To download and install the Amplify pod into your project, execute the command:
 ```bash
+cd $PROJECT_DIRECTORY
 pod install --repo-update
 ```
 {{% notice info %}}
@@ -57,73 +59,61 @@ xed .
 ```
 This should open the newly generated `HandlingUserInput.xcworkspace` in Xcode.
 
-## Adding Amplify Tools 
-
-We will now add AmplifyTools as a build phase in your project.
-
-1. Click on the **HandlingUserInput project** in the project workspace, then click the **Landmark** app target, and then click on **Build Phases**.
-![amplify init](/images/30-10-amplify-init.png)
-
-1. Tap the `+` button to add another phase, and select **New Run Script Phase**
-![amplify init](/images/30-10-amplify-init-2.png)
-
-1. Drag the new `Run Script phase` to move the phase so that it runs prior to the `Compile Sources phase`.
-
-1. Update the `Run Script` build phase title to **Run Amplify Tools**, and then update the shell script to have a single line with:
-```bash
-${PODS_ROOT}/AmplifyTools/amplify-tools.sh
-```
-Your project should now look like this. Notice that the amplify tools phase comes before the Compile Sources phase. 
-![amplify init](/images/30-10-amplify-init-3.png)
-
-##  Update Target Configurations for CocoaPods
+## Update Target Configurations for CocoaPods
 
 This step is specific to the project we downloaded.  This is **not required** when setting up new projects with Amplify. This step addresses the Cocoapods warning we saw when we issued the `pod init` command above.
 
 In your Xcode project, click on **HandleUserInput** on the top left part of the screen, then **Info**.  Select **HandlingUserInput** under **Project**.  Open **Configurations**, **Debug**.  For the **landmarks** target, replace the configuration by **Pods-landmarks.debug**. Repeat the operation for the **release** target, using **Pods-landmarks.release** configuration.  Your project should look like this:  
 ![pod install](/images/30-20-pod-install-2.png)
 
-## Build the project
+## Initialize Amplify
 
-Now that we’ve added Amplify tools to the build process, it will run when you build you project.  Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.  Because this is the first time you are buliding your project, Amplify tools will detect this and generate a number of files in your project directory: 
+The first time you use AWS Amplify in a project, Amplify needs to initialise your project directory and the cloud environment.  We assume *$PROJECT_DIRECTORY* is set and unchanged from [previous step](/20_getting_started/20_bootstrapping_the_app.html).
 
-- `amplify` (folder) - Contains a number of configuration files and pre-generated sample files that we will be using in you project
-- `amplifytools.xcconfig` - this configuration file controls the behavior of amplify tools
-- `amplifyconfiguration.json` - this configuration file will be added to your project and shipped with your bundle. This is required by the amplify libraries.
-- `awsconfiguration.json` - this configuration file will also be added to your poject and shipped with your bundle. This is also requried by the amplify libraries.
+In a Terminal, type the following commands:
 
-You are ready to start building with Amplify! 🎉
-
-## Fix issues caused by Amplify Tools
-
-Amplify Tools is fairly recent and still has some issues.  For example, after the building the project above, it removes the `Landmarks/Resources` folder containing the images.  We are tracking this issue on https://github.com/aws-amplify/amplify-cli/issues/4518.
-
-Let's add these images again.
-
-1. In Xcode, delete the `Recovered References` folder.
-
-1. In the Finder, under `Landmarks` folder, locate the `Landmarks/Resources` folder containing the `.jpg` image files and drag and drop it to your project.
-
-1. Be sure **Copy items if needed** is **NOT checked**
-
-1. Click Finish
-You should see a project structure similar to :
-![Fix Project](/images/20-30-fix-project.png)
-
-1. Rebuild the project, clicking **Product** menu and select  **Build**, or typing **&#8984;B**, to ensure there is no error left.
-
-## Create the backend infrastructure
-
-The last step is to ask Amplify Tools to create the backend infrastructure to host our project.
-
-1. In Xcode, open the `AmplifyConfig/amplifytools.xconfig` file and set `push=true` on the first line.
-```text
-push=true
-modelgen=false
-profile=default
-envName=amplify
+```bash
+cd $PROJECT_DIRECTORY
+amplify init
 ```
 
-1. Rebuild the project, clicking **Product** menu and select  **Build** or typing **&#8984;B**
+1. Enter a name for your project: enter **amplifyiosworkshop** and press enter.
 
-1. To speed up subsequent builds, revert the change and set `push=false`
+1. Enter a name for your environment: enter **dev** and press enter.
+
+1. Choose your default editor:  use the arrow keys to scroll to **None** and press enter.
+
+1. Choose the type of app that you're building: accept the default **ios** and press enter.
+
+1. Do you want to use an AWS profile? accept the default **Yes** and press enter.
+
+1. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/30_configs.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
+
+![amplify init](/images/30-10-amplify-init.png)
+
+Amplify will create a local directory structure to host your project's meta-data.  In addition, it will create the backend resources to host your project : two IAM roles, an S3 bucket and a AWS Cloudformation template.  After 1 or 2 minutes, you should see the below messages:
+
+![amplify init](/images/30-10-amplify-init-ok.png)
+
+### Add Amplify configuration files to the project 
+
+Rather than configuring each service through a constructor or constants file, the Amplify and the underlying AWS SDKs for iOS support configuration through centralized files called `awsconfiguration.json` and `amplifyconfiguration.json`. They defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, these files are automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` and `amplifyconfiguration.json` are located at the root project directory. You have to add them manually to your Xcode project.
+
+In the Finder, drag `awsconfiguration.json` into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
+
+- Clear the **Copy items if needed** check box.
+- Choose **Create groups**, and then choose **Finish**.
+
+![Add awsconfiguration](/images/30-20-add-awsconfiguration.gif)
+
+Repeat the process for `amplifyconfiguration.json`.
+
+Before proceeding to the next step, ensure you have both files added to your project, like one the screenshot below.
+
+![Two configuration files added](/images/30-20-two-configuration-files.png)
+
+## Build the project
+
+Now that we’ve added Amplify tools to the build process, it will run when you build you project.  Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error. 
+
+You are ready to start building with Amplify! 🎉

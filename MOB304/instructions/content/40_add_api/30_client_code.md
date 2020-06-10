@@ -18,9 +18,9 @@ At high level, here is how we gonna proceed
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the AppSync dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight text "hl_lines=12">}}
-# Uncomment the next line to define a global platform for your project
-platform :ios, '13.0'
+{{< highlight bash "hl_lines=12">}}
+cd $PROJECT_DIRECTORY
+echo "platform :ios, '13.0'
 
 target 'Landmarks' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -28,11 +28,11 @@ target 'Landmarks' do
 
   # Pods for Landmarks
   pod 'Amplify', '~> 1.0.1'                             # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
+  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within XCode
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
   pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
-end
 
+end" > Podfile
 {{< /highlight >}}
 
 In a Terminal, type the following commands to download and install the dependencies:
@@ -76,7 +76,7 @@ final class UserData: ObservableObject {
 
 On line 13, we initialise the list of landmarks with an empty array, while preserving the type of the variable.
 
-## Generate code and add it to the Xcode project 
+## Generate code and add it to the XCode project 
 
 Thanks to the strongly typed nature of GraphQL, Amplify generates Swift code to access the data types, the queries and the mutations of the API. 
 
@@ -91,7 +91,7 @@ Wait for the generation to complete and check there is no error.
 
 ![amplify codegen](/images/40-30-amplify-codegen-1.png)
 
-Add the generated files in your project.  In the Finder, locate 4 files in *amplify/generated/models* and drag them into your Xcode project.
+Add the generated files in your project.  In the Finder, locate 4 files in *amplify/generated/models* and drag them into your XCode project.
 
 ![amplify codegen files](/images/40-30-amplify-codegen-2.png)
 
@@ -397,7 +397,7 @@ patch -p0 < ../../scripts/patch1.txt
 patch -p0 < ../../scripts/patch2.txt 
 ```
 
-Clean the project before proceeding to the next step. In Xcode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
+Clean the project before proceeding to the next step. In XCode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
 
 ## Launch the app
 

@@ -22,7 +22,7 @@ To setup oAuth with Facebook, follow these steps:
 
 1. [Sign In](https://developers.facebook.com/) with your Facebook credentials.
 
-1. From the **My Apps** menu, choose **Create App**.
+1. Select **My Apps** menu on the top right side, choose **Add a New App**.
 ![create a facebook app 1](/images/60-10-facebook-1.png)
 
 1. Enter a name for your app and click **Create App Id**.
@@ -31,7 +31,7 @@ To setup oAuth with Facebook, follow these steps:
 1. From the left side menu, choose **Settings**, **Basic** and take note of the **App ID** and **App Secret**
 ![create a facebook app 3](/images/60-10-facebook-3.png)
 
-1. Click **+Add a Platform** from the bottom of the page and choose **Web Site**
+1. Click **+Add a Platform** from the bottom of the page and choose **[Web Site]**
 
 1. Under Web Site, type your user pool domain with the `/oauth2/idpresponse` endpoint into **Site URL**. You can find the Cognito domain by looking in `awsconfiguration.json` file, under the key Auth => Default => OAuth => WebDomain.  Do not forget to type `https://` at the start of the URL.
 

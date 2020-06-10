@@ -29,7 +29,7 @@ amplify update auth
 
 `amplify` creates the required resources to depoy your storage service in the cloud.
 
-![amplify update auth](/images/70-20-amplify-1.png)
+![amplify update auth](/images/60-20-amplify-1.png)
 
 ## Create the API backend in the cloud
 
@@ -46,4 +46,3 @@ Amplify updates the backend infrastructure, it adds the federation configuration
 ```text
 ✔ All resources are updated in the cloud
 ```
-

@@ -15,14 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     public let userData = UserData()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-                
-        
+
         do {
             Amplify.Logging.logLevel = .info
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             try Amplify.add(plugin: AWSS3StoragePlugin())
-            
+
             try Amplify.configure()
             print("Amplify initialized")
             
@@ -68,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("Failed to configure Amplify \(error)")
         }
-    
+
         return true
     }
 
@@ -88,9 +87,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-      
-    // MARK: Amplify - Authentication
-
+    
+    // MARK: -- Authentication code
+    
     // change our internal state, this triggers an UI update on the main thread
     func updateUI(forSignInStatus : Bool) {
         DispatchQueue.main.async() {
@@ -120,19 +119,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    public func signIn(username: String, password: String) {
-        _ = Amplify.Auth.signIn(username: username, password: password) { result in
-            switch result {
-            case .success(_):
-                print("Sign in succeeded")
-                // nothing else required, the event HUB will triggerthe UI refresh
-            case .failure(let error):
-                print("Sign in failed \(error)")
-                // in real life present a message to the user
-            }
-        }
-    }
-
     // signin with Cognito web user interface
     public func authenticateWithHostedUI() {
 
@@ -189,15 +175,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-        
+    
     // MARK: AWS S3 & Image Loading
 
-    // FIXME: remove depency on ImageStore, just store the image on Landmark
-    // and let Landmark deal with ImageStore
-    func image(_ name: String) -> Data? {
+    func image(_ name: String, callback: @escaping (Data) -> Void ) {
         
         print("Downloading image : \(name)")
-        var result : Data?
 
         _ = Amplify.Storage.downloadData(key: "\(name).jpg",
             progressListener: { progress in
@@ -207,31 +190,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 switch event {
                 case let .success(data):
                     print("Image \(name) loaded")
-                    result = data
-                    
-                    // update UI on the main thread
-                    DispatchQueue.main.async {
-                        // cache image
-                        ImageStore.shared.addImage(name: name, image: result!)
-                        
-                        // find landmark that has that image
-                        guard
-                            // seach by index instead of object to trigger a UI refresh
-                            let i = self.userData.landmarks.firstIndex(where: { l in l.hasImage(name) })
-                        else {
-                            fatalError("no landmarks with imageName : \(name)")
-                        }
-                        
-                        // update the landmark
-                        // access by index and not by object to trigger a UI refresh
-                        self.userData.landmarks[i].image = ImageStore.shared.image(name: name)
-                    }
+                    callback(data)
                 case let .failure(storageError):
                     print("Can not download image: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
                 }
             }
         )
-        
-        return result
     }
 }

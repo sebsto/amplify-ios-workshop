@@ -51,9 +51,9 @@ extension UIImage {
 final class ImageStore {
     typealias _ImageDictionary = [String: Image]
     
-    fileprivate let placeholderName = "circle"
+    fileprivate let placeholderName = "PLACEHOLDER"
     fileprivate var images: _ImageDictionary
-    fileprivate static var scale = 2
+    static var scale = 2
     
     static var shared = ImageStore()
 
@@ -62,15 +62,35 @@ final class ImageStore {
         images[self.placeholderName] = Image(uiImage: UIImage.imageWithColor(color: UIColor.white, size: CGSize(width:300, height: 300)))
     }
     
-    func image(name: String) -> Image {
-        guard
-            let img = images[name]
-        else {
-            // should not happen
-            fatalError("Request non existent image")
+    func image(name: String, landmark: Landmark) -> Image {
+        var result : Image?
+        if let img = images[name] {
+            result = img
+        } else {
+            
+            DispatchQueue.main.async {
+                // trigger asynchronous download
+                let app = UIApplication.shared.delegate as! AppDelegate
+                _ = app.image(name) { (data) in
+                    
+                    guard
+                        let i = UIImage(data: data)
+                    else {
+                        fatalError("Couldn't convert image data \(name)")
+                    }
+                    let img = Image(i.cgImage!, scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
+                    
+                    // update UI on the main thread
+                    DispatchQueue.main.async {
+                        // update landmark object, this will trigger the UI refresh because image is Published
+                        // and Landmark is Observable in LandmarkRow UI component
+                        landmark.image = img
+                    }
+                }
+            }
+            result = self.placeholder()
         }
-        return img
-    
+        return result!
     }
     
     func placeholder() -> Image {
@@ -81,12 +101,7 @@ final class ImageStore {
         }
     }
 
-    func addImage(name: String, image : Data) {
-        guard
-            let i = UIImage(data: image)
-        else {
-            fatalError("Couldn't convert image data \(name)")
-        }
-        images[name] = Image(i.cgImage!, scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
+    func addImage(name: String, image : Image) {
+        images[name] = image
     }
 }

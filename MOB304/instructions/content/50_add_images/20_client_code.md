@@ -22,9 +22,9 @@ You can learn more about SwiftUI publish subscribe framework, called [Combine](h
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the Amazon S3 client dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight text "hl_lines=13">}}
-# Uncomment the next line to define a global platform for your project
-platform :ios, '13.0'
+{{< highlight bash "hl_lines=13">}}
+cd $PROJECT_DIRECTORY
+echo "platform :ios, '13.0'
 
 target 'Landmarks' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -36,7 +36,8 @@ target 'Landmarks' do
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
   pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
   pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0.1'   # support for Amazon S3 storage
-end
+
+end" > Podfile
 {{< /highlight >}}
 
 In a Terminal, type the following commands to download and install the dependencies:
@@ -446,11 +447,11 @@ struct LandmarkRow_Previews: PreviewProvider {
 }
 {{% /highlight %}}
 
-**LandMark class** 
+**Landmark class** 
 
 In order to make `Landmark` observable, we need to transform this `struct` into a full fledged `class`. Tis implies adding an initializer and a few fields, such as `CodingKeys` to make it conform to [Decodable](https://developer.apple.com/documentation/swift/codable) protocol.
 
-{{< highlight swift "hl_lines=22-36 72-82 84-85">}}
+{{< highlight swift "hl_lines=22-36 54-55 72-82 84-85">}}
 /*
 See LICENSE folder for this sample’s licensing information.
 

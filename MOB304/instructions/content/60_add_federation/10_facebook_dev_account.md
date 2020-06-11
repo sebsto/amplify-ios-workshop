@@ -39,7 +39,7 @@ To setup oAuth with Facebook, follow these steps:
 
     ```bash
     cd $PROJECT_DIRECTORY
-    echo "https://"$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)"/oauth2/idpresponse" | pbcopy
+    echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)/oauth2/idpresponse" | pbcopy
     ```
 
     ![create a facebook app 4](/images/60-10-facebook-4.png)
@@ -53,7 +53,7 @@ To setup oAuth with Facebook, follow these steps:
 
     ```bash
     cd $PROJECT_DIRECTORY
-    echo "https://"$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain) | pbcopy
+    echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)" | pbcopy
     ```
 
     ![create a facebook app 5](/images/60-10-facebook-5.png)
@@ -72,7 +72,7 @@ To setup oAuth with Facebook, follow these steps:
 
     ```bash
     cd $PROJECT_DIRECTORY
-    echo "https://"$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)"/oauth2/idpresponse" | pbcopy
+    echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)/oauth2/idpresponse" | pbcopy
     ```
 
 ![create a facebook app 7](/images/60-10-facebook-7.png)

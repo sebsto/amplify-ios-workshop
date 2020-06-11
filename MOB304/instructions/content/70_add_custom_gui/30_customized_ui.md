@@ -422,7 +422,7 @@ If you are still authenticated, click **Sign Out** and click the user badge to s
 
 ![customized drop in UI](/images/70-30-1.png)
 
-Enter the username and password that you created in section 3 and try to authenticated.  After a second or two, you will see the Landmark list. 
+Enter the username and password that you created in section 3 and try to authenticate.  After a second or two, you will see the Landmark list.
 
 {{% notice info %}}
 Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (here is [the one for Facebook](https://developers.facebook.com/docs/facebook-login/ios)) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the most advanced readers.

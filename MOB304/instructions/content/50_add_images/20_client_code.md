@@ -553,7 +553,7 @@ What we did just change ?
 
 - line 85 : we add a stored property to hold the SwiftUI image to be used by the user interface. This property is `@Published`, it means observers, such as `LandmarkRow`, will receive a notification when its value change.
 
-The list of all changes we made to the code is visible in [this commit]() TODO .
+The list of all changes we made to the code is visible in [this commit](https://github.com/sebsto/amplify-ios-workshop/commit/3e77d8a992d6600ba8bee3169c2ff30f5122c608).
 
 ## Launch the app 
 

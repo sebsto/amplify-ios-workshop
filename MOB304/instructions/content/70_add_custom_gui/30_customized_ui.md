@@ -411,7 +411,7 @@ struct LandingView_Previews: PreviewProvider {
 }
 {{< /highlight >}}
 
-You can view the whole code changes for this section [from this commit]() TODO.
+You can view the whole code changes for this section [from this commit](https://github.com/sebsto/amplify-ios-workshop/commit/bb8c87d359c8970ff10d5e06cc49786ee5965e4f).
 
 ## Build and Test 
 

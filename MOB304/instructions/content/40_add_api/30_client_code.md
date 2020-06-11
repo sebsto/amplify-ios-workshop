@@ -375,7 +375,7 @@ What did we change ?
 
 - line 52: we created an extension to the provided `Landmark` data object, allowing to initialize an instance of it from a `LandmarkData` object returned by the API.
 
-The list of all changes we made to the code is visible in [this commit]() TODO .
+The list of all changes we made to the code is visible in [this commit](https://github.com/sebsto/amplify-ios-workshop/commit/ad92eada6607a76236f3b9597f4ac867399e20cf).
 
 ## Patch Amplify API Library
 
@@ -397,7 +397,7 @@ patch -p0 < ../../scripts/patch1.txt
 patch -p0 < ../../scripts/patch2.txt 
 ```
 
-Clean the project before proceeding to the next step. In XCode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
+Clean the project before proceeding to the next step. In Xcode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
 
 ## Launch the app
 

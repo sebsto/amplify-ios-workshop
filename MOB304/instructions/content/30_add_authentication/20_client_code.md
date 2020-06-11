@@ -510,4 +510,4 @@ Before proceeding to the next steps, **build** (&#8984;B) the project to ensure 
 
 ## Summary
 
-The list of all changes we made to the code is visible in [this commit]() TODO.
+The list of all changes we made to the code is visible in [this commit](https://github.com/sebsto/amplify-ios-workshop/commit/675318f3df24b3893ba849e19214ce719a6b7445).

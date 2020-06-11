@@ -28,4 +28,4 @@ We divided this workshop in three parts :
 
 - In the second part ([section 4](40_add_api.html) and [section 5](50_add_images.html)) you will learn how to deploy and call an API from your mobile application.
 
-- Finally, you will learn how to customize the authentication user interface ([section 6](60_add_custom_gui.html)) and to add Identity Federation for your login screen (also known as "Login with XXX") ([section 7](70_add_federation.html))
+- Finally, you will learn how to add Identity Federation for your login screen (also known as "Login with XXX") ([section 6](60_add_federation.html)) and to create your own authentication user interface ([section 7](70_add_custom_gui.html)).

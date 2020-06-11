@@ -38,10 +38,13 @@ Should you attend this workshop on your own or in a non-AWS event, you can skip 
 
 # create an AWS CLI profile for this workshop
 # IF YOU ALREADY HAVE A PROFILE NAMED "WORKSHOP" => CHOOSE ANOTHER NAME !
+
+# AFTER EXECUTING THE LINES COPIED FROM EVENT ENGINE, EXECUTE THE LINES BELOW
+
 mkdir ~/.aws &>/dev/null # harmless when the directory already exists
 echo >> ~/.aws/config
 echo "[workshop]"  >> ~/.aws/config
-echo "region=us-west-2"  >> ~/.aws/config
+echo "region=$AWS_DEFAULT_REGION"  >> ~/.aws/config
 echo >> ~/.aws/credentials
 echo "[workshop]"  >> ~/.aws/credentials
 echo "aws_access_key_id = $AWS_ACCESS_KEY_ID"  >> ~/.aws/credentials

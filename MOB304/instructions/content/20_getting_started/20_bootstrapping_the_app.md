@@ -16,7 +16,7 @@ The file has the following directory structure
 
  ```bash
  # download the workshop ZIP file
- curl -o ~/Downloads/HandlingUserInput.zip https://amplify-ios-workshop.go-aws.com/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip
+ curl -o ~/Downloads/HandlingUserInput.zip https://amplify-ios-workshop-new.go-aws.com/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip
 
  # unzip 
  cd ~/Downloads

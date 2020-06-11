@@ -15,13 +15,14 @@ struct LandingView: View {
             // .wrappedValue is used to extract the Bool from Binding<Bool> type
             if (!$user.isSignedIn.wrappedValue) {
                 
-                Button(action: {
-                            let app = UIApplication.shared.delegate as! AppDelegate
-                            app.authenticateWithHostedUI()
-                        }) {
-                    UserBadge().scaleEffect(0.5)
-                }
-
+//                Button(action: {
+//                            let app = UIApplication.shared.delegate as! AppDelegate
+//                            app.authenticateWithHostedUI()
+//                        }) {
+//                    UserBadge().scaleEffect(0.5)
+//                }
+                CustomLoginView()
+                
             } else {
                 LandmarkList().environmentObject(user)
             }

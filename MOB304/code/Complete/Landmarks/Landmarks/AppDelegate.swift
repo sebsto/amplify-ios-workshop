@@ -15,10 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     public let userData = UserData()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
+                
+        
         do {
             Amplify.Logging.logLevel = .info
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             
             try Amplify.configure()
             print("Amplify initialized")
@@ -65,7 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("Failed to configure Amplify \(error)")
         }
-
+    
         return true
     }
 
@@ -85,13 +87,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-    
-    // MARK: -- Authentication code
-    
+      
+    // MARK: Amplify - Authentication
+
     // change our internal state, this triggers an UI update on the main thread
     func updateUI(forSignInStatus : Bool) {
         DispatchQueue.main.async() {
             self.userData.isSignedIn = forSignInStatus
+            
+            // only load landmarks at start of app, when user signed in
+            if (forSignInStatus && self.userData.landmarks.isEmpty) {
+                self.queryLandmarks()
+            }
         }
     }
     
@@ -111,7 +118,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         }
     }
-    
+
     // signin with Cognito web user interface
     public func authenticateWithHostedUI() {
 
@@ -140,5 +147,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
-}
+    
+    // MARK: API Access
+    
+    func queryLandmarks() {
+        print("Query landmarks")
+        
+        _ = Amplify.API.query(request: .list(LandmarkData.self)) { event in
+            switch event {
+            case .success(let result):
+                print("Landmarks query complete.")
+                switch result {
+                case .success(let landmarksData):
+                    print("Successfully retrieved list of landmarks")
+                    for f in landmarksData {
+                        let landmark = Landmark.init(from: f)
+                        DispatchQueue.main.async() {
+                            self.userData.landmarks.append(landmark);
+                        }
+                    }
+                    
+                case .failure(let error):
+                    print("Can not retrieve result : error  \(error.errorDescription)")
+                }
+            case .failure(let error):
+                print("Can not retrieve landmarks : error \(error)")
+            }
+        }
+    }
+}    

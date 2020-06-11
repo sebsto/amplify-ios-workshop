@@ -42,3 +42,28 @@ struct Coordinates: Hashable, Codable {
     var latitude: Double
     var longitude: Double
 }
+
+// assume all fields are non null.
+// real life project must spend more time thinking about null values and
+// maybe convert the above code (original Landmark class) to optionals
+// I am not doing it for this workshop as this would imply too many changes in UI code
+// MARK: - TODO
+
+extension Landmark {
+    init(from : LandmarkData) {
+        
+        guard let i = Int(from.id) else {
+            preconditionFailure("Can not create Landmark, Invalid ID : \(from.id) (expected Int)")
+        }
+        
+        id = i
+        name = from.name
+        imageName = from.imageName!
+        coordinates = Coordinates(latitude: from.coordinates!.latitude!, longitude: from.coordinates!.longitude!)
+        state = from.state!
+        park = from.park!
+        category = Category(rawValue: from.category!)!
+        isFavorite = from.isFavorite!
+
+    }
+}

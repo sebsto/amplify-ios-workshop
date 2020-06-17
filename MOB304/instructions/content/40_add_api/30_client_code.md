@@ -377,28 +377,6 @@ What did we change ?
 
 The list of all changes we made to the code is visible in [this commit](https://github.com/sebsto/amplify-ios-workshop/commit/ad92eada6607a76236f3b9597f4ac867399e20cf).
 
-## Patch Amplify API Library
-
-{{% notice warning %}}
-This is a temporary workaround !
-{{% /notice %}}
-
-During the development of this workshop, we discovered [a bug in the Amplify API library](https://github.com/aws-amplify/amplify-ios/issues/529).  As of today, the library does not support non-model type associations between objects, such as between *LandmarkData* and *CoordinateData*.
-
-You can follow the progress on this issue, or contribute with your comments or code at https://github.com/aws-amplify/amplify-ios/issues/529
-
-We implemented a **specific patch for this data model**, before to proceed and run the app, patch the Pods with the following command. 
-
-In your terminal, type the following code:
-
-```bash
-cd $PROJECT_DIRECTORY
-patch -p0 < ../../scripts/patch1.txt
-patch -p0 < ../../scripts/patch2.txt 
-```
-
-Clean the project before proceeding to the next step. In Xcode, select the **Product** menu, then **Clean Build Folder** (or press **&#8679;&#8984;K**). 
-
 ## Launch the app
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.

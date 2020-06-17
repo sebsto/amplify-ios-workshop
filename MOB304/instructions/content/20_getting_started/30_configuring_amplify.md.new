@@ -36,8 +36,8 @@ target 'Landmarks' do
     use_frameworks!
 
     # Pods for Landmarks
-    pod 'Amplify', '~> 1.0.1'           # required amplify dependency
-    pod 'Amplify/Tools', '~> 1.0.1'     # allows to cal amplify CLI from within Xcode
+    pod 'Amplify', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'           # required amplify dependency
+    pod 'Amplify/Tools', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'     # allows to cal amplify CLI from within Xcode
 
 end
 {{< /highlight >}}

@@ -31,11 +31,11 @@ target 'Landmarks' do
   use_frameworks!
 
   # Pods for Landmarks
-  pod 'Amplify', '~> 1.0.1'                             # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0.1'                       # allows to cal amplify CLI from within Xcode
-  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0.1' # support for Cognito user authentication
-  pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0.1'         # support for GraphQL API
-  pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0.1'   # support for Amazon S3 storage
+  pod 'Amplify', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'                             # required amplify dependency
+  pod 'Amplify/Tools', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'                       # allows to cal amplify CLI from within Xcode
+  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master' # support for Cognito user authentication
+  pod 'AmplifyPlugins/AWSAPIPlugin', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'         # support for GraphQL API
+  pod 'AmplifyPlugins/AWSS3StoragePlugin', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'   # support for Amazon S3 storage
 
 end" > Podfile
 {{< /highlight >}}

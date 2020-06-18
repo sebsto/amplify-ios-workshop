@@ -73,7 +73,7 @@ node --version
 amplify --version
 # Scanning for plugins...
 # Plugin scan successful
-# 4.21.3
+# 4.21.4-iosCodegenWorkshop.0
 
 pod --version
 # 1.9.3

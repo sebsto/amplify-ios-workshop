@@ -91,7 +91,7 @@ Wait for the generation to complete and check there is no error.
 
 ![amplify codegen](/images/40-30-amplify-codegen-1.png)
 
-Add the generated files in your project.  In the Finder, locate 4 files in *amplify/generated/models* and drag them into your XCode project.
+Add the generated files in your project.  In the Finder, locate 5 files in *amplify/generated/models* and drag them into your XCode project.
 
 ![amplify codegen files](/images/40-30-amplify-codegen-2.png)
 

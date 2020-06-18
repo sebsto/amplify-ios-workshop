@@ -29,6 +29,8 @@ target 'Landmarks' do
   # Pods for Landmarks
   pod 'Amplify', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'                             # required amplify dependency
   pod 'Amplify/Tools', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'                       # allows to cal amplify CLI from within XCode
+  pod 'AWSPluginsCore', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'
+
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master' # support for Cognito user authentication
   pod 'AmplifyPlugins/AWSAPIPlugin', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'         # support for GraphQL API
 

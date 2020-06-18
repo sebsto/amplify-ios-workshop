@@ -39,6 +39,7 @@ target 'Landmarks' do
     # Pods for Landmarks
     pod 'Amplify', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'           # required amplify dependency
     pod 'Amplify/Tools', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'     # allows to cal amplify CLI from within Xcode
+    pod 'AWSPluginsCore', :git => 'https://github.com/aws-amplify/amplify-ios', :branch => 'master'
 
 end" > Podfile
 {{< /highlight >}}

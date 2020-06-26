@@ -8,29 +8,37 @@ Now that the storage backend is ready, let's modify the application code to load
 
 - [add AWS Amplify dependencies](#add-amazon-s3-client-library) to the project 
 
-- [add the code](#add-storage-access-code) to query S3 in `AppDelegate`
+- [add the code](#add-storage-access-code-in-appdelegate) to query Amazon S3 to `AppDelegate`
 
 - [update](#update-imagestore-class) the `ImageStore` class in the *Landmarks/Models/Data.swift* file to load the cloud images instead of the local ones.
 
-## Add Amazon S3 client library
-Edit `$PROJECT_DIRECTORY/Podfile` to add the Amazon S3 client dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from belowpwd):
+- change [Landmarks and LandmarkRow](#update-the-landmark-landmarkrow-classes) classes to publish / observe changes on image.
 
-{{< highlight text "hl_lines=13">}}
-# Uncomment the next line to define a global platform for your project
-platform :ios, '13.0'
+{{% notice tip %}}
+You can learn more about SwiftUI publish subscribe framework, called [Combine](https://developer.apple.com/documentation/combine), [in this article](https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine).
+{{% /notice %}}
+
+## Add Amazon S3 client library
+
+Edit `$PROJECT_DIRECTORY/Podfile` to add the Amazon S3 client dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
+
+{{< highlight bash "hl_lines=14">}}
+cd $PROJECT_DIRECTORY
+echo "platform :ios, '13.0'
 
 target 'Landmarks' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
   # Pods for Landmarks
-  pod 'AWSMobileClient', '~> 2.12.0'      # Required dependency
-  pod 'AWSAuthUI', '~> 2.12.0'            # Optional dependency required to use drop-in UI
-  pod 'AWSUserPoolsSignIn', '~> 2.12.0'   # Optional dependency required to use drop-in UI
-  pod 'AWSAppSync', '~> 2.15.0'           # For AppSync GraphQL API
-  pod 'AWSS3', '~> 2.12.1'                # For file transfers
+  pod 'Amplify', '~> 1.0'                             # required amplify dependency
+  pod 'Amplify/Tools', '~> 1.0'                       # allows to cal amplify CLI from within Xcode
 
-end
+  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0' # support for Cognito user authentication
+  pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0'         # support for GraphQL API
+  pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0'   # support for Amazon S3 storage
+
+end" > Podfile
 {{< /highlight >}}
 
 In a Terminal, type the following commands to download and install the dependencies:
@@ -44,97 +52,89 @@ After one minute, you shoud see the below:
 
 ![Pod update](/images/50-20-s3-code-1.png)
 
-## Add storage access code
+Now it's time to change the code.  At high level, this is what we are going to change:
 
-At high level, this is what we are going to change:
+- add AWS S3 file transfer code in `AppDelegate`
+- modify `ImageStorage` class from the initial code sample to download images from the cloud instead of reading the file from the local bundle. (we simplified and redesigned that class to meet our needs)
+- modify `Landmark` and `LandmarkRow` class to publish changes made to the former to the latter.
 
-- add AWS S3 file transfer code in `AppDelegate` 
-- modify `UserStorage` class from the initial code sample to download images from the cloud instead of reading the file from the local bundle. 
+## Add storage access code in AppDelegate
 
-To add storage access code, we first import the `AWSS3` framework.  File upload and download capability is provided by [TransferUtility](https://aws-amplify.github.io/docs/ios/storage#using-transferutility) component.  This class offers a high level interface to manage file uploads and downloads.  It also allows to pause and restart transfers and to monitor progress.  For this workshop, our usage will be simpler.  The code downloads a file by name and returns a `Data` object.
+To add storage access code, we first add the `AWSS3StoragePlugin` to Amplify's runtime.  File upload and download capability is provided by `Amplify.Storage` class.  This class offers a high level interface to manage file uploads and downloads.  It also allows to pause and restart transfers and to monitor progress.  For this workshop, our usage will be simpler.  The code downloads a file by name and calls a callback function when the `Data` object is available.
 
 As usual, you can safely copy/paste the entire `AppDelegate` from below.  Lines that have been added since last section are highlighted.
 
-{{< highlight swift "hl_lines=6 180-217" >}}
-// Landmarks/AppDelegate.swift
+{{< highlight swift "hl_lines=23 179-199" >}}
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+The application delegate.
+*/
 
 import UIKit
-import AWSMobileClient
-import AWSAppSync
-import AWSS3
+import Amplify
+import AmplifyPlugins
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public let userData = UserData()
-    var appSyncClient: AWSAppSyncClient?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        //init appsync
-        self.appSyncInit()
-        
-        AWSMobileClient.default().addUserStateListener(self) { (userState, info) in
+
+        do {
+            Amplify.Logging.logLevel = .info
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSS3StoragePlugin())
+
+            try Amplify.configure()
+            print("Amplify initialized")
             
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
+            // load data when user is signedin
+            self.checkUserSignedIn()
 
-            switch (userState) {
-            case .guest:
-                print("user is in guest mode.")
-                
-            case .signedOut:
-                print("user just signed out")
-                self.userData.landmarks = []
-                
-            case .signedIn:
-                print("user just signed in.")
-                print("username : \(String(describing: AWSMobileClient.default().username))")
-                
-                print("Loading data")
-                self.queryLandmarks()
+            // listen to auth events.
+            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
+            _ = Amplify.Hub.listen(to: .auth) { (payload) in
 
-                AWSMobileClient.default().getUserAttributes(completionHandler: { (attributes, error) in
-                    print("error : \(String(describing: error))")
-                    print("attributes: \(String(describing: attributes))")
-                    print("")
+                switch payload.eventName {
+
+                case HubPayload.EventName.Auth.signedIn:
+                    print("==HUB== User signed In, update UI")
+
+                    self.updateUI(forSignInStatus: true)
+
+                    // if you want to get user attributes
+                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
+                        switch result {
+                        case .success(let attributes):
+                            print("User attribtues - \(attributes)")
+                        case .failure(let error):
+                            print("Fetching user attributes failed with error \(error)")
+                        }
+                    }
+
+
+                case HubPayload.EventName.Auth.signedOut:
+                    print("==HUB== User signed Out, update UI")
+                    self.updateUI(forSignInStatus: false)
                     
-                    AWSMobileClient.default().getTokens({ (tokens, error) in
-                        print("error : \(String(describing: error))")
-                        print("token : \(String(describing: tokens))")
-                        print("")                        
-                    })
-                })
-                                
-            case .signedOutUserPoolsTokenInvalid:
-                print("need to login again.")
+                case HubPayload.EventName.Auth.sessionExpired:
+                    print("==HUB== Session expired, show sign in aui")
+                    self.updateUI(forSignInStatus: false)
 
-            case .signedOutFederatedTokensInvalid:
-                print("user logged in via federation, but currently needs new tokens")
-
-            default:
-                print("unsupported")
+                default:
+                    //print("==HUB== \(payload)")
+                    break
+                }
             }
-        }
-        
-        AWSMobileClient.default().initialize { (userState, error) in
 
-            // notify our subscriber the value changed
-            self.userData.isSignedIn = AWSMobileClient.default().isSignedIn
-            
-            if let userState = userState {
-                print("UserState: \(userState.rawValue)")
-            } else if let error = error {
-                print("error: \(error.localizedDescription)")
-            }
+        } catch {
+            print("Failed to configure Amplify \(error)")
         }
 
-        if (self.userData.isSignedIn) {
-            print("Loading data")
-            self.queryLandmarks()
-        }
-
-        
         return true
     }
 
@@ -154,176 +154,128 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-      
-    // MARK: AWSMobileClient - Authentication
     
-    public func authenticateWithDropinUI(navigationController : UINavigationController) {
-        print("dropinUI()")
-        
-        // Option to launch sign in directly
-        let signinUIOptions = SignInUIOptions(canCancel: false)
-
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, signInUIOptions: signinUIOptions, { (signInState, error) in
-            if let signInState = signInState {
-                print("Sign in flow completed: \(signInState)")
-            } else if let error = error {
-                print("error logging in: \(error.localizedDescription)")
+    // MARK: -- Authentication code
+    
+    // change our internal state, this triggers an UI update on the main thread
+    func updateUI(forSignInStatus : Bool) {
+        DispatchQueue.main.async() {
+            self.userData.isSignedIn = forSignInStatus
+            
+            // only load landmarks at start of app, when user signed in
+            if (forSignInStatus && self.userData.landmarks.isEmpty) {
+                self.queryLandmarks()
             }
-        })
+        }
     }
+    
+    // when user is signed in, fetch its details
+    func checkUserSignedIn() {
 
-    public func authenticateWithHostedUI(navigationController : UINavigationController) {
-        
+        // every time auth status changes, let's check if user is signedIn or not
+        // updating userData will automatically update the UI
+        _ = Amplify.Auth.fetchAuthSession { (result) in
+
+            do {
+                let session = try result.get()
+                self.updateUI(forSignInStatus: session.isSignedIn)
+            } catch {
+                print("Fetch auth session failed with error - \(error)")
+            }
+
+        }
+    }
+    
+    // signin with Cognito web user interface
+    public func authenticateWithHostedUI() {
+
         print("hostedUI()")
-        // Optionally override the scopes based on the usecase.
-        let hostedUIOptions = HostedUIOptions(scopes: ["openid", "email", "profile", "aws.cognito.signin.user.admin"])
-
-        // Present the Hosted UI sign in.
-        AWSMobileClient.default().showSignIn(navigationController: navigationController, hostedUIOptions: hostedUIOptions) { (userState, error) in
-            if let error = error as? AWSMobileClientError {
-                print(error.localizedDescription)
-            }
-            if let userState = userState {
-                print("Status: \(userState.rawValue)")
-
+        _ = Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!) { result in
+            switch result {
+            case .success(_):
+                print("Sign in succeeded")
+            case .failure(let error):
+                print("Sign in failed \(error)")
             }
         }
     }
     
+    // signout globally
     public func signOut() {
-        AWSMobileClient.default().signOut()
-    }
-    
-    // MARK: AWSAppSync
-        
-    func appSyncInit() {
-        do {
-            // You can choose the directory in which AppSync stores its persistent cache databases
-            let cacheConfiguration = try AWSAppSyncCacheConfiguration()
 
-            // AppSync configuration & client initialization
-            let appSyncServiceConfig = try AWSAppSyncServiceConfig()
-            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncServiceConfig: appSyncServiceConfig,
-                                                                  userPoolsAuthProvider: AWSMobileClient.default() as AWSCognitoUserPoolsAuthProvider,
-                                                                  cacheConfiguration: cacheConfiguration)
-            self.appSyncClient = try AWSAppSyncClient(appSyncConfig: appSyncConfig)
-            print("Initialized appsync client.")
-        } catch {
-            print("Error initializing appsync client. \(error)")
+        // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
+        let options = AuthSignOutRequest.Options(globalSignOut: true)
+        _ = Amplify.Auth.signOut(options: options) { (result) in
+            switch result {
+            case .success:
+                print("Successfully signed out")
+            case .failure(let error):
+                print("Sign out failed with error \(error)")
+            }
         }
     }
+    
+    // MARK: API Access
     
     func queryLandmarks() {
         print("Query landmarks")
-        self.appSyncClient?.fetch(query: ListLandmarksQuery(limit:100), cachePolicy: .fetchIgnoringCacheData) {(result, error) in
-                if error != nil {
-                    print(error?.localizedDescription ?? "")
-                    return
-                }
+        
+        _ = Amplify.API.query(request: .list(LandmarkData.self)) { event in
+            switch event {
+            case .success(let result):
                 print("Landmarks query complete.")
-                result?.data?.listLandmarks?.items!.forEach {
+                switch result {
+                case .success(let landmarksData):
+                    print("Successfully retrieved list of landmarks")
+                    for f in landmarksData {
+                        let landmark = Landmark.init(from: f)
+                        DispatchQueue.main.async() {
+                            self.userData.landmarks.append(landmark);
+                        }
+                    }
                     
-                    // convert the AppSync jsonObject (aka Dictionary<String, Any> to Data
-                    // the code below assumes there is no casting / nil error
-                    // TODO should add guard statement and handle errors
-                    // https://nacho4d-nacho4d.blogspot.com/2016/05/dictionary-to-json-string-and-json.html
-                    let jsonData = try! JSONSerialization.data(withJSONObject: $0?.jsonObject as Any, options: [])
-                    // this allows to create a Landmark object using the Decodable protocol
-                    let l : Landmark = try! JSONDecoder().decode(Landmark.self, from: jsonData)
-                    self.userData.landmarks.append(l);
-                    
+                case .failure(let error):
+                    print("Can not retrieve result : error  \(error.errorDescription)")
                 }
-            }
-    }
-
-    // MARK: AWS S3 & Image Loading
-
-    /**
-        Asynchronously load the image from S3.  This method blocks until the S3 download is completed.
-        https://stackoverflow.com/questions/42484281/waiting-until-the-task-finishes
-     */
-    func image(_ imageName : String) -> Data? {
-        
-        print("Downloading image : \(imageName)")
-        
-        var result : Data?
-        
-        let group = DispatchGroup()
-        group.enter()
-        
-        let transferUtility = AWSS3TransferUtility.default()
-        transferUtility.downloadData(
-            forKey: "public/\(imageName).jpg",
-              expression: nil,
-              completionHandler: { (task, URL, data, error) -> Void in
-                
-                if let e = error {
-                    print("Can not download image : \(e)")
-                } else {
-                    print("Image \(imageName) loaded")
-                    result = data!
-                }
-                
-                group.leave()
-              }
-        )
-        
-        // wait for image to be downloaded
-        group.wait()
-        
-        return result
-    }
-}
-
-// Make sure AWSMobileClient is a Cognito User Pool credentails providers
-// this makes it easy to AWSMobileClient shared instance with AppSync Client
-// read https://github.com/awslabs/aws-mobile-appsync-sdk-ios/issues/157 for details
-extension AWSMobileClient: AWSCognitoUserPoolsAuthProviderAsync {
-    public func getLatestAuthToken(_ callback: @escaping (String?, Error?) -> Void) {
-        getTokens { (tokens, error) in
-            if error != nil {
-                callback(nil, error)
-            } else {
-                callback(tokens?.idToken?.tokenString, nil)
+            case .failure(let error):
+                print("Can not retrieve landmarks : error \(error)")
             }
         }
+    }
+    
+    // MARK: AWS S3 & Image Loading
+
+    func image(_ name: String, callback: @escaping (Data) -> Void ) {
+        
+        print("Downloading image : \(name)")
+
+        _ = Amplify.Storage.downloadData(key: "\(name).jpg",
+            progressListener: { progress in
+                // in case you want to monitor progress
+//                    print("Progress: \(progress)")
+            }, resultListener: { (event) in
+                switch event {
+                case let .success(data):
+                    print("Image \(name) loaded")
+                    callback(data)
+                case let .failure(storageError):
+                    print("Can not download image: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
+                }
+            }
+        )
     }
 }
 {{< /highlight>}}
 
-Notice that `AWSS3TransferUtility.transferData()` class is asynchronous and returns immediately.  It takes a callback function as argument to be notified when the transfer completes.  For this use case, we want the transfer to be synchronous and the call to return when the image becomes available.  For this purpose, the code is using thread synchronisation mechanism provided by iOS and MacOS' [Dispatch](https://developer.apple.com/documentation/DISPATCH) framework. The code creates a *Dispatch Group* and `wait()` on the callback function until it `leave()` the group.  
-
-You can read more about Dispatch groups in [Apple's Developer documentation](https://developer.apple.com/documentation/dispatch/dispatchgroup).
+Notice that `Amplify.Storage.downloadData()` class is asynchronous and returns immediately.  It takes a callback function as argument to be notified when the transfer completes. The callback takes care of passing the `Data` received to its caller.
 
 ## Update ImageStore class
 
-The `ImageStore` class is part of the original code sample we started from. It is located in *Landmarks/Models/Data.swift* file.  Accessing the `image` property of a Landmark triggers the image loading logic. This class also takes care of caching images in memory to avoid loading them at each access.
+The `ImageStore` class is part of the original code sample we started from. It is located in *Landmarks/Models/Data.swift* file.  This class takes care of caching images in memory to avoid loading them at each access. It also provider a placeholder when the image is not downloaded yet.  The placeholder is an empty white image generated with an extension of the `UIImage` class.
 
-Let's look how it works by reading code in *Landmarks/Models/Landmark.swift*:
+Open `Landmarks/Models/Data.swift` and paste the content below:
 
-```swift
-extension Landmark {
-    var image: Image {
-        ImageStore.shared.image(name: imageName)
-    }
-}
-```
-
-and in *Landmarks/Models/Data.swift*:
-
-```swift
-    static func loadImage(name: String) -> CGImage {
-        // load image from the local bundle
-    }
-```
-
-{{% notice tip %}}
-You do not need to copy/paste the code above.  We provide the above code for reading / exploration only.
-{{% /notice %}}
-
-To download images from S3, we just replace the logic inside the `loadImage()` function. In XCode, open `Landmarks/Models/Data.swift` and paste the content below:
-
-{{< highlight swift "hl_lines=51-62" >}}
+{{< highlight swift "hl_lines=37-48 50-106" >}}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -360,53 +312,249 @@ func load<T: Decodable>(_ filename: String, as type: T.Type = T.self) -> T {
     }
 }
 
-final class ImageStore {
-    typealias _ImageDictionary = [String: CGImage]
-    fileprivate var images: _ImageDictionary = [:]
+// allow to create image with uniform color
+// https://gist.github.com/isoiphone/031da3656d69c0d85805
+extension UIImage {
+    class func imageWithColor(color: UIColor, size: CGSize=CGSize(width: 1, height: 1)) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        color.setFill()
+        UIRectFill(CGRect(origin: CGPoint.zero, size: size))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+    }
+}
 
-    fileprivate static var scale = 2
+// manage iage cache and download
+final class ImageStore {
+    typealias _ImageDictionary = [String: Image]
+    
+    fileprivate let placeholderName = "PLACEHOLDER"
+    fileprivate var images: _ImageDictionary
+    static var scale = 2
     
     static var shared = ImageStore()
+
+    init() {
+        images = [:]
+        images[self.placeholderName] = Image(uiImage: UIImage.imageWithColor(color: UIColor.white, size: CGSize(width:300, height: 300)))
+    }
     
-    func image(name: String) -> Image {
-        let index = _guaranteeImage(name: name)
-        
-        return Image(images.values[index], scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
+    func image(name: String, landmark: Landmark) -> Image {
+        var result : Image?
+        if let img = images[name] {
+            result = img
+        } else {
+            
+            DispatchQueue.main.async {
+                // trigger asynchronous download
+                let app = UIApplication.shared.delegate as! AppDelegate
+                _ = app.image(name) { (data) in
+                    
+                    guard
+                        let i = UIImage(data: data)
+                    else {
+                        fatalError("Couldn't convert image data \(name)")
+                    }
+                    let img = Image(i.cgImage!, scale: CGFloat(ImageStore.scale), label: Text(verbatim: name))
+                    
+                    // update UI on the main thread
+                    DispatchQueue.main.async {
+                        // update landmark object, this will trigger the UI refresh because image is Published
+                        // and Landmark is Observable in LandmarkRow UI component
+                        landmark.image = img
+                    }
+                }
+            }
+            result = self.placeholder()
+        }
+        return result!
+    }
+    
+    func placeholder() -> Image {
+        if let img = images[self.placeholderName] {
+            return img
+        } else {
+            fatalError("Image cache is incorrectly initialized")
+        }
     }
 
-    // load the image from Amazon S3 instead of local resource bundle
-    static func loadImage(name: String) -> CGImage {
-        let app = UIApplication.shared.delegate as! AppDelegate
-        guard
-            // going trough a UIImage is the shortest way I found to get a CGImage from NSData
-            let i = UIImage(data: app.image(name)!),
-            let image = i.cgImage
-        else {
-            fatalError("Couldn't load image \(name).jpg from Amazon S3.")
-        }
-        return image
-    }
-    
-    fileprivate func _guaranteeImage(name: String) -> _ImageDictionary.Index {
-        if let index = images.index(forKey: name) { return index }
-        
-        images[name] = ImageStore.loadImage(name: name)
-        return images.index(forKey: name)!
+    func addImage(name: String, image : Image) {
+        images[name] = image
     }
 }
 {{< /highlight >}}
 
 What did we just change ?  
 
-- we modified the implementation of `loadImage()` function 
+- line 39 : we created an `UIImage` extension to generate a white square image to be used as placeholder.
 
-- it now calls `image(name)` on the application delegate.
+- line 51 : we re-wrote `ImageStore` class. It now has three methods : `.addImage(name:String ,image: Image)` to add an image to the cache.  `.image(name: String, callback: (Data) -> Void)` to retrieve an image from the cache.  If the image is not present, it returns a placeholder and triggers the download. When download completes, the callback function is called. The callback function creates the Image and updates the matching `Landmark` object. Finally, `.placeholder()` returns the placeholder image. 
 
-- `image(name)` return a [Data](https://developer.apple.com/documentation/foundation/data) while `loadImage()` is supposed to return a [CGImage](https://developer.apple.com/documentation/coregraphics/cgimage).  To transform [Data](https://developer.apple.com/documentation/foundation/data) to [CGImage](https://developer.apple.com/documentation/coregraphics/cgimage), it firts created a [UIImage](https://developer.apple.com/documentation/uikit/uiimage) and then calls `.cgImage()`
+Notice how the image is generated : `Amplify.Storage.downloadData()` returns a [Data](https://developer.apple.com/documentation/foundation/data) while `Landmark.image` expects a SwiftUI [Image](https://developer.apple.com/documentation/swiftui/image).  To transform the [Data](https://developer.apple.com/documentation/foundation/data) to an [Image](https://developer.apple.com/documentation/swiftui/image), we first create an [UIImage](https://developer.apple.com/documentation/uikit/uiimage) using `UIImage(data:)` and then call `cgImage` to pass to `Image.init(cgImage:scale:label)`.
 
-- the rest of the caching and display logic is unchanged.
+## Update the Landmark & LandmarkRow classes
 
-The list of all changes we made to the code is visible in [this commit](https://github.com/aws-samples/aws-reinvent-2019-mobile-workshops/commit/cbe400f6437540a98030679c7414f1cc2f506549#diff-c13367945d5d4c91047b3b50234aa7ab).
+Finally, we are adding a few fields and behaviours to the `Landmark` and `LandmarkRow` classes.
+
+**LandmarkRow class**
+
+A `LandmarkRow` is a UI row in the landmark table.  We mark the `Landmark` object as "observable" with the directive `@ObservedObject`
+
+{{% notice tip %}}
+`ObservedObject` directive is part of the [SwiftUI framework](https://developer.apple.com/documentation/swiftui/observedobject). It is a property wrapper type that subscribes to an observable object and invalidates a view whenever the observable object changes. 
+{{% /notice %}}
+
+You can just add the directive in front of `var landmark: Landmark` or copy / paste the whole file here:
+
+{{% highlight swift "hl_lines=11" %}}
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+A single row to be displayed in a list of landmarks.
+*/
+
+import SwiftUI
+
+struct LandmarkRow: View {
+    @ObservedObject var landmark: Landmark
+
+    var body: some View {
+        HStack {
+            landmark.image
+                .resizable()
+                .frame(width: 50, height: 50)
+            Text(verbatim: landmark.name)
+            Spacer()
+
+            if landmark.isFavorite {
+                Image(systemName: "star.fill")
+                    .imageScale(.medium)
+                    .foregroundColor(.yellow)
+            }
+        }
+    }
+}
+
+struct LandmarkRow_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            LandmarkRow(landmark: landmarkData[0])
+            LandmarkRow(landmark: landmarkData[1])
+        }
+        .previewLayout(.fixed(width: 300, height: 70))
+    }
+}
+{{% /highlight %}}
+
+**Landmark class** 
+
+In order to make `Landmark` observable, we need to transform this `struct` into a full fledged `class`. Tis implies adding an initializer and a few fields, such as `CodingKeys` to make it conform to [Decodable](https://developer.apple.com/documentation/swift/codable) protocol.
+
+{{< highlight swift "hl_lines=22-36 54-55 72-82 84-85">}}
+/*
+See LICENSE folder for this sample’s licensing information.
+
+Abstract:
+The model for an individual landmark.
+*/
+
+import SwiftUI
+import CoreLocation
+
+// migrated Landmark from struct to class to make it Observable
+class Landmark: Decodable, Identifiable, ObservableObject {
+    var id: Int
+    var name: String
+    fileprivate var imageName: String
+    fileprivate var coordinates: Coordinates
+    var state: String
+    var park: String
+    var category: Category
+    var isFavorite: Bool
+    
+    // consequence is that I need to add the constructor from decoder
+    required init(from decoder: Decoder) throws {
+         let container = try decoder.container(keyedBy: LandmarkKeys.self) // defining our (keyed) container
+         id          = try container.decode(Int.self, forKey: .id)
+         name        = try container.decode(String.self, forKey: .name)
+         imageName   = try container.decode(String.self, forKey: .imageName)
+         state       = try container.decode(String.self, forKey: .state)
+         park        = try container.decode(String.self, forKey: .park)
+         isFavorite  = try container.decode(Bool.self, forKey: .isFavorite)
+         category    = try container.decode(Category.self, forKey: .category)
+         coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
+
+        // trigger image download & set placeholder
+        image = ImageStore.shared.image(name: imageName, landmark: self)
+    }
+
+     // construct from API Data
+     init(from : LandmarkData) {
+                
+        guard let i = Int(from.id) else {
+            preconditionFailure("Can not create Landmark, Invalid ID : \(from.id) (expected Int)")
+        }
+        
+        self.id = i
+        name = from.name
+        imageName = from.imageName!
+        coordinates = Coordinates(latitude: from.coordinates!.latitude!, longitude: from.coordinates!.longitude!)
+        state = from.state!
+        park = from.park!
+        category = Category(rawValue: from.category!)!
+        isFavorite = from.isFavorite!
+        
+        // trigger image download & set placeholder
+        image = ImageStore.shared.image(name: imageName, landmark: self)
+
+    }
+    
+    var locationCoordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude)
+    }
+
+    enum Category: String, CaseIterable, Codable, Hashable {
+        case featured = "Featured"
+        case lakes = "Lakes"
+        case rivers = "Rivers"
+        case mountains = "Mountains"
+    }
+        
+    // part of Decodable protocol, I need to declare all keys from the jSON file
+    enum LandmarkKeys: String, CodingKey {
+        case id          = "id"
+        case name        = "name"
+        case imageName   = "imageName"
+        case category    = "category"
+        case isFavorite  = "isFavorite"
+        case park        = "park"
+        case state       = "state"
+        case coordinates = "coordinates"
+    }
+    
+    // advertise changes on this property.  This will allow Views to refresh when image is changed.
+    @Published var image : Image = Image("temp")
+}
+
+struct Coordinates: Hashable, Codable {
+    var latitude: Double
+    var longitude: Double
+}
+{{< /highlight >}}
+
+What we did just change ?
+
+- line 36 : we add a new initialiser `init(from: Decoder)` to comply to the `Decodable` protocol. The initiliazer also triggers the image download when an instance of `Landmark` is created.
+
+- line 72 : we add the list of items available for decoding, as per `Decodable` protocol.
+
+- line 85 : we add a stored property to hold the SwiftUI image to be used by the user interface. This property is `@Published`, it means observers, such as `LandmarkRow`, will receive a notification when its value change.
+
+The list of all changes we made to the code is visible in [this commit](https://github.com/sebsto/amplify-ios-workshop/commit/3e77d8a992d6600ba8bee3169c2ff30f5122c608).
 
 ## Launch the app 
 
@@ -417,7 +565,7 @@ After a few seconds, you should see the application running in the iOS simulator
 ![run](/images/40-30-appsync-code-2.png)
 
 {{% notice tip %}}
-There might be a small delay between the moment the Landmark list is displayed and the moment the list is populated.  This is because image loading is synchronous and calls are blocked while the images are downloaded.  One way to improve this would be to modify `ImageStore` class in `Data.swift` file to return a pre-canned image while loading the landmark image, and replace images as they are being loaded. You can see the required changes [on this commit](https://github.com/aws-samples/aws-reinvent-2019-mobile-workshops/commit/babb1dd8406a44a336fdee0af078bc1c0d5f6709) (It also has changes in `AppDelegate.swift`, `Landmark.swift`, and `LandmarkRow.swift` files). You can take this an optional step in this workshop.  
+When you start the app, you will notice the table's rows are populated as soon as the landmark data are fetched from the API.  At that moment, no image is shown (to be correct, the white square placeholder image is shown). As Amazon S3 downloads finish, images are added asynchronously to the table's rows.
 {{% /notice %}}
 
 Now that we have the basic building blocks of the app defined, let's explore the options offered to customize the authentication user interface and user experience.

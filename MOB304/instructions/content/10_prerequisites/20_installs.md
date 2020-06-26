@@ -8,13 +8,11 @@ Before we begin coding, there are a few things we need to install, update, and c
 
 ### Apple Software
 
-In order to develop native applications for iOS, you need to have [XCode](https://apple.com/xcode) installed on your laptop.
-You can download and install XCode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~2Gb, so it might take up to one hour depending on your network connection.
-
-If you are attending this workshop during [re:Invent 2019](https://reinvent.awsevents.com), ask an AWS Staff member to get a USB key containing XCode 11 package.
+In order to develop native applications for iOS, you need to have [Xcode](https://apple.com/xcode) installed on your laptop.
+You can download and install Xcode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~2Gb, so it might take up to one hour depending on your network connection.
 
 {{% notice note %}}
-This workshop requires [Swift 5.1](https://swift.org) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework.  These are provided by [XCode 11](https://apple.com/xcode) or more recent.
+This workshop requires at least [Swift 5.1](https://swift.org) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework.  These are provided by [Xcode 11](https://apple.com/xcode) or more recent.
 {{% /notice %}}
 
 ### Installing or updating
@@ -39,7 +37,7 @@ brew install awscli
 # install Node.js & npm
 brew install node
 
-# install the AWS Amplify CLI
+# install the AWS Amplify CLI 
 npm install -g @aws-amplify/cli
 
 # install jq
@@ -58,26 +56,26 @@ If you already have one or several of these dependencies installed, just verify 
 
 ```bash
 brew --version
-# Homebrew 2.2.0
-# Homebrew/homebrew-core (git revision abe6e; last commit 2019-11-04)
-# Homebrew/homebrew-cask (git revision e317e; last commit 2019-11-04)
+# Homebrew 2.3.0
+# Homebrew/homebrew-core (git revision 467e0; last commit 2020-06-05)
+# Homebrew/homebrew-cask (git revision 8a0acb; last commit 2020-06-05)
 
 python3 --version
-# Python 3.7.5
+# Python 3.7.3
 
 aws --version
-# aws-cli/1.16.290 Python/3.7.5 Darwin/18.7.0 botocore/1.13.26
+# aws-cli/2.0.19 Python/3.7.4 Darwin/19.5.0 botocore/2.0.0dev23
 
 node --version
-# v13.2.0
+# v14.4.0
 
 amplify --version
 # Scanning for plugins...
 # Plugin scan successful
-# 4.2.0
+# 4.22.0
 
 pod --version
-# 1.8.4
+# 1.9.3
 ```
 {{% /tab  %}}
 {{% /tabs %}}

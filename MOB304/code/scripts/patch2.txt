@@ -1,0 +1,31 @@
+diff -ruN ./Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/MOB304/code/Complete/Landmarks/Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift
+--- ./Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-08 21:06:41.000000000 +0200
++++ /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/MOB304/code/Complete/Landmarks/Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-06 16:50:01.000000000 +0200
+@@ -33,12 +33,27 @@
+         withModelFields(fields)
+     }
+ 
++    func withCodable(_ field: ModelField) {
++        switch field.type {
++        case let .customType(codableType):
++            print(codableType)
++            self.addChild(settingParentOf: .init(value: .init(name: "latitude", fieldType: .value)))
++            self.addChild(settingParentOf: .init(value: .init(name: "longitude", fieldType: .value)))
++        default:
++            preconditionFailure("This should not happen")
++        }
++    }
++
+     func withModelFields(_ fields: [ModelField]) {
+         fields.forEach { field in
+             if field.isAssociationOwner, let associatedModel = field.associatedModel {
+                 let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
+                 child.withModelFields(associatedModel.schema.graphQLFields)
+                 self.addChild(settingParentOf: child)
++            } else if field.type.isCustomType {
++                let child = SelectionSet(value: .init(name: field.name, fieldType: SelectionSetFieldType.model))
++                child.withCodable(field)
++                self.addChild(settingParentOf: child)
+             } else {
+                 self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
+             }

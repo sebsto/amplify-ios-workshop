@@ -10,10 +10,10 @@ Here's a reminder of everything we accomplished. We:
 
 - we started with an existing application (Apple's Landmarks SwiftUI example)
 - we added user authentication, with signin, signup, forgot password and email verification flows.  
-- we explored the authentication user interface offered by AWS Amplify and how to customize it
 - we explored the Amazon Cognito hosted user interface and explained how to implement "Login With Facebook"
-- we added a cloud-based API and database to store the application data 
-- we added a cloud-based file storage service to host the application images 
+- we added a cloud-based API and database to store the application data
+- we added a cloud-based file storage service to host the application images
+- we transitionned to a Custom View to support the authentication flow.
 
 The backend for our application is entirely serverless, which means it's extremely cost efficient, scalable, and highly available thanks to services from AWS. 
 

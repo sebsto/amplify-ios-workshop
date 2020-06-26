@@ -8,52 +8,39 @@ weight = 30
   src = "images/30-20-test-1.png"
 +++
 
-You just add a bit of logic in `AppDelegate` class to sign in and to sign out users.  You also modified the screen flow to start the app with a `LandingView` that controls the routing towards a `LoginViewController` or the `LandmarkList` view based on the user authentication status.
+You just add a bit of logic in `AppDelegate` class to sign in and to sign out users.  You also modified the screen flow to start the app with a `LandingView` that controls the routing towards a `UserBadge` or the `LandmarkList` view based on the user authentication status.
 
-Let's now verify everythign works as expected.  Start the application using XCode's menu and click **Product**, then **Run** (or press **&#8984;R**).
+Let's now verify everythign works as expected.  Start the application using Xcode's menu and click **Product**, then **Run** (or press **&#8984;R**).
 
-The application starts and shows the `LandingView`.  Click on the user icon in the middle of the screen to trigger the Amplify Login View. Click on **Create new account** to signup a new user.
+The application starts and shows the `LandingView`.  Click on the user icon in the middle of the screen to trigger the user authentication, using Cognito's web user interface. Click on **Sign up** at the bottom of the screen to signup a new user.
 
-Landing View | Authentication View | Signup View
+Landing View | Login View (Cognito) | Signup View (Cognito)
 :---: | :---: | :---: |
-!![Landing View](/images/30-20-test-1.png) | ![App Login Screen](/images/30-20-test-2.png) | ![App Login Screen](/images/30-20-test-3.png) |
-
+![Landing View](/images/30-20-test-1.png) | ![App Login Screen](/images/30-20-test-5.png) | ![App Signup Screen](/images/30-20-test-3.png) |
 
 After clicking **Sign Up**, check your email.  Cognito sends you a confirmation code.
 
-Code View | Registration View | Landmarks List View
-:---: | :---: | :---: |
-!![Confirmation Code](/images/30-20-test-4.png) | ![Registration](/images/30-20-test-5.png) | ![Landmark list](/images/30-20-test-6.png) |
+Code View (Cognito) | Landmarks List View
+:---: | :---: |
+![Confirmation Code](/images/30-20-test-4.png) | ![Landmark list](/images/30-20-test-6.png) |
 
-Click **Sign Out** to end the session and return to the `LandingView`.
+Click **Sign Out** to end the session and, after a short redirection to Cognito's signout page, you return to the `LandingView`.
 
-In the XCode console, you see some application debugging information: the username and profile of the signed in user as well as its Cognito token.  
+In the Xcode console, you see some application debugging information: the username and profile of the signed in user as well as its Cognito token.  
 
 ```text 
-user just signed in.
-username : Optional("sebsto")
-Sign in flow completed: signedIn
-error : nil
-attributes: Optional(["sub": "4105547d-0000-0000-0000-b057472cd2c5", "phone_number_verified": "false", "phone_number": "+33711", "email": "-secret-@amazon.com", "email_verified": "true"])
-
-error : nil
-token : Optional(AWSMobileClient.Tokens(idToken: Optional(AWSMobileClient.SessionToken(tokenString: Optional("eyJraWQiOiJ...WQi"))), expiration: Optional(2019-10-24 15:47:05 +0000)))
-
-(edited for brevity)
+2020-06-08 17:11:26.908420+0200 Landmarks[86260:7126165] [Amplify] Configuring
+Amplify initialized
+hostedUI()
+2020-06-08 17:11:39.156307+0200 Landmarks[86260:7126165] [Amplify] AWSMobileClient Event listener - signedIn
+Sign in succeeded
+==HUB== User signed In, update UI
+User attribtues - [Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.unknown("email_verified"), value: "true"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.email, value: "stormacq@amazon.com"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.unknown("sub"), value: "ba12b222-b50c-498e-a911-08f11e53f624")]
+2020-06-08 17:11:46.832938+0200 Landmarks[86260:7126165] [Amplify] AWSMobileClient Event listener - signedOut
+Successfully signed out
+==HUB== User signed Out, update UI
 ```
 
 {{% notice warning %}}
-This application displays user personal information, such as the email address and the Cognito token in the console.  In real life DO NOT print these information in the console.  We did this for education purpose only.
+This application displays user personal information, such as the email address and the Cognito ID in the console.  In real life DO NOT print these information in the console.  We did this for education purpose only.
 {{% /notice %}}
-
-You can ignore the following warning in XCode console, [as they appear only in the Simulator](https://openradar.appspot.com/45237042):
-
-```text 
-2019-10-24 16:47:05.056651+0200 Landmarks[92803:3338639] [Client] Updating selectors failed with: Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service on pid 0 named com.apple.commcenter.coretelephony.xpc was invalidated." UserInfo={NSDebugDescription=The connection to service on pid 0 named com.apple.commcenter.coretelephony.xpc was invalidated.}
-```
-
-To permanently disable these warnings, open a Terminal and type:
-
-```bash
-xcrun simctl spawn booted log config --mode "level:off"  --subsystem com.apple.CoreTelephony
-```

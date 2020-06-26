@@ -29,7 +29,9 @@ amplify add api
 
 1. Do you want to configure advanced settings for the GraphQL API.  Select **Yes, I want to make some additional changes** and press enter.
 
-1. Choose the additional authorization types you want to configure for the API.  We do not need additional authorization types, just **press enter** without selecting any.
+1. Configure additional auth types? Accept the default (**No**) and press enter.
+
+1. Configure conflict detection? Accept the default (**No**) and press enter
 
 1. Do you have an annotated GraphQL schema? Accept the default (**No**) and press enter.
 
@@ -49,30 +51,31 @@ Let's edit the GraphQL schema.
 
 Below is a schema that will suit our needs for storing and querying Landmarks.
 
-1. **Paste this into `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`**, replacing the example schema content. Remember to save the file.
+1. Add the schema to `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`, replacing the example schema content. You can copy / paste the below command:
 
-```graphql
-    type Landmark
-        @model
-        @auth(rules: [ {allow: private, provider: userPools, operations: [ read ] } ])
-    {
-        id: Int!
-        name: String!
-        category: String
-        city: String
-        state: String
-        isFeatured: Boolean
-        isFavorite: Boolean
-        park: String
-        coordinates: Coordinate
-        imageName: String
-    }
+{{% highlight bash %}}
+cd $PROJECT_DIRECTORY
+echo "type LandmarkData
+    @model
+    @auth(rules: [ {allow: private, provider: userPools, operations: [ read ] } ])
+{
+    id: ID!
+    name: String!
+    category: String
+    city: String
+    state: String
+    isFeatured: Boolean
+    isFavorite: Boolean
+    park: String
+    coordinates: CoordinateData
+    imageName: String
+}
 
-    type Coordinate {
-        longitude: Float
-        latitude: Float
-    }
-```
+type CoordinateData {
+    longitude: Float
+    latitude: Float
+}" > $PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql
+{{% /highlight %}}
 
 There are a few things to notice about the schema:
 
@@ -93,19 +96,11 @@ amplify push
 
 1. Are you sure you want to continue? Review the table and verify an API is being Created.  Accept the default (**Yes**) and press enter.
 
-1. Do you want to generate code for your newly created GraphQL API? Accept the default (**Yes**) and press enter.
+1. Do you want to generate code for your newly created GraphQL API? Select **No** and press enter.
 
-1. Enter the file name pattern of graphql queries, mutations and subscriptions. Accept the default (**graphql/\*\*/*.graphql**) and press enter.
+![amplify push](/images/40-10-amplify-3.png)
 
-1. Do you want to generate/update all possible GraphQL operations - queries, mutations and subscriptions? Accept the default (**Yes**) and press enter.
-
-1. Enter maximum statement depth [increase from default if your schema is deeply nested].  Accept the default (**2**) and press enter.
-
-1. Enter the file name for the generated code. Accept the default (**API.swift**) and press enter.
-
-![amplify push](/images/40-10-amplify-2.png)
-
-Amplify creates the backend infrastructure : an AWS AppSync API and a Amazon DynamoDB table. Amplify also creates swift client code to easily access the API from our application.  We will add this code to our project in the next section.
+Amplify creates the backend infrastructure : an AWS AppSync API and a Amazon DynamoDB table. In the next section, we will use Amplify to create swift client code to easily access the API from our application.  We will add this code to our project.
 
 At this point, without having to write any code, we now have a GraphQL API that will let us perform CRUDL operations on our Landmarks data types!
 

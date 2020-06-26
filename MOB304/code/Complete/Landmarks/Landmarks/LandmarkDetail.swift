@@ -12,11 +12,7 @@ struct LandmarkDetail: View {
     var landmark: Landmark
     
     var landmarkIndex: Int {
-        if ( userData.landmarks.count > 0 ) {
-            return userData.landmarks.firstIndex(where: { $0.id == landmark.id })!
-        } else {
-            return 0
-        }
+        userData.landmarks.firstIndex(where: { $0.id == landmark.id })!
     }
     
     var body: some View {
@@ -38,7 +34,7 @@ struct LandmarkDetail: View {
                         self.userData.landmarks[self.landmarkIndex]
                             .isFavorite.toggle()
                     }) {
-                        if self.userData.landmarks.count > 0 && self.userData.landmarks[self.landmarkIndex]
+                        if self.userData.landmarks[self.landmarkIndex]
                             .isFavorite {
                             Image(systemName: "star.fill")
                                 .foregroundColor(Color.yellow)

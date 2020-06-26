@@ -18,7 +18,7 @@ At high level, here is how we gonna proceed
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the AppSync dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight bash "hl_lines=12">}}
+{{< highlight bash "hl_lines=13">}}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 

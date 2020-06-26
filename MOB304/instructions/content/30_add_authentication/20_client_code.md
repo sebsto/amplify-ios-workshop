@@ -26,7 +26,7 @@ We choose to write all AWS specific code in the `AppDelegate` class, to avoid sp
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the Amplify Authentication dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight bash "hl_lines=11 ">}}
+{{< highlight bash "hl_lines=12 ">}}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 

@@ -2,6 +2,9 @@ This is the source code for [https://amplify-ios-workshop.go-aws.com/](https://a
 
 ## Status
 
+**June 26** 
+Brand new version using Amplify iOS Lib 1.0 
+
 **June 7 2020**
 Create `amplifylibs` branch to host version based on new [Amplify iOS Library](https://docs.amplify.aws/start/q/integration/ios)
 
@@ -31,11 +34,11 @@ Final application is working and demo-able.  Some tweaks and improvements can be
 - [ ] add instruction to use other IDP (apple, google, amazon)
 - [ ] use Hugo page resource to load images
 - [ ] unify Xcode screenshots (bright vs dark theme) 
-- [ ] add commits at end of each steps
 - [ ] add amplify build script to project as per [official doc](https://docs.amplify.aws/start/getting-started/setup/q/integration/ios), and remove 'add configuration files' steps in 30.20.
 
 ### Done
 
+- [X] add commits at end of each steps
 - [X] add s3 async download code to workshop instructions
 - [X] remove re:invent specific instructions
 - [X] use curl to download ZIP file

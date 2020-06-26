@@ -72,7 +72,7 @@ node --version
 amplify --version
 # Scanning for plugins...
 # Plugin scan successful
-# 4.21.4
+# 4.22.0
 
 pod --version
 # 1.9.3

@@ -38,8 +38,7 @@ brew install awscli
 brew install node
 
 # install the AWS Amplify CLI 
-npm install -g @aws-amplify/cli@iosCodegenWorkshop
-# use this specific tag until https://github.com/aws-amplify/amplify-ios/issues/529 is resolved
+npm install -g @aws-amplify/cli
 
 # install jq
 # required to import some data into our API and
@@ -73,7 +72,7 @@ node --version
 amplify --version
 # Scanning for plugins...
 # Plugin scan successful
-# 4.21.4-iosCodegenWorkshop.0
+# 4.21.4
 
 pod --version
 # 1.9.3

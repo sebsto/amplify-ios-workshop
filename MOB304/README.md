@@ -31,6 +31,7 @@ Final application is working and demo-able.  Some tweaks and improvements can be
 
 ### Workshop Instructions
 
+- [ ] global signout [is now the default](https://github.com/aws-amplify/amplify-ios/pull/542), should simplify signout code by removing the options
 - [ ] add instruction to use other IDP (apple, google, amazon)
 - [ ] use Hugo page resource to load images
 - [ ] unify Xcode screenshots (bright vs dark theme) 

@@ -1,6 +1,6 @@
-diff -ruN ./Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/MOB304/code/Complete/Landmarks/Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift
+diff -ruN ./Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/BOA302/code/Complete/Landmarks/Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift
 --- ./Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-08 21:06:41.000000000 +0200
-+++ /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/MOB304/code/Complete/Landmarks/Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-06 16:50:01.000000000 +0200
++++ /Users/stormacq/Documents/amazon/te/2019/reinvent/mobile workshop/workshop/BOA302/code/Complete/Landmarks/Pods/AWSPluginsCore/AmplifyPlugins/Core/AWSPluginsCore/Model/Support/SelectionSet.swift	2020-06-06 16:50:01.000000000 +0200
 @@ -33,12 +33,27 @@
          withModelFields(fields)
      }

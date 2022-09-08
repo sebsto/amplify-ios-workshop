@@ -4,7 +4,7 @@ frontend:
   phases:
     build:
       commands:
-        - cd MOB304/instructions
+        - cd BOA302/instructions
         - hugo --enableGitInfo
   artifacts:
     baseDirectory: MOB304/instructions/public

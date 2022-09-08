@@ -27,14 +27,9 @@ Before re:Invent 2022, current build are available at [https://main.d1p0aatx1581
 
 ## TODO - Infrastructure 
 
-[] fix error in hugo build 
-
-```
- ERROR 2022/09/08 12:29:03 render of "page" failed: execute of template failed: template: _default/single.html:1:3: executing "_default/single.html" at <partial "header.html" .>: error calling partial: "/codebuild/output/src565188881/src/amplify-ios-workshop/BOA302/instructions/layouts/partials/header.html:88:9": execute of template failed: template: partials/header.html:51:7: executing "partials/header.html" at <partial "menu.html" .>: error calling partial: "/codebuild/output/src565188881/src/amplify-ios-workshop/BOA302/instructions/themes/hugo-theme-learn/layouts/partials/menu.html:88:9": execute of template failed: template: partials/menu.html:88:9: executing "partials/menu.html" at <partial "menu-footer.html" .>: error calling partial: "/codebuild/output/src565188881/src/amplify-ios-workshop/BOA302/instructions/layouts/partials/menu-footer.html:1:1": execute of template failed: html/template:partials/menu-footer.html: "\"" in unquoted attr: "https://github.com/sebsto/amplify-ios-workshop/tree/main/BOA302\""
- ```
- 
 [] refresh hugo version in local docker (run.sh) 
 [] refresh hugo on Amplify Build (buildspec.yml)
+[X] fix error in hugo build 
 
 ### Dir Structure
 

@@ -62,8 +62,7 @@ struct LandmarkDetail: View {
 
 struct LandmarkDetail_Preview: PreviewProvider {
     static var previews: some View {
-        let userData = UserData()
-        return LandmarkDetail(landmark: userData.landmarks[0])
-            .environmentObject(userData)
+        return LandmarkDetail(landmark: landmarkData[0])
+            .environmentObject(UserData())
     }
 }

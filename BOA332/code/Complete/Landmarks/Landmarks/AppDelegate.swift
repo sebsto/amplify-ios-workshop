@@ -1,10 +1,9 @@
-import UIKit
+import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     
     public let userData = UserData()
     
@@ -68,35 +67,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-    
-    // MARK: UISceneSession Lifecycle
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-    
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-    // MARK: -- Authentication code
+}
+
+// MARK: -- Authentication code
+extension AppDelegate {
     
     // change our internal state, this triggers an UI update on the main thread
     @MainActor
     func updateUI(forSignInStatus : Bool) async {
-            self.userData.isSignedIn = forSignInStatus
-            
-            // load landmarks at start of app when user signed in
-            if (forSignInStatus && self.userData.landmarks.isEmpty) {
-                await self.queryLandmarks()
-            }
+        self.userData.isSignedIn = forSignInStatus
+        
+        // load landmarks at start of app when user signed in
+        if (forSignInStatus && self.userData.landmarks.isEmpty) {
+            await self.queryLandmarks()
+        }
     }
     
     // when user is signed in, fetch its details
@@ -126,11 +110,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
         let options = AuthSignOutRequest.Options(globalSignOut: true)
-        let result = await Amplify.Auth.signOut(options: options)
+        let _ = await Amplify.Auth.signOut(options: options)
         print("Signed Out")
     }
-    
-    // MARK: API Access
+}
+
+// MARK: API Access
+extension AppDelegate {
     
     func queryLandmarks() async {
         print("Query landmarks")

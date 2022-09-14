@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct SignOutButton : View {
-    let app = UIApplication.shared.delegate as! AppDelegate
-    
+    @EnvironmentObject private var appDelegate: AppDelegate
+
     var body: some View {
-        NavigationLink(destination: LandingView(user: app.userData)) {
+        NavigationLink(destination: LandingView(user: appDelegate.userData)) {
             Button(action: { Task {
-                    try await self.app.signOut() }
+                    try await appDelegate.signOut() }
             }) {
                 Text("Sign Out")
             }

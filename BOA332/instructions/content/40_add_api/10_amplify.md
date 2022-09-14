@@ -57,7 +57,9 @@ Below is a schema that will suit our needs for storing and querying Landmarks.
 cd $PROJECT_DIRECTORY
 echo "type LandmarkData
     @model
-    @auth(rules: [ {allow: private, provider: userPools, operations: [ read ] } ])
+    @auth(rules: [ 
+      { allow: private }
+    ])
 {
     id: ID!
     name: String!

@@ -9,18 +9,30 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 - Refresh directory structure to prepare for re:Invent 2022.  
 - New TODO list  
 
-## TODO - Code 
+## In progress (status 9/14/2022)
 
+[] Test code with [Amplify-iOS developer preview](https://docs.amplify.aws/lib/devpreview/getting-started/q/platform/ios/#install-amplify-libraries) 
 [] Test workshop instructions with 2022 Amplify and report misses  
 [] Review for Swift 5.7 / Xcode 14 compatibility  
 [] Migrate callbacks to async / await pattern  
+
+- using Amplify iOS dev-preview branch from here https://github.com/aws-amplify/amplify-ios/tree/dev-preview
+- Reafactoring code for new concurrency model (`async`/`await` amongst others)
+- no more dependencies on CocoaPods, will need to changes instructions 
+- most of the rest works, modulo a few code changes.
+- Auth : OK 
+- API  : OK. Requires to patch generated code because of https://github.com/aws-amplify/amplify-ios/issues/1443 
+
+## TODO - Code 
+
 [] Resolve TODO left in the code  
 
 ## TODO - Instructions 
 
 [] Update instructions to support new AWS Event Engine  
+[] Update instructions to use SPM vs CocoaPods 
 [] Update Signin part to use "Signin With Apple" instead of "Login with facebook"  
-[] Use Amplify Datastore rather than straigth API calls ?  
+[] Use Amplify Datastore rather than straigth API calls ?  (if we have time)
 
 ## TODO - Infrastructure 
 
@@ -31,7 +43,7 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 [] Add Adbove Analytics tracking to web pages  
 [X] fix error in hugo build  
 
-### Dir Structure
+<!-- ### Dir Structure
 
 ```text
 x (you are here)
@@ -41,7 +53,7 @@ x (you are here)
       |-- StartingPoint  <== this is the starting point of the app
 |
 |-- instructions         <== this is the static web site
-```
+``` -->
 
 ### Deploy
 

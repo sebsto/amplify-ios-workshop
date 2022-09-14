@@ -98,6 +98,7 @@ for ((i=0; i<$LANDMARKS_LIST_LENGTH; i++)); do
        -H "Authorization: $TOKEN"          \
        --data "$API_DATA"
   echo ""
+  sleep 0.1 # avoid some throtling
 done
 
 # clean up

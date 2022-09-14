@@ -121,7 +121,7 @@ Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="
 
 ```graphql
 query ListLandmarks {
-    listLandmarkDatas {
+    listLandmarkData {
         items {
             id
             name

@@ -88,6 +88,12 @@ cd $PROJECT_DIRECTORY
 amplify codegen models
 ```
 
+TODO : patch generated LandMarkData with 
+until this [issue](https://github.com/aws-amplify/amplify-ios/issues/1443) is resolved
+```
+    model.listPluralName = "LandmarkData"
+```
+
 Wait for the generation to complete and check there is no error.
 
 ![amplify codegen](/images/40-30-amplify-codegen-1.png)

@@ -1,18 +1,20 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-A view showing a list of landmarks.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ A view showing a list of landmarks.
+ */
 
 import SwiftUI
 
 struct SignOutButton : View {
     let app = UIApplication.shared.delegate as! AppDelegate
-
+    
     var body: some View {
         NavigationLink(destination: LandingView(user: app.userData)) {
-            Button(action: { self.app.signOut() }) {
+            Button(action: { Task {
+                    try await self.app.signOut() }
+            }) {
                 Text("Sign Out")
             }
         }

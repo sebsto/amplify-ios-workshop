@@ -27,7 +27,7 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 - Remove UIKit and Migrate to a 100% SwiftUI app ([commit](https://github.com/sebsto/amplify-ios-workshop/commit/5d0f776ab0a63ac96cf486498550adb68800b383))
 
-- Storage : 
+- Storage : OK. Require ssome change in the threading code. Check this [commit](https://github.com/sebsto/amplify-ios-workshop/commit/ef04d4fe218bf9c956e196c041ac689c03125d32).
 
 ## TODO - Code 
 

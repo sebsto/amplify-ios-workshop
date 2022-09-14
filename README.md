@@ -3,7 +3,7 @@
 This is the official repository for AWS re:Invent 2022 Build On AWS Mobile Workshop.
 
 
-## BOA302
+## BOA332
 
 **Build an iOS Native App with a Cloud-Based Backend**
 

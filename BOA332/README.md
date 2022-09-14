@@ -12,7 +12,7 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 ## TODO - Code 
 
 [] Test workshop instructions with 2022 Amplify and report misses  
-[] Review for Swift 5 / Xcode 13 compatibility  
+[] Review for Swift 5.7 / Xcode 14 compatibility  
 [] Migrate callbacks to async / await pattern  
 [] Resolve TODO left in the code  
 

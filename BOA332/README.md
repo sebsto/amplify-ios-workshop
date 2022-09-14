@@ -43,8 +43,8 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 ## TODO - Infrastructure 
 
 [] Deploy on new AWS Event Engine  
-[] refresh hugo version in local docker (run.sh)  
-[] refresh hugo on Amplify Build (buildspec.yml)  
+[X] refresh hugo version in local docker (run.sh)  
+[X] refresh hugo on Amplify Build (buildspec.yml)  
 [] Deploy on https://workshop.aws  
 [] Add Adbove Analytics tracking to web pages  
 [X] fix error in hugo build  

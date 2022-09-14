@@ -10,6 +10,7 @@ import CoreLocation
 
 // migrated Landmark from struct to class to make it Observable
 class Landmark: Decodable, Identifiable, ObservableObject {
+    
     var id: Int
     var name: String
     fileprivate var imageName: String
@@ -19,6 +20,10 @@ class Landmark: Decodable, Identifiable, ObservableObject {
     var category: Category
     var isFavorite: Bool
     
+    // advertise changes on this property.  This will allow Views to refresh when image is changed.
+    @Published var image : Image = ImageStore.shared.placeholder()
+
+
     // consequence is that I need to add the constructor from decoder
     required init(from decoder: Decoder) throws {
          let container = try decoder.container(keyedBy: LandmarkKeys.self) // defining our (keyed) container
@@ -31,29 +36,28 @@ class Landmark: Decodable, Identifiable, ObservableObject {
          category    = try container.decode(Category.self, forKey: .category)
          coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
 
-        // trigger image download & set placeholder
+        // returns a cached image or placeholder synchronously, and trigger an image download asynchronously
         image = ImageStore.shared.image(name: imageName, landmark: self)
     }
+    
+    // construct from API Data
+    init(from : LandmarkData)  {
 
-     // construct from API Data
-     init(from : LandmarkData) {
-                
         guard let i = Int(from.id) else {
             preconditionFailure("Can not create Landmark, Invalid ID : \(from.id) (expected Int)")
         }
-        
-        self.id = i
-        name = from.name
-        imageName = from.imageName!
-        coordinates = Coordinates(latitude: from.coordinates!.latitude!, longitude: from.coordinates!.longitude!)
-        state = from.state!
-        park = from.park!
-        category = Category(rawValue: from.category!)!
-        isFavorite = from.isFavorite!
-        
-        // trigger image download & set placeholder
-        image = ImageStore.shared.image(name: imageName, landmark: self)
 
+        id          = i
+        name        = from.name
+        imageName   = from.imageName!
+        coordinates = Coordinates(latitude: from.coordinates!.latitude!, longitude: from.coordinates!.longitude!)
+        state       = from.state!
+        park        = from.park!
+        category    = Category(rawValue: from.category!)!
+        isFavorite  = from.isFavorite!
+
+        // returns a cached image or placeholder synchronously, and trigger an image download asynchronously
+        image = ImageStore.shared.image(name: imageName, landmark: self)
     }
     
     var locationCoordinate: CLLocationCoordinate2D {
@@ -68,7 +72,7 @@ class Landmark: Decodable, Identifiable, ObservableObject {
         case rivers = "Rivers"
         case mountains = "Mountains"
     }
-        
+    
     // part of Decodable protocol, I need to declare all keys from the jSON file
     enum LandmarkKeys: String, CodingKey {
         case id          = "id"
@@ -81,11 +85,11 @@ class Landmark: Decodable, Identifiable, ObservableObject {
         case coordinates = "coordinates"
     }
     
-    // advertise changes on this property.  This will allow Views to refresh when image is changed.
-    @Published var image : Image = Image("temp")
 }
+
 
 struct Coordinates: Hashable, Codable {
     var latitude: Double
     var longitude: Double
 }
+

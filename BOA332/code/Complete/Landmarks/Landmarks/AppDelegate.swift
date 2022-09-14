@@ -16,7 +16,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         AppDelegate.instance = self
         
         do {
-//            Amplify.Logging.logLevel = .info
+            //Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
@@ -25,20 +25,25 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
             try Amplify.configure()
             print("Amplify initialized")
             
-            // load data when user is signedin
+            // asynchronously 
             Task {
-                try await self.checkUserSignedIn()
+                
+                // check if user is already signed in from a previous run
+                let session = try await Amplify.Auth.fetchAuthSession()
+                
+                // and update the GUI accordingly
+                await self.updateUI(forSignInStatus: session.isSignedIn)
             }
             
             // listen to auth events.
             // see https://github.com/aws-amplify/amplify-ios/blob/dev-preview/Amplify/Categories/Auth/Models/AuthEventName.swift
-            let _ : UnsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
+            let _  = Amplify.Hub.listen(to: .auth) { payload in
                 switch payload.eventName {
                     
                 case HubPayload.EventName.Auth.signedIn:
-                    print("==HUB== User signed In, update UI")
                     
                     Task {
+                        print("==HUB== User signed In, update UI")
                         await self.updateUI(forSignInStatus: true)
                     }
                     
@@ -89,18 +94,10 @@ extension AppDelegate {
         
         // load landmarks at start of app when user signed in
         if (forSignInStatus && self.userData.landmarks.isEmpty) {
-            await self.queryLandmarks()
+            self.userData.landmarks = await self.queryLandmarks()
+        } else {
+            self.userData.landmarks = []
         }
-    }
-    
-    // when user is signed in, fetch its details
-    func checkUserSignedIn() async throws {
-        
-        // every time auth status changes, let's check if user is signedIn or not
-        // updating userData will automatically update the UI
-        let session = try await Amplify.Auth.fetchAuthSession()
-        await self.updateUI(forSignInStatus: session.isSignedIn)
-        
     }
     
     // signin with Cognito web user interface
@@ -128,47 +125,51 @@ extension AppDelegate {
 // MARK: API Access
 extension AppDelegate {
     
-    func queryLandmarks() async {
+    func queryLandmarks() async -> [ Landmark ] {
         print("Query landmarks")
         
         do {
-            let result = try await Amplify.API.query(request: .list(LandmarkData.self))
-            print("Landmarks query complete.")
-            
+            let queryResult = try await Amplify.API.query(request: .list(LandmarkData.self))
             print("Successfully retrieved list of landmarks")
-            for entry in try result.get() {
-                let landmark = Landmark.init(from: entry)
-                DispatchQueue.main.async() {
-                    self.userData.landmarks.append(landmark);
-                }
+            
+            // convert [ LandmarkData ] to [ LandMark ]
+            let result = try queryResult.get().map { landmarkData in
+                Landmark.init(from: landmarkData)
             }
+            
+            return result
+            
         } catch let error as APIError {
             print("Failed to load data from api : \(error)")
         } catch {
             print("Unexpected error while calling API : \(error)")
         }
+        
+        return []
     }
 }
 
 // MARK: AWS S3 & Image Loading
 extension AppDelegate {
 
-    func image(_ name: String) async -> Data? {
-        
+    func downloadImage(_ name: String) async -> Data {
+                
         print("Downloading image : \(name)")
         
         do {
+            
             let task = try await Amplify.Storage.downloadData(key: "\(name).jpg")
-            let result = try? await task.value
-            print("Image \(name) loaded")
-            return result
+            let data = try await task.value
+            print("Image \(name) downloaded")
+            
+            return data
             
         } catch let error as StorageError {
             print("Can not download image \(name): \(error.errorDescription). \(error.recoverySuggestion)")
         } catch {
             print("Unknown error when loading image \(name): \(error)")
         }
-        return nil // may return a default image
+        return Data() // may return a default image
     }
 }
 

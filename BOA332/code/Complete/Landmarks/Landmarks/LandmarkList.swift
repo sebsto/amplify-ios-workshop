@@ -12,8 +12,10 @@ struct SignOutButton : View {
 
     var body: some View {
         NavigationLink(destination: LandingView(user: appDelegate.userData)) {
-            Button(action: { Task {
-                    try await appDelegate.signOut() }
+            Button(action: {
+                Task {
+                    try await appDelegate.signOut()
+                }
             }) {
                 Text("Sign Out")
             }

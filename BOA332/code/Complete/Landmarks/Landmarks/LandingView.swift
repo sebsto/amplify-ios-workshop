@@ -20,7 +20,9 @@ struct LandingView: View {
 
                     Task {
                         try await appDelegate.authenticateWithHostedUI()
-                    }}) {
+                    }
+                    
+                }) {
                         UserBadge().scaleEffect(0.5)
                     }
 
@@ -33,7 +35,13 @@ struct LandingView: View {
 
 struct LandingView_Previews: PreviewProvider {
     static var previews: some View {
-        let app = UIApplication.shared.delegate as! AppDelegate
-        return LandingView(user: app.userData)
+//        let userDataSignedIn = UserData()
+//        userDataSignedIn.isSignedIn = true
+        let userDataSignedOff = UserData()
+        userDataSignedOff.isSignedIn = false
+        return Group {
+            LandingView(user: userDataSignedOff)
+//            LandingView(user: userDataSignedIn)
+        }
     }
 }

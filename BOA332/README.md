@@ -20,8 +20,14 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 - Reafactoring code for new concurrency model (`async`/`await` amongst others)
 - no more dependencies on CocoaPods, will need to changes instructions 
 - most of the rest works, modulo a few code changes.
+
 - Auth : OK 
 - API  : OK. Requires to patch generated code because of https://github.com/aws-amplify/amplify-ios/issues/1443 
+- New code with Auth and API by this [commit](https://github.com/sebsto/amplify-ios-workshop/commit/d89d27b7ab600c436f522983d4d2407e9ac3bf09)
+
+- Remove UIKit and Migrate to a 100% SwiftUI app ([commit](https://github.com/sebsto/amplify-ios-workshop/commit/5d0f776ab0a63ac96cf486498550adb68800b383))
+
+- Storage : 
 
 ## TODO - Code 
 

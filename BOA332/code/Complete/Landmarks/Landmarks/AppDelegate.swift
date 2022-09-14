@@ -2,16 +2,26 @@ import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSS3StoragePlugin
 
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
+    
+    // https://stackoverflow.com/questions/66156857/swiftui-2-accessing-appdelegate
+    static private(set) var instance: AppDelegate! = nil
     
     public let userData = UserData()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        AppDelegate.instance = self
+        
         do {
-            Amplify.Logging.logLevel = .info
+//            Amplify.Logging.logLevel = .info
+            
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSS3StoragePlugin())
+
             try Amplify.configure()
             print("Amplify initialized")
             
@@ -137,6 +147,28 @@ extension AppDelegate {
         } catch {
             print("Unexpected error while calling API : \(error)")
         }
+    }
+}
+
+// MARK: AWS S3 & Image Loading
+extension AppDelegate {
+
+    func image(_ name: String) async -> Data? {
+        
+        print("Downloading image : \(name)")
+        
+        do {
+            let task = try await Amplify.Storage.downloadData(key: "\(name).jpg")
+            let result = try? await task.value
+            print("Image \(name) loaded")
+            return result
+            
+        } catch let error as StorageError {
+            print("Can not download image \(name): \(error.errorDescription). \(error.recoverySuggestion)")
+        } catch {
+            print("Unknown error when loading image \(name): \(error)")
+        }
+        return nil // may return a default image
     }
 }
 

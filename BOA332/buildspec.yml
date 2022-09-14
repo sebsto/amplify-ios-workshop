@@ -4,10 +4,10 @@ frontend:
   phases:
     build:
       commands:
-        - cd BOA302/instructions
+        - cd BOA332/instructions
         - hugo --enableGitInfo
   artifacts:
-    baseDirectory: BOA302/instructions/public
+    baseDirectory: BOA332/instructions/public
     files:
       - '**/*'
   cache:

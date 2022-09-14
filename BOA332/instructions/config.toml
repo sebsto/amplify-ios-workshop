@@ -9,18 +9,18 @@ sectionPagesMenu = "main"
 #pygmentsCodeFences = true
 
 #https://gohugo.io/news/0.60.0-relnotes/
-[markup]
-  defaultMarkdownHandler = "blackfriday"
+#[markup]
+#  defaultMarkdownHandler = "blackfriday"
 
-  [markup.highlight]
-     codeFences = true
+#  [markup.highlight]
+#     codeFences = true
 
-  [markup.blackFriday]
-     hrefTargetBlank = true
+#  [markup.blackFriday]
+#     hrefTargetBlank = true
 
-  [markup.goldmark.renderer]
-     unsafe= true
-     # https://discourse.gohugo.io/t/raw-html-getting-omitted-in-0-60-0/22032
+#  [markup.goldmark.renderer]
+#     unsafe= true
+#     # https://discourse.gohugo.io/t/raw-html-getting-omitted-in-0-60-0/22032
 
 [params]
 themeVariant = "mine"

@@ -4,18 +4,14 @@ chapter : false
 weight : 10
 ---
 
+::alert[When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop. If not done already, **:link[follow these instructions]{href="/10_prerequisites/05_event_engine.md"} to access a temporary AWS account**. Once you have access, **:link[proceed to next section]{href="/10_prerequisites/20_installs.md"}. You can safely skip this page..**]{header="Warning" type="warning"}
 
-{{% notice warning %}}
-When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop.  If not done already, **follow [these instructions](05_event_engine.html) to access a temporary AWS account**.  Once you have access, [proceed to next section](/10_prerequisites/20_installs.html). **You can safely skip this page**.
-{{% /notice %}}
 
 ## AWS Account 
 
 To follow the instructions proposed by this workshop, you need to have an AWS Account and an IAM user with the minimum priviledges required to access the services we use in this workshop. In addition, you need to know the access key and secret key for the IAM users.  
 
-{{% notice tip %}}
-If you already have an AWS account, have IAM Administrator access and have access key and secret key, you can skip this page.
-{{% /notice %}}
+::alert[If you already have an AWS account, have IAM Administrator access and have access key and secret key, you can skip this page.]{header="Tip" type="success"}
 
 **If you don't already have an AWS account and you are not using an AWS temporary account**: [create
 your account now](https://aws.amazon.com/getting-started/) (you need a valid phone number and a credit card)

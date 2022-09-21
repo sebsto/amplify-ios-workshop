@@ -11,9 +11,7 @@ Before we begin coding, there are a few things we need to install, update, and c
 In order to develop native applications for iOS, you need to have [Xcode](https://apple.com/xcode) installed on your laptop.
 You can download and install Xcode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~2Gb, so it might take up to one hour depending on your network connection.
 
-{{% notice note %}}
-This workshop requires at least [Swift 5.1](https://swift.org) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework.  These are provided by [Xcode 11](https://apple.com/xcode) or more recent.
-{{% /notice %}}
+::alert[This workshop requires at least [Swift 5.1](https://swift.org/) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework. These are provided by [Xcode 11](https://apple.com/xcode) or more recent.]{header="Note" type="Info"}
 
 ### Installing or updating
 
@@ -48,8 +46,8 @@ brew install jq
 # install cocoa pods
 sudo gem install cocoapods
 ```
-{{% /tab  %}}
-{{% tab "verify" "Version" %}}
+
+::alert[These commands will take a few minutes to finish.]{header="Note" type="Info"}
 
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
 
@@ -77,12 +75,8 @@ amplify --version
 pod --version
 # 1.9.3
 ```
-{{% /tab  %}}
-{{% /tabs %}}
 
-{{% notice note %}}
-These commands will take a few minutes to finish.
-{{% /notice %}}
+::alert[These commands will take a few minutes to finish.]{header="Note" type="Info"}
 
 To learn more about the tools we are instaling, you can follow the following links:
 

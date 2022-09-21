@@ -6,7 +6,7 @@ weight : 20
 
 The starting point for the workshop is the [Apple Swift UI tutorial](https://developer.apple.com/tutorials/swiftui/tutorials) at the "Handling User Input" step.
 
-1. Download the :button[project zip file]{href="/static/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}  
+1. Download the :button[project zip file]{href="/static/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}  
 The file has the following directory structure
 ![Directory Structure](/static/images/20-10-directory-structure.png)
 
@@ -45,6 +45,6 @@ In the following steps, we will guide you through step by step instructions to m
 
 ::alert[If the example application in not starting or not working as described above, do not proceed to the next section. The instructions will fail at some point.]{header="Warning" type="warning"}
 
-:link[Project files]{href="/static/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}!
+:link[Project files]{href="/static/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}!
 
 

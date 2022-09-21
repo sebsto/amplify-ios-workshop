@@ -39,7 +39,7 @@ amplify add auth
 
 1. Select the social providers you want to configure for your user pool. **Do not select any other provider at this stage**, press **enter**.
 
-![amplify init](/images/30-10-amplify-add-auth.png)
+![amplify init](/static/images/30-10-amplify-add-auth.png)
 
 Amplify generates configuration files in `$PROJECT_DIRECTORY/amplify`. To actually create the backend resources, type the following command:
 
@@ -49,12 +49,11 @@ amplify push
 
 1. Are you sure you want to continue? Accept the default **Y** and press enter.
 
-![amplify init](/images/30-10-amplify-push-1.png)
+![amplify init](/static/images/30-10-amplify-push-1.png)
 
 After a while, you should see:
 
-![amplify init](/images/30-10-amplify-push-2.png)
+![amplify init](/static/images/30-10-amplify-push-2.png)
 
-{{% notice tip %}}
-Amazon Cognito lets you add user sign-up, sign-in, and access control to your web and mobile apps quickly and easily. We just made a User Pool, which is a secure user directory that will let our users sign in with the username and password pair they create during registration. Amazon Cognito (and the Amplify CLI) also supports configuring sign-in with social identity providers, such as Facebook, Google, and Amazon, and enterprise identity providers via SAML 2.0. If you'd like to learn more, we have a lot more information on the [Amazon Cognito Developer Resources page](https://aws.amazon.com/cognito/dev-resources/) as well as the [AWS Amplify Authentication documentation.](https://aws-amplify.github.io/docs/ios/authentication)
-{{% /notice %}}
+::alert[Amazon Cognito lets you add user sign-up, sign-in, and access control to your web and mobile apps quickly and easily. We just made a User Pool, which is a secure user directory that will let our users sign in with the username and password pair they create during registration. Amazon Cognito (and the Amplify CLI) also supports configuring sign-in with social identity providers, such as Facebook, Google, and Amazon, and enterprise identity providers via SAML 2.0. If you'd like to learn more, we have a lot more information on the [Amazon Cognito Developer Resources page](https://aws.amazon.com/cognito/dev-resources/) as well as the [AWS Amplify Authentication documentation.](https://aws-amplify.github.io/docs/ios/authentication)]{header="Tip" type="success"}
+

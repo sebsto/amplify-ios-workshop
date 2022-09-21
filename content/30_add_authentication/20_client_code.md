@@ -52,13 +52,13 @@ pod install --repo-update
 
 After one minute, you shoud see the below:
 
-![Pod update](/images/30-20-pod-install-1.png)
+![Pod update](/static/images/30-20-pod-install-1.png)
 
 ## Add authentication code
 
 Let's start to add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
 
-{{< highlight swift "hl_lines=8-8 10">}}
+:::code{language=Swift}
 // Landmarks/Models/UserData.swift
 import Combine
 import SwiftUI
@@ -68,11 +68,11 @@ final class UserData: ObservableObject {
     @Published var landmarks = landmarkData
     @Published var isSignedIn : Bool = false
 }
-{{< /highlight >}}
+:::
 
 Add user authentication logic to *Landmarks/AppDelegate.swift*:
 
-{{< highlight swift "hl_lines=9-10 15-15 19-67 89-142" >}}
+:::code{language=Swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -217,7 +217,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-{{< /highlight >}}
+:::
 
 What did we add ?
 
@@ -246,13 +246,13 @@ Let's create two new Swift classes in `$PROJECT_DIRECTORY/Landmarks` (same direc
 
 To add a new Swift class to your project, use Xcode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name.
 
-![add classes to xcode](/images/30-20-xcode-add-class.gif)
+![add classes to xcode](/static/images/30-20-xcode-add-class.gif)
 
 ### UserBadge.swift 
 
 The user badge is a very simple graphical view representing a big login button.
 
-{{< highlight swift >}}
+:::code{language=Swift}
 //
 //  UserBadge.swift
 //  Landmarks
@@ -290,7 +290,7 @@ struct UserBadge_Previews: PreviewProvider {
         UserBadge()
     }
 }
-{{< /highlight >}}
+:::
 
 ### LandingView.swift
 
@@ -298,7 +298,7 @@ This `LandingView` selects the view to present based on authentication status.  
 
 Pay attention to the `@ObservedObject` annotation.  This tells SwiftUI to invalidate and redraw the View when the state of the object changes.  When user signs in or signs out, `LandingView` will automatically adjust and render the `UserBadge` or the `LandmarkList` view.
 
-{{< highlight swift >}}
+:::code{language=Swift}
 //
 //  LandingView.swift
 //  Landmarks
@@ -336,13 +336,13 @@ struct LandingView_Previews: PreviewProvider {
         return LandingView(user: app.userData)
     }
 }
-{{< /highlight >}}
+:::
 
 ### Update SceneDelegate.swift
 
 Finally, we update `SceneDelegate.swift` to launch our new `LandingView` instead of launching `LandmarkList` when the application starts. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/SceneDelegate.swift* :
 
-{{< highlight swift "hl_lines=14-14 25-25 65" >}}
+:::code{language=Swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -403,13 +403,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 }
-{{< /highlight >}}
+:::
 
 ## Add a signout button
 
 To make our tests easier and to allow users to signout and invalidate their session, let's add a signout button on the top of the `LandmarkList` view.  Highlighted lines show the update.  You can copy/paste the whole content to replace `Landmarks/LandmarkList.swift`
 
-{{< highlight swift "hl_lines=10-20 44-44 58" >}}
+:::code{language=Swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -468,7 +468,7 @@ struct LandmarksList_Previews: PreviewProvider {
         .environmentObject(UserData())
     }
 }
-{{< /highlight >}}
+:::
 
 What we did just change ?
 
@@ -485,7 +485,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 1. In Xcode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
 
 1. Add the following entry in URL scheme:
-{{< highlight xml "hl_lines=6-16" >}}
+:::code{language=XML}
 <plist version="1.0">
 
      <dict>
@@ -505,7 +505,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 
      <!-- ... -->
      </dict>
-{{< /highlight >}}
+:::
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 

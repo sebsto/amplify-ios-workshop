@@ -12,13 +12,13 @@ The application starts and shows the `LandingView`.  Click on the user icon in t
 
 Landing View | Login View (Cognito) | Signup View (Cognito)
 :---: | :---: | :---: |
-![Landing View](/images/30-20-test-1.png) | ![App Login Screen](/images/30-20-test-5.png) | ![App Signup Screen](/images/30-20-test-3.png) |
+![Landing View](/static/images/30-20-test-1.png) | ![App Login Screen](/static/images/30-20-test-5.png) | ![App Signup Screen](/static/images/30-20-test-3.png) |
 
 After clicking **Sign Up**, check your email.  Cognito sends you a confirmation code.
 
 Code View (Cognito) | Landmarks List View
 :---: | :---: |
-![Confirmation Code](/images/30-20-test-4.png) | ![Landmark list](/images/30-20-test-6.png) |
+![Confirmation Code](/static/images/30-20-test-4.png) | ![Landmark list](/static/images/30-20-test-6.png) |
 
 Click **Sign Out** to end the session and, after a short redirection to Cognito's signout page, you return to the `LandingView`.
 
@@ -37,6 +37,4 @@ Successfully signed out
 ==HUB== User signed Out, update UI
 ```
 
-{{% notice warning %}}
-This application displays user personal information, such as the email address and the Cognito ID in the console.  In real life DO NOT print these information in the console.  We did this for education purpose only.
-{{% /notice %}}
+::alert[This application displays user personal information, such as the email address and the Cognito ID in the console.  In real life DO NOT print these information in the console.  We did this for education purpose only.](https://aws-amplify.github.io/docs/ios/authentication)]{header="Warning" type="warning"}

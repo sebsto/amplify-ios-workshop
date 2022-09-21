@@ -4,8 +4,7 @@ chapter : true
 weight : 30
 ---
 
-### Section 3
 
-## Add user authentication
-
-{{% children showhidden="false" %}}
+* :link[What we will build]{href="/30_add_authentication/10_amplify.md"}
+* :link[Bootstrapping the App]{href="/30_add_authentication/20_client_code.md"}
+* :link[Configuring Amplify]{href="/30_add_authentication/30_test.md"}

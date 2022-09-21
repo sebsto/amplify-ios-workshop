@@ -12,7 +12,7 @@ The file has the following directory structure
 
 2. This workshop will start from the *Complete* version of the tutorial project.  In the remaining part of this workshop, `$PROJECT_DIRECTORY` will refer to `~/Downloads/amplify-ios-workshop/Complete/Landmarks`.  
 
-    Unzip the file and open the Xcode project:
+Unzip the file and open the Xcode project:
 
  ```bash
  # download the workshop ZIP file

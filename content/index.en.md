@@ -1,10 +1,8 @@
 ---
-title: "Amplify iOS Workshop"
+title: "Build an iOS Native App with a Cloud-Based Backend"
 chapter: true
-weight: 1
+weight: 0
 ---
-
-# Build an iOS App<br/>using a cloud-based backend.
 
 ## Welcome!
 
@@ -13,6 +11,8 @@ In this workshop, we will create a data-driven native iOS app, integrated with a
 {{% notice info %}}
 This guide assumes that you are familiar with iOS development and tools. If you are new to iOS development, you can follow [these steps](https://developer.apple.com/library/archive/referencelibrary/GettingStarted/DevelopiOSAppsSwift/BuildABasicUI.html) to create your first iOS application using Swift.
 {{% /notice %}}
+
+::alert[This guide assumes that you are familiar with iOS development and tools. If you are new to iOS development, you can follow [these steps](https://developer.apple.com/tutorials/SwiftUI) to create your first iOS application using Swift.]{header="Info" type="info"}
 
 ## Estimated run time
 
@@ -29,3 +29,7 @@ We divided this workshop in three parts :
 - In the second part ([section 4](40_add_api.html) and [section 5](50_add_images.html)) you will learn how to deploy and call an API from your mobile application.
 
 - Finally, you will learn how to add Identity Federation for your login screen (also known as "Login with XXX") ([section 6](60_add_federation.html)) and to create your own authentication user interface ([section 7](70_add_custom_gui.html)).
+
+  
+
+

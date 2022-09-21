@@ -20,12 +20,12 @@ cd $PROJECT_DIRECTORY
 pod init
 ```
 
-1. After doing this, you should see a newly created file called Podfile. This file is used to describe what packages your project depends on.
+2. After doing this, you should see a newly created file called Podfile. This file is used to describe what packages your project depends on.
 
 ::alert[You can safely ignore the "PBXNativeTarget name=`Landmarks` UUID=`B7394861229F194000C47603" warning, we will fix this in a minute.]{header="Info" type="info"}
 
-2. **Type the below command** to include the following pods in the Podfile:
-{{< highlight bash >}}
+3. **Type the below command** to include the following pods in the Podfile:
+:::code{language=Bash}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 
@@ -38,9 +38,10 @@ target 'Landmarks' do
     pod 'Amplify/Tools', '~> 1.0'     # allows to cal amplify CLI from within Xcode
 
 end" > Podfile
-{{< /highlight >}}
+:::
 
-3. To download and install the Amplify pod into your project, execute the command:
+
+4. To download and install the Amplify pod into your project, execute the command:
 ```bash
 cd $PROJECT_DIRECTORY
 pod install --repo-update
@@ -48,7 +49,7 @@ pod install --repo-update
 
 ::alert[You can safely ignore the "PBXNativeTarget name=`Landmarks` UUID=`B7394861229F194000C47603" warning, we will fix this in a minute.]{header="Info" type="info"}
 
-1. After doing this, you should now see file called `HandlingUserInput.xcworkspace`. You are required to use this file from now on instead of the `.xcodeproj` file. To open your workspace, execute the command:
+5. After doing this, you should now see file called `HandlingUserInput.xcworkspace`. You are required to use this file from now on instead of the `.xcodeproj` file. To open your workspace, execute the command:
 
 ```bash
 xed .

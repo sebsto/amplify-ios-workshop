@@ -54,4 +54,4 @@ In the Terminal, type:
 
 This should look like the below (actual values will vary):
 
-![aws configure](/images/10-30-aws-config.png)
+![aws configure](/static/images/10-30-aws-config.png)

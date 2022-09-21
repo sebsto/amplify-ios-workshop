@@ -13,13 +13,13 @@ When attending this workshop during an event organised by AWS, such as [AWS re\:
 1. Open your browser and navigate to [https://dashboard.eventengine.run](https://dashboard.eventengine.run)
 
 1. Read the Terms and Conditions and Acceptable Use Policy, then enter the 12 digits hashcode given by AWS instructor.
-![hash code](/images/10-05-10.png)
+![hash code](/static/images/10-05-10.png)
 
 1. Click **AWS Console**
-![link to console](/images/10-05-20.png)
+![link to console](/static/images/10-05-20.png)
 
     The screen below has all the information you need to run the workshop:
-    ![open console](/images/10-05-30.png)
+    ![open console](/static/images/10-05-30.png)
 
 1. Please note the region that the event is using. **Only actions in this region are allowed.**
 

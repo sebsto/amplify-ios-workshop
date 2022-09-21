@@ -23,13 +23,13 @@ Once you have an AWS account, create an **IAM user** by following these steps:
 1. [Open the IAM console using this link](https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new). (Alternatively, navigate to [the IAM console](https://console.aws.amazon.com/iam/home#/home), from the left menu, click **Users** and click **Add User** button on the top of the page.)
 
 1. Enter the user details as shown below and click **Next: Permission**
-![Add User](/images/10-10-add-user.png)
+![Add User](/static/images/10-10-add-user.png)
 
 1. click **Attach existing policies directly**, then click the button **Create Policy**. This creates a new tab to create the policy.
-![Create Policy](/images/10-10-create-policy.png)
+![Create Policy](/static/images/10-10-create-policy.png)
 
 1. Click **JSON** tab and replace the policy with the one below, then click **Review Policy**
-![Add Policy](/images/10-10-add-policy.png)
+![Add Policy](/static/images/10-10-add-policy.png)
 
 ```json
 {
@@ -115,17 +115,17 @@ Once you have an AWS account, create an **IAM user** by following these steps:
 ```
 
 1. Give a name and a description to the policy and click **Create policy** at the bottom of the page.
-![Review Policy](/images/10-10-review-policy.png)
+![Review Policy](/static/images/10-10-review-policy.png)
 
 1. Return the to *Add User* tab, click the reload button (<i class="fas fa-sync-alt"></i>) to reload the list of policies, search for the policy you just created and select it. Click **Next: Tags**
-![Attach Polic](/images/10-10-attach-policy.png)
+![Attach Polic](/static/images/10-10-attach-policy.png)
 
 1. Do not attach any tag, click **Next: Preview**
 
 1. Review your choices and click **Create user** 
 
 1. Take note of the **Access Key ID** and the **Secret access key** . You will need these in the next section.
-![Access Key](/images/10-10-access-key.png).  When the two keys are copied, click **Close**
+![Access Key](/static/images/10-10-access-key.png).  When the two keys are copied, click **Close**
 
 {{% notice warning %}}
 This screen in the IAM console is the only place where you can access the secret access key.  If you fail to take a note it at this stage, you will need to regenerate a new one later.

@@ -26,7 +26,7 @@ We choose to write all AWS specific code in the `AppDelegate` class, to avoid sp
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the Amplify Authentication dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-:::code{language=Swift}
+:::code{language=swift}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 
@@ -58,7 +58,7 @@ After one minute, you shoud see the below:
 
 Let's start to add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
 
-:::code{language=Swift}
+:::code{language=swift}
 // Landmarks/Models/UserData.swift
 import Combine
 import SwiftUI
@@ -252,7 +252,7 @@ To add a new Swift class to your project, use Xcode menu and click **File**, the
 
 The user badge is a very simple graphical view representing a big login button.
 
-:::code{language=Swift}
+:::code{language=swift}
 //
 //  UserBadge.swift
 //  Landmarks
@@ -298,7 +298,7 @@ This `LandingView` selects the view to present based on authentication status.  
 
 Pay attention to the `@ObservedObject` annotation.  This tells SwiftUI to invalidate and redraw the View when the state of the object changes.  When user signs in or signs out, `LandingView` will automatically adjust and render the `UserBadge` or the `LandmarkList` view.
 
-:::code{language=Swift}
+:::code{language=swift}
 //
 //  LandingView.swift
 //  Landmarks
@@ -342,7 +342,7 @@ struct LandingView_Previews: PreviewProvider {
 
 Finally, we update `SceneDelegate.swift` to launch our new `LandingView` instead of launching `LandmarkList` when the application starts. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/SceneDelegate.swift* :
 
-:::code{language=Swift}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -409,7 +409,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 To make our tests easier and to allow users to signout and invalidate their session, let's add a signout button on the top of the `LandmarkList` view.  Highlighted lines show the update.  You can copy/paste the whole content to replace `Landmarks/LandmarkList.swift`
 
-:::code{language=Swift}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -485,7 +485,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 1. In Xcode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
 
 1. Add the following entry in URL scheme:
-:::code{language=XML}
+:::code{language=xml-doc}
 <plist version="1.0">
 
      <dict>

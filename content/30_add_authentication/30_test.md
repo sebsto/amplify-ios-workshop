@@ -37,4 +37,5 @@ Successfully signed out
 ==HUB== User signed Out, update UI
 ```
 
-::alert[This application displays user personal information, such as the email address and the Cognito ID in the console.  In real life DO NOT print these information in the console.  We did this for education purpose only.](https://aws-amplify.github.io/docs/ios/authentication)]{header="Warning" type="warning"}
+::alert[This application displays user personal information, such as the email address and the Cognito ID in the console.  In real life DO NOT print these information in the console.  We did this for education purpose only ]{header="Warning" type="warning"}
+

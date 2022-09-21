@@ -45,4 +45,6 @@ In the following steps, we will guide you through step by step instructions to m
 
 ::alert[If the example application in not starting or not working as described above, do not proceed to the next section. The instructions will fail at some point.]{header="Warning" type="warning"}
 
-:link[Project files]{href=/static/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}!
+:link[Project files]{href="/static/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}!
+
+

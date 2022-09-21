@@ -4,9 +4,7 @@ chapter : true
 weight : 10
 ---
 
-## Prerequisites for the Workshop
-
-* :link[AWS Temporary Account]{href="/10_prerequisites/aws-temporary-account"}
-* :link[Create an IAM User]{href="/10_prerequisites/create-iam-user"}
-* :link[Installs]{href="/10_prerequisites/installs"}
-* :link[Configs]{href="/10_prerequisites/configs"}
+* :link[AWS Temporary Account]{href="/10_prerequisites/05_event_engine.md"}
+* :link[Create an IAM User]{href="/10_prerequisites/10_iam_user.md"}
+* :link[Installs]{href="/10_prerequisites/20_installs.md"}
+* :link[Configs]{href="/10_prerequisites/30_configs.md"}

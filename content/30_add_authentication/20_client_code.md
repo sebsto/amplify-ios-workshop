@@ -72,7 +72,7 @@ final class UserData: ObservableObject {
 
 Add user authentication logic to *Landmarks/AppDelegate.swift*:
 
-:::code{language=Swift}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -485,7 +485,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 1. In Xcode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
 
 1. Add the following entry in URL scheme:
-:::code{language=xml-doc}
+:::code{language=xml}
 <plist version="1.0">
 
      <dict>

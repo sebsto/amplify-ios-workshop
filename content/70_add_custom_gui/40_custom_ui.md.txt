@@ -1,8 +1,8 @@
-+++
-title = "Federation with Custom UI"
-chapter = false
-weight = 40
-+++
+---
+title : "Federation with Custom UI"
+chapter : false
+weight : 40
+---
 
 {{< notice warning >}}
 This is work in progress

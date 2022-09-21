@@ -1,8 +1,9 @@
-+++
-title = "Create an IAM User"
-chapter = false
-weight = 1
-+++
+---
+title : "Create an IAM User"
+chapter : false
+weight : 1
+---
+
 
 {{% notice warning %}}
 When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop.  If not done already, **follow [these instructions](05_event_engine.html) to access a temporary AWS account**.  Once you have access, [proceed to next section](/10_prerequisites/20_installs.html). **You can safely skip this page**.

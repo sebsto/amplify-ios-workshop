@@ -1,8 +1,8 @@
-+++
-title = "Trying out some queries"
-chapter = false
-weight = 20
-+++
+---
+title : "Trying out some queries"
+chapter : false
+weight : 20
+---
 
 
 **Open the AWS Console** and **click into the amplifyiosworkshop-dev API**. Now we can start poking around with the API.

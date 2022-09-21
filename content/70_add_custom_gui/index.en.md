@@ -1,9 +1,8 @@
-+++
-title = "Customize the Login UI"
-chapter = true
-weight = 70
-pre = "<b>7. </b>"
-+++
+---
+title : "Customize the Login UI"
+chapter : true
+weight : 70
+---
 
 ### Section 7
 

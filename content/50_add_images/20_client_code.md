@@ -1,8 +1,8 @@
-+++
-title = "Update application code"
-chapter = false
-weight = 20
-+++
+---
+title : "Update application code"
+chapter : false
+weight : 20
+---
 
 Now that the storage backend is ready, let's modify the application code to load the images from Amazon S3.  We're going to make several changes in the application:
 

@@ -1,8 +1,8 @@
-+++
-title = "Federation with Hosted UI"
-chapter = false
-weight = 30
-+++
+---
+title : "Federation with Hosted UI"
+chapter : false
+weight : 30
+---
 
 The easiest way to present users a GUI that includes identity federation is to use Cognito Hosted UI.  Cognito Hosted UI automatically adds "Continue With XXX" button based on the backend configuration.
 

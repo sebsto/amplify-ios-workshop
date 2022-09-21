@@ -1,8 +1,8 @@
-+++
-title = "Installs"
-chapter = false
-weight = 20
-+++
+---
+title : "Installs"
+chapter : false
+weight : 20
+---
 
 Before we begin coding, there are a few things we need to install, update, and configure on your laptop.
 

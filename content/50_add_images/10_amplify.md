@@ -1,8 +1,8 @@
-+++
-title = "Add cloud storage"
-chapter = false
-weight = 10
-+++
+---
+title : "Add cloud storage"
+chapter : false
+weight : 10
+---
 
 Now that we have the user authentication and API in place, let's tackle the storage of the image.  The current version of the application is loading the landmark's images from a local bundle.  The images are located in *Landmarks/Resources* folder and `Data.swift` has the logic to load the image.  The class `ImageStore` reads the local bundle and maintain an in memory cache to avoid reading the same image from the bundle over and over again.
 

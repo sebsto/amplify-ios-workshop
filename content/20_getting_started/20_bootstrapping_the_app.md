@@ -1,8 +1,8 @@
-+++
-title = "Bootstrapping the App"
-chapter = false
-weight = 20
-+++
+---
+title : "Bootstrapping the App"
+chapter : false
+weight : 20
+---
 
 The starting point for the workshop is the [Apple Swift UI tutorial](https://developer.apple.com/tutorials/swiftui/tutorials) at the "Handling User Input" step.
 

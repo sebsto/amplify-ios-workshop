@@ -1,8 +1,8 @@
-+++
-title = "Configs"
-chapter = false
-weight = 30
-+++
+---
+title : "Configs"
+chapter : false
+weight : 30
+---
 
 {{% notice warning %}}
 When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop.  If not done already, **follow [these instructions](05_event_engine.html) to access a temporary AWS account**.  Once you have access, [proceed to next section](/20_getting_started.html).

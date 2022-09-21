@@ -3,6 +3,11 @@ title = "Congratulations!"
 chapter = false
 weight = 10
 +++
+---
+title : "Congratulations !"
+chapter : false
+weight : 10
+---
 
 While no application is really ever done, we've certainly come a long way toward building a native iOS app backed up by a cloud backend! 
 

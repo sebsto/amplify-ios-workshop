@@ -1,8 +1,8 @@
-+++
-title = "Configuring Amplify"
-chapter = false
-weight = 30
-+++
+---
+title : "Configuring Amplify"
+chapter : false
+weight : 30
+---
 
 This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/) to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code. You installed the CLI as part of the [prerequisites instructions](/10_prerequisites/20_installs.html#installing-or-updating).  Now we integrate Amplify tools with your Xcode project.
 

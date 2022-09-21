@@ -1,8 +1,8 @@
-+++
-title = "Update Amplify"
-chapter = false
-weight = 20
-+++
+---
+title : "Update Amplify"
+chapter : false
+weight : 20
+---
 
 Amazon Cognito does support Identity Federation out of the box with [Login With Amazon](https://login.amazon.com/), [Login with Google](https://developers.google.com/identity/sign-in/web/sign-in), [Login with Facebook](https://developers.facebook.com/docs/facebook-login/), [Signin with Apple](https://aws.amazon.com/blogs/security/how-to-set-up-sign-in-with-apple-for-amazon-cognito/), or any [OIDC](https://openid.net/connect/) or [SAMLv2](https://en.wikipedia.org/wiki/SAML_2.0) compliant identity provider.  
 
@@ -21,11 +21,11 @@ amplify update auth
 
 1. What do you want to do? Choose **Update OAuth social providers** and **press enter** 
 
-1. Select the identity providers you want to configure for your user pool:  Use the arrow keys to highlight **Facebook** and press **space**, then press enter.
+2. Select the identity providers you want to configure for your user pool:  Use the arrow keys to highlight **Facebook** and press **space**, then press enter.
 
-1. Enter your Facebook App ID for your OAuth flow:.  Enter the **Facebook App Id** that you noted in previous section. (for example `2600000000004701`)
+3. Enter your Facebook App ID for your OAuth flow:.  Enter the **Facebook App Id** that you noted in previous section. (for example `2600000000004701`)
 
-1. Enter your Facebook App Secret for your OAuth flow. Enter the **Facebook App Secret** that you noted in previous section. (for example `89xxxxxxxxxxxxxxxxxxxxxxxxxx605`)
+4. Enter your Facebook App Secret for your OAuth flow. Enter the **Facebook App Secret** that you noted in previous section. (for example `89xxxxxxxxxxxxxxxxxxxxxxxxxx605`)
 
 `amplify` creates the required resources to depoy your storage service in the cloud.
 

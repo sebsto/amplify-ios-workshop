@@ -1,8 +1,8 @@
-+++
-title = "Cleaning Up"
-chapter = false
-weight = 20
-+++
+---
+title : "Cleaning Up"
+chapter : false
+weight : 20
+---
 
 ### Deleting via Amplify
 

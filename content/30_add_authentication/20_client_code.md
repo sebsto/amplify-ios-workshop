@@ -1,8 +1,8 @@
-+++
-title = "Update application code"
-chapter = false
-weight = 20
-+++
+---
+title : "Update application code"
+chapter : false
+weight : 20
+---
 
 Now that the cloud-based backend is ready, let's modify the application code to add an authentication screen.  We're going to make several changes in the application:
 

@@ -1,8 +1,8 @@
-+++
-title = "Add a GraphQL API backend"
-chapter = false
-weight = 10
-+++
+---
+title : "Add a GraphQL API backend"
+chapter : false
+weight : 10
+---
 
 Now that we have authenticated users, let's make an API for retrieving Landmarks. The application we started from uses a locally bundled JSON file to list all Landmarks.  You can check that file in *Landmarks/Resources/landmarkData.json*.  We are going to create a database in the cloud to store this list and an API to allow our application to retrieve the list.
 

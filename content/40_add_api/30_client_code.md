@@ -1,8 +1,8 @@
-+++
-title = "Update application code"
-chapter = false
-weight = 30
-+++
+---
+title : "Update application code"
+chapter : false
+weight : 30
+---
 
 Now that we have a GraphQL API to support access our data model from the cloud, let's modify the application code to call the GraphQL endpoint instead of listing hard coded values.
 

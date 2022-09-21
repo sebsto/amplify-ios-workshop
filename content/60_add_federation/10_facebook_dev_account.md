@@ -1,8 +1,8 @@
-+++
-title = "Facebook Developer Account"
-chapter = false
-weight = 10
-+++
+---
+title : "Facebook Developer Account"
+chapter : false
+weight : 10
+---
 
 Nowadays, most applications allow users to sign-in using a third-party identity, defined and managed outside of your app.  This is known as Identity Federation.  Amazon Cognito does support Identity Federation out of the box with [Login With Amazon](https://login.amazon.com/), [Login with Google](https://developers.google.com/identity/sign-in/web/sign-in), [Login with Facebook](https://developers.facebook.com/docs/facebook-login/), [Signin with Apple](https://aws.amazon.com/blogs/security/how-to-set-up-sign-in-with-apple-for-amazon-cognito/), or any [OIDC](https://openid.net/connect/) or [SAMLv2](https://en.wikipedia.org/wiki/SAML_2.0) compliant identity provider.
 

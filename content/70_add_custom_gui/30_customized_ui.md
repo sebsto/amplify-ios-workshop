@@ -1,8 +1,8 @@
-+++
-title = "Bring your own UI"
-chapter = false
-weight = 30
-+++
+---
+title : "Bring your own UI"
+chapter : false
+weight : 30
+---
 
 Amazon Cognito provides low level API allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://docs.amplify.aws/lib/auth/signin/q/platform/ios).
 

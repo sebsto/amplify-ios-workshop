@@ -1,8 +1,8 @@
-+++
-title = "Add an authentication backend"
-chapter = false
-weight = 10
-+++
+---
+title : "Add an authentication backend"
+chapter : false
+weight : 10
+---
 
 Now that we have the application up and running and all the pre-requisites installed, let's add user authentication.
 

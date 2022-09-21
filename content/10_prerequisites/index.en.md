@@ -1,9 +1,8 @@
-+++
-title = "Prerequisites"
-chapter = true
-weight = 10
-pre = "<b>1. </b>"
-+++
+---
+title : "Prerequisites"
+chapter : true
+weight : 10
+---
 
 ### Section 1
 

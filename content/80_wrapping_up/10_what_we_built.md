@@ -1,8 +1,3 @@
-+++
-title = "Congratulations!"
-chapter = false
-weight = 10
-+++
 ---
 title : "Congratulations !"
 chapter : false

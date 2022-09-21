@@ -2,9 +2,6 @@
 title : "Create a user and test"
 chapter : false
 weight : 30
-[[resources]]
-  name = "LandingView"
-  src = "images/30-20-test-1.png"
 ---
 
 You just add a bit of logic in `AppDelegate` class to sign in and to sign out users.  You also modified the screen flow to start the app with a `LandingView` that controls the routing towards a `UserBadge` or the `LandmarkList` view based on the user authentication status.

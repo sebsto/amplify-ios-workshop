@@ -4,9 +4,7 @@ chapter : false
 weight : 30
 ---
 
-{{% notice warning %}}
-When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop.  If not done already, **follow [these instructions](05_event_engine.html) to access a temporary AWS account**.  Once you have access, [proceed to next section](/20_getting_started.html).
-{{% /notice %}}
+::alert[When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop.  If not done already, **follow [these instructions](05_event_engine.html) to access a temporary AWS account**.  Once you have access, [proceed to next section](/20_getting_started.html).]{header="Warning" type="warning"}
 
 Now that the prerequisites are installed, let's finish the configuration.
 
@@ -16,8 +14,9 @@ Before using `aws` command line, you need to configure a default **region** and 
 
 A best practice is to deploy your infrastructure close to your customers, let's configure a default AWS Region for this workshop : Oregon (*us-west-2*) for North America or Frankfurt (*eu-central-1*) for Europe.
 
-{{% tabs %}}
-{{% tab "us-west-2" "North America" %}}
+
+::::tabs
+:::tab{id="us-west-2" label="North America"}
 In the Terminal, type:
 
 `aws configure`
@@ -26,15 +25,13 @@ In the Terminal, type:
 
 1. At the **AWS Access Key** prompt, enter **the IAM user access key**
 
-1. At the **AWS Secret Access Key** prompt, enter **the IAM user secret access key**
+2. At the **AWS Secret Access Key** prompt, enter **the IAM user secret access key**
 
-1. At the **Default region name**, enter the region close to your customers (in this workshop, we use **us-west-2** for Northern America)
+3. At the **Default region name**, enter the region close to your customers (in this workshop, we use **us-west-2** for Northern America)
 
-1. At the Default output format, keep the defaut **None**
-
-{{% /tab %}}
-
-{{% tab  "eu-central-1"  "Europe" %}}
+4. At the Default output format, keep the defaut **None**
+:::
+:::tab{id="eu-central-1" label="Europe"}
 In the Terminal, type:
 
 `aws configure`
@@ -43,14 +40,13 @@ In the Terminal, type:
 
 1. At the **AWS Access Key** prompt, enter **the IAM user access key**
 
-1. At the **AWS Secret Access Key** prompt, enter **the IAM user secret access key**
+2. At the **AWS Secret Access Key** prompt, enter **the IAM user secret access key**
 
-1. At the **Default region name**, enter the region close to your customers (in this workshop, we use **eu-central-1** for Europe)
+3. At the **Default region name**, enter the region close to your customers (in this workshop, we use **eu-central-1** for Europe)
 
-1. At the Default output format, keep the defaut **None**
-
-{{% /tab %}}
-{{% /tabs %}}
+4. At the Default output format, keep the defaut **None**
+:::
+::::
 
 This should look like the below (actual values will vary):
 

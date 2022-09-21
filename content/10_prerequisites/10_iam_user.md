@@ -125,10 +125,10 @@ Once you have an AWS account, create an **IAM user** by following these steps:
 1. Review your choices and click **Create user** 
 
 1. Take note of the **Access Key ID** and the **Secret access key** . You will need these in the next section.
-![Access Key](/static/images/10-10-access-key.png).  When the two keys are copied, click **Close**
+![Access Key](/static/images/10-10-access-key.png)  When the two keys are copied, click **Close**
 
-{{% notice warning %}}
-This screen in the IAM console is the only place where you can access the secret access key.  If you fail to take a note it at this stage, you will need to regenerate a new one later.
-{{% /notice %}}
+
+::alert[This screen in the IAM console is the only place where you can access the secret access key.  If you fail to take a note it at this stage, you will need to regenerate a new one later.]{header="Warning" type="warning"}
+
 
 You now have an IAM user with the priviledges required by Amplify.  In the remaining steps of this workshop, you will use this IAM user to programmatically access your AWS account from your laptop.

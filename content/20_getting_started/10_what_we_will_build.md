@@ -8,7 +8,7 @@ During this workshop, we are going to add a cloud-based authentication and API b
 
 Landing View | Web Authentication View | Custom Authentication View | Main View
 :---: | :---: |  :---: | :---: |
-![App Landing Screen](/images/20-10-app-01.png) | ![App Web Login Screen](/images/20-10-app-04.png) | ![App Custom Login Screen](/images/20-10-app-03.png) | ![App Main Screen](/images/20-10-app-02.png) |
+![App Landing Screen](/static/images/20-10-app-01.png) | ![App Web Login Screen](/static/images/20-10-app-04.png) | ![App Custom Login Screen](/static/images/20-10-app-03.png) | ![App Main Screen](/static/images/20-10-app-02.png) |
 
 The application will use :
 
@@ -16,4 +16,4 @@ The application will use :
 - [AWS AppSync](https://docs.aws.amazon.com/en_pv/appsync/latest/devguide/welcome.html) to call a GraphQL API to access its data set
 - [Amazon S3](https://docs.aws.amazon.com/en_pv/AmazonS3/latest/gsg/GetStartedWithS3.html) to access images
 
-![Architecture](/images/20-10-architecture.png)
+![Architecture](/static/images/20-10-architecture.png)

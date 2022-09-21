@@ -12,13 +12,13 @@ Now that the cloud-based backend is ready, let's modify the application code to 
 
 The view navigation will look like this:
 
-{{<mermaid align="left">}}
+:::code{language=mermaid}
 graph LR;
     A(SceneDelegate) -->|entry point| B(LandingView)
     B --> C{is user<br/>authenticated?}
     C -->|no| D(LoginView)
     C -->|Yes| E(LandmarkList)
-{{< /mermaid >}}
+:::
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
 
@@ -26,7 +26,7 @@ We choose to write all AWS specific code in the `AppDelegate` class, to avoid sp
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the Amplify Authentication dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight bash "hl_lines=12 ">}}
+:::code{language=Swift}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 
@@ -41,7 +41,7 @@ target 'Landmarks' do
   pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0' # support for Cognito user authentication
   
 end" > Podfile
-{{< /highlight >}}
+:::
 
 In a Terminal, type the following commands to download and install the dependencies:
 

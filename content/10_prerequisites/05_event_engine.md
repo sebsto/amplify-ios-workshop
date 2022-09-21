@@ -4,7 +4,6 @@ chapter : false
 weight : 1
 ---
 
-
 When attending this workshop during an event organised by AWS, such as [AWS re\:Invent](https://reinvent.awsevents.com/), you may choose to use one of AWS' temporary AWS Account instead of using your personal or company AWS account.  Follow the instructions from this page and the AWS instructor in the room to access the temporary account.
 
 ::alert[Should you attend this workshop on your own or in a non-AWS event, you can skip this section and [proceed to next section]().]{header="Warning" type="warning"}

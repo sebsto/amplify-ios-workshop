@@ -4,4 +4,4 @@ chapter : true
 weight : 70
 ---
 
-* :link[What we will build]{href="/70_add_custom_gui/30_customized_ui.md"}
+* :link[Bring your own UI]{href="/70_add_custom_gui/30_customized_ui.md"}

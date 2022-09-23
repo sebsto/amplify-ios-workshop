@@ -14,10 +14,10 @@ The view navigation will look like this:
 
 :::code{language=mermaid}
 graph LR;
-    A(SceneDelegate) -->|entry point| B(LandingView)
-    B --> C{is user<br/>authenticated?}
-    C -->|no| D(LoginView)
-    C -->|Yes| E(LandmarkList)
+    A(SceneDelegate<br/>) -->|entry point| B(LandingView<br/>)
+    B --> C{is user<br/>authenticated?<br/>}
+    C -->|no| D(LoginView<br/>)
+    C -->|Yes| E(LandmarkList<br/>)
 :::
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.

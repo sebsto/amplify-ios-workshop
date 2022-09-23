@@ -17,9 +17,9 @@ You can download and install Xcode from [Apple's App Store](https://apps.apple.c
 
 You need different command line tools to be installed : `aws`, `amplify`, `cocoapods` and `jq`.  These tools have themselves requirements on `python`, `pip`, `nodejs` and `npm`.  To install and configure these, open a Terminal on your laptop and type the following commands:
 
-{{% tabs %}}
-{{% tab "install" "Install" %}}
 
+::::tabs
+:::tab{id="install" label="Install"}
 Follow these instructions to install the prerequisites using [HomeBrew](https://brew.sh/) package manager. 
 
 ```bash
@@ -46,8 +46,8 @@ brew install jq
 # install cocoa pods
 sudo gem install cocoapods
 ```
-
-::alert[These commands will take a few minutes to finish.]{header="Note" type="info"}
+:::
+:::tab{id="verify" label="Version"}
 
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
 
@@ -75,6 +75,8 @@ amplify --version
 pod --version
 # 1.9.3
 ```
+:::
+::::
 
 ::alert[These commands will take a few minutes to finish.]{header="Note" type="info"}
 

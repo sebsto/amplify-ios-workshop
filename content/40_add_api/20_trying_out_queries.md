@@ -36,15 +36,15 @@ This area is AWS AppSync's interactive query explorer. We can write queries and 
 cd $PROJECT_DIRECTORY
 ../../scripts/get_app_client.sh
 ```
-    Copy the **Client ID** value returned, for example:
-    ![Client ID](/static/images/40-20-client-id.png)
+Copy the **Client ID** value returned, for example:
+![Client ID](/static/images/40-20-client-id.png)
 
-    Alternatively, you can retrieve the ClientID in the Amazon Cognito console:
+Alternatively, you can retrieve the ClientID in the Amazon Cognito console:
 
-    1.  Click on the link to open the Cognito console in your Region: [Northern America](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=us-east-1#/) or [Europe](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=eu-central-1#/)
-    2.  Select the User Pool named **amplifyiosworkshopxxxxx_userpool_xxxx-dev** (the xxx is generated randomly and will vary)
-    3. Click **App Clients** on the left menu, select the client named **amplifyxxxx_app_clientWeb** and click **Show Details** to reveal both the App client id and the App client secret.  Copy the **App client id**.  The correct app client has no secret key as "App client secret".  
-    ![app client id](/static/images/40-20-appsync-2.png)
+1.  Click on the link to open the Cognito console in your Region: [Northern America](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=us-east-1#/) or [Europe](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=eu-central-1#/)
+2.  Select the User Pool named **amplifyiosworkshopxxxxx_userpool_xxxx-dev** (the xxx is generated randomly and will vary)
+3. Click **App Clients** on the left menu, select the client named **amplifyxxxx_app_clientWeb** and click **Show Details** to reveal both the App client id and the App client secret.  Copy the **App client id**.  The correct app client has no secret key as "App client secret".  
+![app client id](/static/images/40-20-appsync-2.png)
 
 1. Go back to the **AppSync console**, in the **Query** section Paste the value into the **ClientId** field
 

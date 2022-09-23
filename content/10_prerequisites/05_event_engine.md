@@ -18,8 +18,8 @@ When attending this workshop during an event organised by AWS, such as [AWS re\:
 1. Click **AWS Console**
 ![link to console](/static/images/10-05-20.png)
 
-    The screen below has all the information you need to run the workshop:
-    ![open console](/static/images/10-05-30.png)
+The screen below has all the information you need to run the workshop:
+![open console](/static/images/10-05-30.png)
 
 1. Please note the region that the event is using. **Only actions in this region are allowed.**
 

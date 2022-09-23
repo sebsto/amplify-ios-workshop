@@ -22,7 +22,7 @@ You need different command line tools to be installed : `aws`, `amplify`, `cocoa
 :::tab{id="install" label="Install"}
 Follow these instructions to install the prerequisites using [HomeBrew](https://brew.sh/) package manager. 
 
-:::code{language=Bash}
+```bash
 # install brew itself
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -45,35 +45,35 @@ brew install jq
 
 # install cocoa pods
 sudo gem install cocoapods
-:::
+```
 :::
 :::tab{id="verify" label="Version"}
 
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
 
-    :::code{language=Bash}
-    brew --version
-    # Homebrew 2.3.0
-    # Homebrew/homebrew-core (git revision 467e0; last commit 2020-06-05)
-    # Homebrew/homebrew-cask (git revision 8a0acb; last commit 2020-06-05)
+```bash
+brew --version
+# Homebrew 2.3.0
+# Homebrew/homebrew-core (git revision 467e0; last commit 2020-06-05)
+# Homebrew/homebrew-cask (git revision 8a0acb; last commit 2020-06-05)
 
-    python3 --version
-    # Python 3.7.3
+python3 --version
+# Python 3.7.3
 
-    aws --version
-    # aws-cli/2.0.19 Python/3.7.4 Darwin/19.5.0 botocore/2.0.0dev23
+aws --version
+# aws-cli/2.0.19 Python/3.7.4 Darwin/19.5.0 botocore/2.0.0dev23
 
-    node --version
-    # v14.4.0
+node --version
+# v14.4.0
 
-    amplify --version
-    # Scanning for plugins...
-    # Plugin scan successful
-    # 4.22.0
+amplify --version
+# Scanning for plugins...
+# Plugin scan successful
+# 4.22.0
 
-    pod --version
-    # 1.9.3
-    :::
+pod --version
+# 1.9.3
+```
 :::
 ::::
 

@@ -7,6 +7,9 @@ code/Complete-FINAL
 instructions/public
 public
 
+# Studio local dev test
+preview_build
+
 #amplify
 **/amplify/\#current-cloud-backend
 **/amplify/.config/local-*

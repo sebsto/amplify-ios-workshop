@@ -32,10 +32,10 @@ This area is AWS AppSync's interactive query explorer. We can write queries and 
 
 2. Look up the value for the **ClientId** field.  You can either use the script below or get the client ID in the console. To use the script, in your terminal, type:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 ../../scripts/get_app_client.sh
-```
+:::
 Copy the **Client ID** value returned, for example:
 ![Client ID](/static/images/40-20-client-id.png)
 
@@ -60,17 +60,17 @@ You should now be able to try out the following mutations and queries. Press the
 
 **Add a new Landmark** by copy/pasting the following and running the query:
 
-```graphql
+:::code{language=graphql}
 mutation CreateLandmark($input: CreateLandmarkDataInput!) {
     createLandmarkData(input: $input) {
         id
     }
 }
-```
+:::
 
 Open the **Query Variables** section on the bottom and copy / paste the following data:
 
-```json
+:::code{language=json}
 { "input" :
     {
         "name": "Lake Umbagog",
@@ -88,13 +88,13 @@ Open the **Query Variables** section on the bottom and copy / paste the followin
         "imageName": "umbagog"
     }  
 }
-```
+:::
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
 
 **Get the Landmark**  we just created by running this query:
 
-```graphql
+:::code{language=graphql}
 query GetLandmark {
     getLandmarkData(id: 9999) {
         id
@@ -112,13 +112,13 @@ query GetLandmark {
         imageName
     }
 }
-```
+:::
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
 
 **List all the landmarks** with this query :
 
-```graphql
+:::code{language=graphql}
 query ListLandmarks {
     listLandmarkData {
         items {
@@ -139,13 +139,13 @@ query ListLandmarks {
         nextToken
     }
 }
-```
+:::
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
 
 Finally, **delete the landmark** we created with this query:
 
-```graphql
+:::code{language=graphql}
 mutation DeleteLandmark {
   deleteLandmarkData(input: { id: 9999 }) {
     id
@@ -163,7 +163,7 @@ mutation DeleteLandmark {
     imageName
   }
 }
-```
+:::
 
 Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
 

@@ -44,17 +44,17 @@ amplify add storage
 
 In a Terminal, assuming you are still in your project directory, type:
 
-```bash
+:::code{language=bash}
 amplify push
-```
+:::
 
 1. Are you sure you want to continue? Review the table and verify the Storage service is being Created.  Accept the default (**Yes**) and press enter.
 
 Amplify creates the backend infrastructure : an Amazon S3 bucket.  After a while, you should see the familiar message :
 
-```text
+:::code{language=bash}
 ✔ All resources are updated in the cloud
-```
+:::
 
 ## Upload images to Amazon S3
 
@@ -69,7 +69,7 @@ cd $PROJECT_DIRECTORY
 
 The script should output the following:
 
-```text 
+:::code{language=bash}
 Uploading project images to your S3 bucket : amplifyiosworkshopa51bbe725c374d37b1f3aaae6303900b-dev/public
 upload: Resources/landmarkData.json to s3://amplifyiosworkshopa51bbe725c374d37b1f3aaae6303900b-dev/public/landmarkData.json
 upload: Resources/icybay.jpg to s3://amplifyiosworkshopa51bbe725c374d37b1f3aaae6303900b-dev/public/icybay.jpg
@@ -84,7 +84,7 @@ upload: Resources/twinlake.jpg to s3://amplifyiosworkshopa51bbe725c374d37b1f3aaa
 upload: Resources/silversalmoncreek.jpg to s3://amplifyiosworkshopa51bbe725c374d37b1f3aaae6303900b-dev/public/silversalmoncreek.jpg
 upload: Resources/turtlerock.jpg to s3://amplifyiosworkshopa51bbe725c374d37b1f3aaae6303900b-dev/public/turtlerock.jpg
 upload: Resources/umbagog.jpg to s3://amplifyiosworkshopa51bbe725c374d37b1f3aaae6303900b-dev/public/umbagog.jpg
-```
+:::
 
 Now that the storage is in place and the images are in the cloud, let's modify the application to load the images from Amazon S3 instead of from the local bundle.
 
@@ -92,7 +92,7 @@ Now that the storage is in place and the images are in the cloud, let's modify t
 
 The `init_s3.sh` script is much shorter than the previous one we used to initialise the database.  The script uses the `aws` command line tool to synchronize the local resources directory with the Amazon S3 bucket.
 
-```bash
+:::code{language=bash}
 #
 # The code below is an extract from the script 'init_s3.sh'
 # Check the full script in $PROJECT_DIRECTORY/../../../
@@ -102,6 +102,6 @@ CODE_DIR=...
 IMAGE_BUCKET=...
 
 aws s3 sync $CODE_DIR/Landmarks/Resources/ s3://$IMAGE_BUCKET/public
-```
+:::
 
 Note that the `public` prefix does not mean anybody can access the images.  It means *any authenticated user* can read and write the images.  Amplify Storage service supports two other storage classes : `protected/{user_identity_id}/` for files readable by all authenticated users but writable only by the owner, and `private/{user_identity_id}/` for files only accessible by their owner.

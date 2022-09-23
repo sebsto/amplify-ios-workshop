@@ -42,10 +42,10 @@ end" > Podfile
 
 In a Terminal, type the following commands to download and install the dependencies:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 pod install --repo-update
-```
+:::
 
 After one minute, you shoud see the below:
 

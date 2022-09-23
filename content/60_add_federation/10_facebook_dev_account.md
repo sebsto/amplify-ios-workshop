@@ -35,14 +35,14 @@ To setup oAuth with Facebook, follow these steps:
 
 7. Under Web Site, type your user pool domain with the `/oauth2/idpresponse` endpoint into **Site URL**. You can find the Cognito domain by looking in `awsconfiguration.json` file, under the key Auth => Default => OAuth => WebDomain.  Do not forget to type `https://` at the start of the URL.
 
-    Alternatively, the below command will copy the value to the clipboard, you will just need to paste it in the correct field:
+Alternatively, the below command will copy the value to the clipboard, you will just need to paste it in the correct field:
 
-    ```bash
-    cd $PROJECT_DIRECTORY
-    echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)/oauth2/idpresponse" | pbcopy
-    ```
+:::code{language=bash}
+cd $PROJECT_DIRECTORY
+echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)/oauth2/idpresponse" | pbcopy
+:::
 
-    ![create a facebook app 4](/static/images/60-10-facebook-4.png)
+![create a facebook app 4](/static/images/60-10-facebook-4.png)
 
 8. Click **Save Changes**
 
@@ -51,10 +51,10 @@ To setup oAuth with Facebook, follow these steps:
 
 The below command will copy the value to the clipboard, you will just need to paste it in the correct field:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)" | pbcopy
-```
+:::
 
 ![create a facebook app 5](/static/images/60-10-facebook-5.png)
 
@@ -70,10 +70,10 @@ echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)
 
 Alternatively, the below command will copy the value to the clipboard, you will just need to paste it in the correct field:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 echo "https://$(cat awsconfiguration.json | jq -r .Auth.Default.OAuth.WebDomain)/oauth2/idpresponse" | pbcopy
-```
+:::
 
 ![create a facebook app 7](/static/images/60-10-facebook-7.png)
 

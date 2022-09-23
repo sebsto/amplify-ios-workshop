@@ -13,10 +13,10 @@ We use AWS Amplify command line to update the Amazon Cognito configuration on th
 
 In a terminal, type:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 amplify update auth
-```
+:::
 
 1. What do you want to do? Choose **Update OAuth social providers** and **press enter** 
 
@@ -34,14 +34,14 @@ amplify update auth
 
 In a Terminal, assuming you are still in your project directory, type:
 
-```bash
+:::code{language=bash}
 amplify push
-```
+:::
 
 1. Are you sure you want to continue? Review the table and verify the Auth service is being Updated.  Accept the default (**Yes**) and press enter.
 
 Amplify updates the backend infrastructure, it adds the federation configuration to Amazon Cognito.  After a while, you should see the familiar message :
 
-```text
+:::code{language=bash}
 ✔ All resources are updated in the cloud
-```
+:::

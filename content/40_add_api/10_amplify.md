@@ -14,10 +14,10 @@ Just like we added an authentication backend in the previous section, we use `am
 
 In a Terminal, type:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 amplify add api
-```
+:::
 
 1. Please select from one of the below mentioned services.  Use the arrow keys to select **GraphQL** and press enter.
 
@@ -90,9 +90,9 @@ There are a few things to notice about the schema:
 
 In a Terminal, assuming you are still in your project directory, type:
 
-```bash
+:::code{language=bash}
 amplify push
-```
+:::
 
 1. Are you sure you want to continue? Review the table and verify an API is being Created.  Accept the default (**Yes**) and press enter.
 
@@ -112,14 +112,14 @@ The sample application we started from uses a local file (*Landmarks/Resources/l
 
 In a Terminal, type:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 ../../scripts/init_db.sh
-```
+:::
 
 The script should output the following:
 
-```text
+:::code{language=bash}
 Checking prerequisites
 Getting an access token
 CLIENT_ID=7lxxxxxxxxxxxxxxi5k
@@ -141,7 +141,7 @@ Uploading data to https://ncfh3rdww5eqfjpxuwxys2xcsm.appsync-api.eu-west-1.amazo
 {"data":{"createLandmark":{"id":1012}}}
 Cleaning up
 Done - success
-```
+:::
 
 
 ::alert[If you downloaded the sample project from Apple's Developer website instead of [the link provided](/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip) in section 2, the above script will fail because of a syntax error in the JSON data file.  To fix this, edit **Landmarks/Resources/landmarkData.json** and **remove the extra ,** at the end of line 105.]{header="Warning" type="warning"}

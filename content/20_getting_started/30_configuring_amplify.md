@@ -25,7 +25,7 @@ pod init
 ::alert[You can safely ignore the "PBXNativeTarget name=`Landmarks` UUID=`B7394861229F194000C47603" warning, we will fix this in a minute.]{header="Info" type="info"}
 
 3. **Type the below command** to include the following pods in the Podfile:
-:::code{language=Bash}
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 

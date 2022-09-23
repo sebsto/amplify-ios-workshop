@@ -8,9 +8,10 @@ The easiest way to present users a GUI that includes identity federation is to u
 
 You can test the Hosted UI by clicking on the link given by Amplify CLI at the end of the `amplify push` command from previous section.  For example, my link is:
 
-```text
+:::code{language=text}
 https://amplifyiosworkshopaf0xxxxx-xxxxxxxx-dev.auth.eu-west-1.amazoncognito.com/login?response_type=code&client_id=58xxxxxxxxxxxxxxjhn&redirect_uri=landmarks://
-```
+:::
+
 The Hosted UI now shows the "Login With Facebook" button.
 ![federation hosted ui](/static/images/60-30-hostedui-1.png)
 

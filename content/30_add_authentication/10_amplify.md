@@ -16,10 +16,10 @@ You can learn more about the Hosted UI experience in the [Amplify documentation]
 
 In a Terminal, type the following commands:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 amplify add auth
-```
+:::
 
 1. Do you want to use the default authentication and security configuration? Use the arrow keys to select **Default configuration with Social Provider (Federation)** and press enter
 
@@ -43,9 +43,9 @@ amplify add auth
 
 Amplify generates configuration files in `$PROJECT_DIRECTORY/amplify`. To actually create the backend resources, type the following command:
 
-```bash
+:::code{language=bash}
 amplify push
-```
+:::
 
 10. Are you sure you want to continue? Accept the default **Y** and press enter.
 

@@ -38,10 +38,10 @@ end" > Podfile
 
 In a Terminal, type the following commands to download and install the dependencies:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 pod install --repo-update
-```
+:::
 
 After one minute, you shoud see the below:
 
@@ -51,9 +51,9 @@ After one minute, you shoud see the below:
 
 `UserData` holds a hard coded list of landmarks, loaded from a JSON files (*Landmarks/Resources/landmarkData.json*).  The `Landmarks/Models/Data.swift` class loads the JSON file at application startup time using this line:
 
-```swift
+:::code{language=swift}
 let landmarkData: [Landmark] = load("landmarkData.json")
-```
+:::
 
 Let's replace `UserData.swift` with the below 
 
@@ -83,16 +83,16 @@ Thanks to the strongly typed nature of GraphQL, Amplify generates Swift code to 
 
 In a Terminal, type the following commands to generate Swift code based on your GraphQL model:
 
-```bash
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 amplify codegen models
-```
+:::
 
 TODO : patch generated LandMarkData with 
 until this [issue](https://github.com/aws-amplify/amplify-ios/issues/1443) is resolved
-```
+:::code{language=swift}
     model.listPluralName = "LandmarkData"
-```
+:::
 
 Wait for the generation to complete and check there is no error.
 

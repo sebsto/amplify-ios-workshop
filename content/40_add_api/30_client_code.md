@@ -18,7 +18,7 @@ At high level, here is how we gonna proceed
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the AppSync dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight bash "hl_lines=13">}}
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 
@@ -34,7 +34,7 @@ target 'Landmarks' do
   pod 'AmplifyPlugins/AWSAPIPlugin', '~> 1.0'         # support for GraphQL API
 
 end" > Podfile
-{{< /highlight >}}
+:::
 
 In a Terminal, type the following commands to download and install the dependencies:
 
@@ -45,7 +45,7 @@ pod install --repo-update
 
 After one minute, you shoud see the below:
 
-![Pod update](/images/40-30-appsync-code-1.png)
+![Pod update](/static/images/40-30-appsync-code-1.png)
 
 ## Modify UserData class
 
@@ -57,7 +57,7 @@ let landmarkData: [Landmark] = load("landmarkData.json")
 
 Let's replace `UserData.swift` with the below 
 
-{{< highlight swift "hl_lines=13" >}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -73,7 +73,7 @@ final class UserData: ObservableObject {
     @Published var landmarks : [Landmark] = []
     @Published var isSignedIn : Bool = false
 }
-{{< /highlight >}}
+:::
 
 On line 13, we initialise the list of landmarks with an empty array, while preserving the type of the variable.
 
@@ -96,24 +96,24 @@ until this [issue](https://github.com/aws-amplify/amplify-ios/issues/1443) is re
 
 Wait for the generation to complete and check there is no error.
 
-![amplify codegen](/images/40-30-amplify-codegen-1.png)
+![amplify codegen](/static/images/40-30-amplify-codegen-1.png)
 
 Add the generated files in your project.  In the Finder, locate 5 files in *amplify/generated/models* and drag them into your XCode project.
 
-![amplify codegen files](/images/40-30-amplify-codegen-2.png)
+![amplify codegen files](/static/images/40-30-amplify-codegen-2.png)
 
 When the *Options* dialog box appears, do the following:
 
 - Clear the **Copy items if needed** check box.
 - Choose **Create groups**, and then choose **Finish**.
 
-![add amplify codegen files](/images/40-30-amplify-codegen-3.png)
+![add amplify codegen files](/static/images/40-30-amplify-codegen-3.png)
 
 ## Add client code in the application delegate 
 
 We modify `AppDelegate.swift` to add code to call the GraphQL API.  You can safely copy/paste the entire file from below. 
 
-{{< highlight swift "hl_lines=23-23 98-101 151-177" >}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -292,7 +292,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 }    
-{{< /highlight >}}
+:::
 
 What we did change ?
 
@@ -306,7 +306,7 @@ To allow the creation of the application `Landmark` model object from the API `L
 
 Open `Landmarks/Models/Landmark.swift` and copy/paste the code below.
 
-{{< highlight swift "hl_lines=52-68" >}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -376,7 +376,7 @@ extension Landmark {
 
     }
 }
-{{< /highlight >}}
+:::
 
 What did we change ?
 
@@ -387,13 +387,12 @@ The list of all changes we made to the code is visible in [this commit](https://
 ## Launch the app
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
-![build](/images/20-10-xcode.png)
+![build](/static/images/20-10-xcode.png)
 
 After a few seconds, you should see the application running in the iOS simulator.
-![run](/images/40-30-appsync-code-2.png)
+![run](/static/images/40-30-appsync-code-2.png)
 
-{{% notice tip %}}
-If you did not sign out last time you started the application, you are still signed in.  This is expected as the Amplify` library stores the token locally and automatically refresh the token when it expires.
-{{% /notice %}}
+
+::alert[If you did not sign out last time you started the application, you are still signed in.  This is expected as the Amplify` library stores the token locally and automatically refresh the token when it expires.]{header="Tip" type="success"}
 
 At this stage, we have hybrid data sources.  The Landmark list is loaded from the GraphQL API, but the images are still loaded from the local bundle.  In the next section, we are going to move the images to Amazon S3.

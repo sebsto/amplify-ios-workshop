@@ -14,15 +14,14 @@ Now that the storage backend is ready, let's modify the application code to load
 
 - change [Landmarks and LandmarkRow](#update-the-landmark-landmarkrow-classes) classes to publish / observe changes on image.
 
-{{% notice tip %}}
-You can learn more about SwiftUI publish subscribe framework, called [Combine](https://developer.apple.com/documentation/combine), [in this article](https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine).
-{{% /notice %}}
+
+::alert[You can learn more about SwiftUI publish subscribe framework, called [Combine](https://developer.apple.com/documentation/combine), [in this article](https://developer.apple.com/documentation/combine/receiving_and_handling_events_with_combine).]{header="Tip" type="success"}
 
 ## Add Amazon S3 client library
 
 Edit `$PROJECT_DIRECTORY/Podfile` to add the Amazon S3 client dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
 
-{{< highlight bash "hl_lines=14">}}
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 echo "platform :ios, '13.0'
 
@@ -39,7 +38,7 @@ target 'Landmarks' do
   pod 'AmplifyPlugins/AWSS3StoragePlugin', '~> 1.0'   # support for Amazon S3 storage
 
 end" > Podfile
-{{< /highlight >}}
+:::
 
 In a Terminal, type the following commands to download and install the dependencies:
 
@@ -50,7 +49,7 @@ pod install --repo-update
 
 After one minute, you shoud see the below:
 
-![Pod update](/images/50-20-s3-code-1.png)
+![Pod update](/static/images/50-20-s3-code-1.png)
 
 Now it's time to change the code.  At high level, this is what we are going to change:
 
@@ -64,7 +63,7 @@ To add storage access code, we first add the `AWSS3StoragePlugin` to Amplify's r
 
 As usual, you can safely copy/paste the entire `AppDelegate` from below.  Lines that have been added since last section are highlighted.
 
-{{< highlight swift "hl_lines=23 179-199" >}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -265,7 +264,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
 }
-{{< /highlight>}}
+:::
 
 Notice that `Amplify.Storage.downloadData()` class is asynchronous and returns immediately.  It takes a callback function as argument to be notified when the transfer completes. The callback takes care of passing the `Data` received to its caller.
 
@@ -275,7 +274,7 @@ The `ImageStore` class is part of the original code sample we started from. It i
 
 Open `Landmarks/Models/Data.swift` and paste the content below:
 
-{{< highlight swift "hl_lines=37-48 50-106" >}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -383,7 +382,7 @@ final class ImageStore {
         images[name] = image
     }
 }
-{{< /highlight >}}
+:::
 
 What did we just change ?  
 
@@ -401,13 +400,11 @@ Finally, we are adding a few fields and behaviours to the `Landmark` and `Landma
 
 A `LandmarkRow` is a UI row in the landmark table.  We mark the `Landmark` object as "observable" with the directive `@ObservedObject`
 
-{{% notice tip %}}
-`ObservedObject` directive is part of the [SwiftUI framework](https://developer.apple.com/documentation/swiftui/observedobject). It is a property wrapper type that subscribes to an observable object and invalidates a view whenever the observable object changes. 
-{{% /notice %}}
+::alert[`ObservedObject` directive is part of the [SwiftUI framework](https://developer.apple.com/documentation/swiftui/observedobject). It is a property wrapper type that subscribes to an observable object and invalidates a view whenever the observable object changes.]{header="Tip" type="success"}
 
 You can just add the directive in front of `var landmark: Landmark` or copy / paste the whole file here:
 
-{{% highlight swift "hl_lines=11" %}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -446,13 +443,13 @@ struct LandmarkRow_Previews: PreviewProvider {
         .previewLayout(.fixed(width: 300, height: 70))
     }
 }
-{{% /highlight %}}
+:::
 
 **Landmark class** 
 
 In order to make `Landmark` observable, we need to transform this `struct` into a full fledged `class`. Tis implies adding an initializer and a few fields, such as `CodingKeys` to make it conform to [Decodable](https://developer.apple.com/documentation/swift/codable) protocol.
 
-{{< highlight swift "hl_lines=22-36 54-55 72-82 84-85">}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -544,7 +541,7 @@ struct Coordinates: Hashable, Codable {
     var latitude: Double
     var longitude: Double
 }
-{{< /highlight >}}
+:::
 
 What we did just change ?
 
@@ -559,13 +556,12 @@ The list of all changes we made to the code is visible in [this commit](https://
 ## Launch the app 
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
-![build](/images/20-10-xcode.png)
+![build](/static/images/20-10-xcode.png)
 
 After a few seconds, you should see the application running in the iOS simulator.
-![run](/images/40-30-appsync-code-2.png)
+![run](/static/images/40-30-appsync-code-2.png)
 
-{{% notice tip %}}
-When you start the app, you will notice the table's rows are populated as soon as the landmark data are fetched from the API.  At that moment, no image is shown (to be correct, the white square placeholder image is shown). As Amazon S3 downloads finish, images are added asynchronously to the table's rows.
-{{% /notice %}}
+::alert[When you start the app, you will notice the table's rows are populated as soon as the landmark data are fetched from the API.  At that moment, no image is shown (to be correct, the white square placeholder image is shown). As Amazon S3 downloads finish, images are added asynchronously to the table's rows]{header="Tip" type="success"}
+
 
 Now that we have the basic building blocks of the app defined, let's explore the options offered to customize the authentication user interface and user experience.

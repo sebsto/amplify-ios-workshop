@@ -14,7 +14,7 @@ We start by adding a new method in the Application Delegate to sign in through t
 
 Add the `signIn()` function in file *Landmarks/AppDelegate.swift* (you can safely copy/paste the whole file below, modified lines are highlighted):
 
-{{< highlight swift "hl_lines=122-133">}}
+:::code{language=swift}
 /*
 See LICENSE folder for this sample’s licensing information.
 
@@ -228,7 +228,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
 }
-{{< /highlight >}}
+:::
 
 ## Add a Custom Login Screen
 
@@ -236,7 +236,7 @@ We implement our own custom login screen as a View.  To add a new Swift class to
 
 Copy / paste the code from below:
 
-{{< highlight swift >}}
+:::code{language=swift}
 import SwiftUI
 import Combine
 
@@ -341,7 +341,7 @@ static var previews: some View {
     }
 }
 #endif
-{{< /highlight >}}
+:::
 
 The code is straigthforward:
 
@@ -370,7 +370,7 @@ if (!$user.isSignedIn.wrappedValue) {
 
 This code is making the `LandingView` code simpler.  It displays `CustomLoginView` when user is not signed in, or `LandmarkList` otherwise.  You can safely copy/paste the full code below to replace the content of *Landmarks/LandingView.swift*:
 
-{{< highlight swift >}}
+:::code{language=swift}
 //
 //  LandingView.swift
 //  Landmarks
@@ -409,21 +409,20 @@ struct LandingView_Previews: PreviewProvider {
         return LandingView(user: app.userData)
     }
 }
-{{< /highlight >}}
+:::
 
 You can view the whole code changes for this section [from this commit](https://github.com/sebsto/amplify-ios-workshop/commit/bb8c87d359c8970ff10d5e06cc49786ee5965e4f).
 
 ## Build and Test 
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
-![build](/images/20-10-xcode.png)
+![build](/static/images/20-10-xcode.png)
 
 If you are still authenticated, click **Sign Out** and click the user badge to sign in again. You should see this:
 
-![customized drop in UI](/images/70-30-1.png)
+![customized drop in UI](/static/images/70-30-1.png)
 
 Enter the username and password that you created in section 3 and try to authenticate.  After a second or two, you will see the Landmark list.
 
-{{% notice info %}}
-Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (here is [the one for Facebook](https://developers.facebook.com/docs/facebook-login/ios)) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the most advanced readers.
-{{% /notice %}}
+
+::alert[Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (here is [the one for Facebook](https://developers.facebook.com/docs/facebook-login/ios)) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the most advanced readers.]{header="Info" type="info"}

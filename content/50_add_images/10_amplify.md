@@ -38,7 +38,7 @@ amplify add storage
 
 `amplify` creates the required resources to depoy your storage service in the cloud.
 
-![amplify add storage](/images/50-10-amplify-1.png)
+![amplify add storage](/static/images/50-10-amplify-1.png)
 
 ## Create the storage backend in the cloud
 

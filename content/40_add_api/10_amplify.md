@@ -6,9 +6,7 @@ weight : 10
 
 Now that we have authenticated users, let's make an API for retrieving Landmarks. The application we started from uses a locally bundled JSON file to list all Landmarks.  You can check that file in *Landmarks/Resources/landmarkData.json*.  We are going to create a database in the cloud to store this list and an API to allow our application to retrieve the list.
 
-{{% notice tip %}}
-To build our API we'll use [AWS AppSync](https://aws.amazon.com/appsync/), a managed GraphQL service for building data-driven apps. If you're not yet familiar with the basics of GraphQL, you should take a few minutes and check out [https://graphql.github.io/learn/](https://graphql.github.io/learn/) before continuing, or use the site to refer back to when you have questions as you read along.
-{{% /notice %}}
+::alert[To build our API we'll use [AWS AppSync](https://aws.amazon.com/appsync/), a managed GraphQL service for building data-driven apps. If you're not yet familiar with the basics of GraphQL, you should take a few minutes and check out [https://graphql.github.io/learn/](https://graphql.github.io/learn/) before continuing, or use the site to refer back to when you have questions as you read along.]{header="Tip" type="success"}
 
 ## Declare an API backend
 
@@ -43,7 +41,7 @@ amplify add api
 
 `amplify` creates the required resources to depoy your API in the cloud.
 
-![amplify add api](/images/40-10-amplify-1.png)
+![amplify add api](/static/images/40-10-amplify-1.png)
 
 Let's edit the GraphQL schema.
 
@@ -53,7 +51,7 @@ Below is a schema that will suit our needs for storing and querying Landmarks.
 
 1. Add the schema to `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`, replacing the example schema content. You can copy / paste the below command:
 
-{{% highlight bash %}}
+:::code{language=bash}
 cd $PROJECT_DIRECTORY
 echo "type LandmarkData
     @model
@@ -77,7 +75,7 @@ type CoordinateData {
     longitude: Float
     latitude: Float
 }" > $PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql
-{{% /highlight %}}
+:::
 
 There are a few things to notice about the schema:
 
@@ -86,7 +84,7 @@ There are a few things to notice about the schema:
 - `@auth` is another [GraphQL Transformer](https://aws-amplify.github.io/docs/cli-toolchain/graphql) used by Amplify.  It tells Amplify to restrict API access to users authenticated with Amazon Cognito User Pools only and to authorize read operations for all authenticated users.
 
 - the data schema itself is aligned to the JSON provided in the sample application (in *Landmarks/Resources/landmarkData.json*):
-![Sample Data](/images/40-10-data-sample.png)
+![Sample Data](/static/images/40-10-data-sample.png)
 
 ## Create the API backend in the cloud
 
@@ -100,7 +98,7 @@ amplify push
 
 1. Do you want to generate code for your newly created GraphQL API? Select **No** and press enter.
 
-![amplify push](/images/40-10-amplify-3.png)
+![amplify push](/static/images/40-10-amplify-3.png)
 
 Amplify creates the backend infrastructure : an AWS AppSync API and a Amazon DynamoDB table. In the next section, we will use Amplify to create swift client code to easily access the API from our application.  We will add this code to our project.
 
@@ -145,9 +143,9 @@ Cleaning up
 Done - success
 ```
 
-{{% notice warning %}}
-If you downloaded the sample project from Apple's Developer website instead of [the link provided](/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip) in section 2, the above script will fail because of a syntax error in the JSON data file.  To fix this, edit **Landmarks/Resources/landmarkData.json** and **remove the extra ,** at the end of line 105.
-{{% /notice %}}
+
+::alert[If you downloaded the sample project from Apple's Developer website instead of [the link provided](/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip) in section 2, the above script will fail because of a syntax error in the JSON data file.  To fix this, edit **Landmarks/Resources/landmarkData.json** and **remove the extra ,** at the end of line 105.]{header="Warning" type="warning"}
+
 
 If you're curious about how this script works, continue to read below, otherwise feel free to skip to the next section.
 

@@ -8,9 +8,8 @@ Amazon Cognito does support Identity Federation out of the box with [Login With 
 
 We use AWS Amplify command line to update the Amazon Cognito configuration on the backend and add support for Login With Facebook.
 
-{{% notice warning %}}
-It is important to not overwrite the values we entered previously, be sure to follow instructions carefully.
-{{% /notice %}}
+
+::alert[It is important to not overwrite the values we entered previously, be sure to follow instructions carefully.]{header="Warning" type="warning"}
 
 In a terminal, type:
 
@@ -29,7 +28,7 @@ amplify update auth
 
 `amplify` creates the required resources to depoy your storage service in the cloud.
 
-![amplify update auth](/images/60-20-amplify-1.png)
+![amplify update auth](/static/images/60-20-amplify-1.png)
 
 ## Create the API backend in the cloud
 

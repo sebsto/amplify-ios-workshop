@@ -4,8 +4,4 @@ chapter : true
 weight : 70
 ---
 
-### Section 7
-
-## Customize the Login User Interface
-
-{{% children showhidden="false" %}}
+* :link[What we will build]{href="/70_add_custom_gui/30_customized_ui.md"}

@@ -48,10 +48,10 @@ sudo gem install cocoapods
 ```
 :::
 :::tab{id="verify" label="Version"}
-
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
 
 ```bash
+# Verify brew version 
 brew --version
 # Homebrew 2.3.0
 # Homebrew/homebrew-core (git revision 467e0; last commit 2020-06-05)

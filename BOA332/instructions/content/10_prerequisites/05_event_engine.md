@@ -1,8 +1,8 @@
-+++
-title = "AWS Temporary Account"
-chapter = false
-weight = 1
-+++
+---
+title : "AWS Temporary Account"
+chapter : false
+weight : 1
+---
 
 When attending this workshop during an event organised by AWS, such as [AWS re:Invent](https://reinvent.awsevents.com/), you may choose to use one of AWS' temporary AWS Account instead of using your personal or company AWS account.  Follow the instructions from this page and the AWS instructor in the room to access the temporary account.
 
@@ -14,18 +14,18 @@ Should you attend this workshop on your own or in a non-AWS event, you can skip 
 
 1. Open your browser and navigate to [https://dashboard.eventengine.run](https://dashboard.eventengine.run)
 
-1. Read the Terms and Conditions and Acceptable Use Policy, then enter the 12 digits hashcode given by AWS instructor.
+2. Read the Terms and Conditions and Acceptable Use Policy, then enter the 12 digits hashcode given by AWS instructor.
 ![hash code](/images/10-05-10.png)
 
-1. Click **AWS Console**
+3. Click **AWS Console**
 ![link to console](/images/10-05-20.png)
 
     The screen below has all the information you need to run the workshop:
     ![open console](/images/10-05-30.png)
 
-1. Please note the region that the event is using. **Only actions in this region are allowed.**
+4. Please note the region that the event is using. **Only actions in this region are allowed.**
 
-1. Copy and paste the CLI credentials.  You will need these values thorough the workshop. Open a Terminal on your laptop and execute the set of `export` commands you copied from the event engine page:
+5. Copy and paste the CLI credentials.  You will need these values thorough the workshop. Open a Terminal on your laptop and execute the set of `export` commands you copied from the event engine page:
 
 ```bash
 # this is a copy paste from event engine console
@@ -57,6 +57,6 @@ export AWS_SECRET_ACCESS_KEY=
 export AWS_SESSION_TOKEN=
 ```
 
-1. Finally, click the **Open AWS Console** button to open the AWS Console.  You can also copy the login link in case you want to return to the console later.
+6. Finally, click the **Open AWS Console** button to open the AWS Console.  You can also copy the login link in case you want to return to the console later.
 
 Now that you have an AWS Account and a pair of Access Key / Secret Key, let's proceed to [the installation of development tools on your local machine](/10_prerequisites/20_installs.html).

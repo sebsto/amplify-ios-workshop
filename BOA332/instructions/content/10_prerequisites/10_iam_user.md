@@ -1,8 +1,8 @@
-+++
-title = "Create an IAM User"
-chapter = false
-weight = 1
-+++
+---
+title : "Create an IAM User"
+chapter : false
+weight : 1
+---
 
 {{% notice warning %}}
 When attending this workshop during an event organised by AWS, you can choose to use a temporary account for the duration of this workshop.  If not done already, **follow [these instructions](05_event_engine.html) to access a temporary AWS account**.  Once you have access, [proceed to next section](/10_prerequisites/20_installs.html). **You can safely skip this page**.
@@ -25,13 +25,13 @@ Once you have an AWS account, create an **IAM user** by following these steps:
 
 1. [Open the IAM console using this link](https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new). (Alternatively, navigate to [the IAM console](https://console.aws.amazon.com/iam/home#/home), from the left menu, click **Users** and click **Add User** button on the top of the page.)
 
-1. Enter the user details as shown below and click **Next: Permission**
+2. Enter the user details as shown below and click **Next: Permission**
 ![Add User](/images/10-10-add-user.png)
 
-1. click **Attach existing policies directly**, then click the button **Create Policy**. This creates a new tab to create the policy.
+3. click **Attach existing policies directly**, then click the button **Create Policy**. This creates a new tab to create the policy.
 ![Create Policy](/images/10-10-create-policy.png)
 
-1. Click **JSON** tab and replace the policy with the one below, then click **Review Policy**
+4. Click **JSON** tab and replace the policy with the one below, then click **Review Policy**
 ![Add Policy](/images/10-10-add-policy.png)
 
 ```json
@@ -117,17 +117,17 @@ Once you have an AWS account, create an **IAM user** by following these steps:
 }
 ```
 
-1. Give a name and a description to the policy and click **Create policy** at the bottom of the page.
+5. Give a name and a description to the policy and click **Create policy** at the bottom of the page.
 ![Review Policy](/images/10-10-review-policy.png)
 
-1. Return the to *Add User* tab, click the reload button (<i class="fas fa-sync-alt"></i>) to reload the list of policies, search for the policy you just created and select it. Click **Next: Tags**
+6. Return the to *Add User* tab, click the reload button (<i class="fas fa-sync-alt"></i>) to reload the list of policies, search for the policy you just created and select it. Click **Next: Tags**
 ![Attach Polic](/images/10-10-attach-policy.png)
 
-1. Do not attach any tag, click **Next: Preview**
+7. Do not attach any tag, click **Next: Preview**
 
-1. Review your choices and click **Create user** 
+8. Review your choices and click **Create user** 
 
-1. Take note of the **Access Key ID** and the **Secret access key** . You will need these in the next section.
+9. Take note of the **Access Key ID** and the **Secret access key** . You will need these in the next section.
 ![Access Key](/images/10-10-access-key.png).  When the two keys are copied, click **Close**
 
 {{% notice warning %}}

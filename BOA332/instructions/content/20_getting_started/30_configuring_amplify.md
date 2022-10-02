@@ -1,70 +1,36 @@
-+++
-title = "Configuring Amplify"
-chapter = false
-weight = 30
-+++
+---
+title : "Configuring Amplify"
+chapter : false
+weight : 30
+---
 
-This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/) to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code. You installed the CLI as part of the [prerequisites instructions](/10_prerequisites/20_installs.html#installing-or-updating).  Now we integrate Amplify tools with your Xcode project.
+This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/), an open-source library to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code. You installed the CLI as part of the [prerequisites instructions](/10_prerequisites/20_installs.html#installing-or-updating).  For thsii workshop we will use the Developer Preview of the new Amplify iOS Library. This release is entirely built in Swift and support modern Swift constructs, such as `async` / `await` patterns for concurrent code.
 
 ## Add Amplify to your application
 
-Amplify for iOS is distribued through [Cocoapods](https://cocoapods.org/) as a Pod. In this section, you’ll setup cocoa pods and add the required Amplify packages.
+Amplify for iOS is distribued with [Swift Package Manager](https://www.swift.org/package-manager/) (SPM) or [Cocoapods](https://cocoapods.org/). In this section, you’ll use SPM to add the required Amplify packages to your project in Xcode.
 
-Before starting this step, please make sure that **please close Xcode**.
+In Xcode, select **File**, **Add Packages...**
 
-{{% notice warning %}}
-Did you really close Xcode ?
-{{% /notice %}}
+![xcode add packages](/images/20-30-add-packages.png)
 
-1. In order to initialize your project with the CocoaPods package manager, execute the command:
-```bash
-cd $PROJECT_DIRECTORY
-pod init
-```
+In the top right search bar, type `https://github.com/aws-amplify/amplify-ios`. For **Dependency Rules**, select **Branch** and type `dev-preview` as branch name. Then, select **Add Package** button on the bottom right.
 
-1. After doing this, you should see a newly created file called Podfile. This file is used to describe what packages your project depends on.
-{{% notice info %}}
-You can safely ignore the "PBXNativeTarget name=`Landmarks` UUID=`B7394861229F194000C47603" warning, we will fix this in a minute.
-{{% /notice %}}
+![xcode add amplify packages](/images/20-30-add-amplify-packages.png)
 
-1. **Type the below command** to include the following pods in the Podfile:
-{{< highlight bash >}}
-cd $PROJECT_DIRECTORY
-echo "platform :ios, '13.0'
+Depending on the internet bandwidth and the model of your laptop, it might take a few minutes to download and verify Amplify and its dependencies.
 
-target 'Landmarks' do
-    # Comment the next line if you don't want to use dynamic frameworks
-    use_frameworks!
+![xcode download amplify packages](/images/20-30-download-amplify-packages.png)
 
-    # Pods for Landmarks
-    pod 'Amplify', '~> 1.0'           # required amplify dependency
-    pod 'Amplify/Tools', '~> 1.0'     # allows to cal amplify CLI from within Xcode
+Select the four linked libraries containing the Amplify code we will use for this project:
+- `Amplify`: the core library
+- `AWSAPIPlugin`: the library to access GraphQL APIs 
+- `AWSCognitoAuthPlugin`: the library to include user authentification
+- `AWSS3StoragePlugin`: the library to access images or files stored on S3.
 
-end" > Podfile
-{{< /highlight >}}
+Once these four libraries are select, select **Add Package**.
 
-1. To download and install the Amplify pod into your project, execute the command:
-```bash
-cd $PROJECT_DIRECTORY
-pod install --repo-update
-```
-{{% notice info %}}
-You can safely ignore the "PBXNativeTarget name=`Landmarks` UUID=`B7394861229F194000C47603" warning, we will fix this in a minute.
-{{% /notice %}}
-
-1. After doing this, you should now see file called `HandlingUserInput.xcworkspace`. You are required to use this file from now on instead of the `.xcodeproj` file. To open your workspace, execute the command:
-
-```bash
-xed .
-```
-This should open the newly generated `HandlingUserInput.xcworkspace` in Xcode.
-
-## Update Target Configurations for CocoaPods
-
-This step is specific to the project we downloaded.  This is **not required** when setting up new projects with Amplify. This step addresses the Cocoapods warning we saw when we issued the `pod init` command above.
-
-In your Xcode project, click on **HandleUserInput** on the top left part of the screen, then **Info**.  Select **HandlingUserInput** under **Project**.  Open **Configurations**, **Debug**.  For the **landmarks** target, replace the configuration by **Pods-landmarks.debug**. Repeat the operation for the **release** target, using **Pods-landmarks.release** configuration.  Your project should look like this:  
-![pod install](/images/30-20-pod-install-2.png)
+![xcode add amplify libraries](/images/20-30-add-amplify-libraries.png)
 
 ## Initialize Amplify
 
@@ -79,15 +45,15 @@ amplify init
 
 1. Enter a name for your project: enter **amplifyiosworkshop** and press enter.
 
-1. Enter a name for your environment: enter **dev** and press enter.
+2. Enter a name for your environment: enter **dev** and press enter.
 
-1. Choose your default editor:  use the arrow keys to scroll to **None** and press enter.
+3. Choose your default editor:  use the arrow keys to scroll to **None** and press enter.
 
-1. Choose the type of app that you're building: accept the default **ios** and press enter.
+4. Choose the type of app that you're building: accept the default **ios** and press enter.
 
-1. Do you want to use an AWS profile? accept the default **Yes** and press enter.
+5. Do you want to use an AWS profile? accept the default **Yes** and press enter.
 
-1. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/30_configs.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
+6. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/30_configs.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
 
 ![amplify init](/images/30-10-amplify-init.png)
 

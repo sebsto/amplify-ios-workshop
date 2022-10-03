@@ -6,32 +6,25 @@ theme = "hugo-theme-learn"
 uglyurls = true
 #googleAnalytics = "UA-151590472-1"
 sectionPagesMenu = "main"
-#pygmentsCodeFences = true
 
-#https://gohugo.io/news/0.60.0-relnotes/
-#[markup]
-#  defaultMarkdownHandler = "blackfriday"
+[markup.highlight]
+codeFences = true
 
-#  [markup.highlight]
-#     codeFences = true
-
-#  [markup.blackFriday]
-#     hrefTargetBlank = true
-
-#  [markup.goldmark.renderer]
-#     unsafe= true
-#     # https://discourse.gohugo.io/t/raw-html-getting-omitted-in-0-60-0/22032
+[markup.goldmark.renderer]
+unsafe= true
+# https://discourse.gohugo.io/t/raw-html-getting-omitted-in-0-60-0/22032
 
 [params]
 themeVariant = "mine"
-showVisitedLinks = false
+showVisitedLinks = true
 author = "Sébastien Stormacq"
 description = "Amplify iOS Workshop"
 disableSearch = false
 disableAssetsBusting = false
 disableLanguageSwitchingButton = true
-disableShortcutsTitle = true
+disableShortcutstitle = true
 disableInlineCopyToClipBoard = true
+disableLandingPageButton = true
 
 [[menu.shortcuts]]
 name = "<i class='fab fa-twitter fa-lg'></i> @sebsto"
@@ -40,5 +33,5 @@ url = "https://twitter.com/intent/user?screen_name=sebsto"
 weight = 1
 
 [outputs]
-home = [ "HTML", "AMP", "RSS", "JSON"]
-page = [ "HTML", "AMP"]
+home = [ "HTML", "RSS", "JSON"]
+page = [ "HTML"]

@@ -4,18 +4,13 @@ This is the source code for [https://amplify-ios-workshop.go-aws.com/](https://a
 
 Before re:Invent 2022, current builds are available at [https://main.d1p0aatx1581oy.amplifyapp.com/](https://main.d1p0aatx1581oy.amplifyapp.com/)
 
-**September 8 2022** 
+## In progress (status 10/3/2022)
 
-- Refresh directory structure to prepare for re:Invent 2022.  
-- New TODO list  
+[] Refactoring workshop instructions to take into account code modifications
 
-## In progress (status 9/14/2022)
+**September 14 2022**
 
-[] Test code with [Amplify-iOS developer preview](https://docs.amplify.aws/lib/devpreview/getting-started/q/platform/ios/#install-amplify-libraries) 
-[] Test workshop instructions with 2022 Amplify and report misses  
-[] Review for Swift 5.7 / Xcode 14 compatibility  
-[] Migrate callbacks to async / await pattern  
-
+- Test workshop instructions with 2022 Amplify and report misses  
 - using Amplify iOS dev-preview branch from here https://github.com/aws-amplify/amplify-ios/tree/dev-preview
 - Reafactoring code for new concurrency model (`async`/`await` amongst others)
 - no more dependencies on CocoaPods, will need to changes instructions 
@@ -27,7 +22,12 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 - Remove UIKit and Migrate to a 100% SwiftUI app ([commit](https://github.com/sebsto/amplify-ios-workshop/commit/5d0f776ab0a63ac96cf486498550adb68800b383))
 
-- Storage : OK. Require ssome change in the threading code. Check this [commit](https://github.com/sebsto/amplify-ios-workshop/commit/ef04d4fe218bf9c956e196c041ac689c03125d32).
+- Storage : OK. Requires some changes in the threading code. Check this [commit](https://github.com/sebsto/amplify-ios-workshop/commit/ef04d4fe218bf9c956e196c041ac689c03125d32).
+
+**September 8 2022** 
+
+- Refresh directory structure to prepare for re:Invent 2022.  
+- New TODO list  
 
 ## TODO - Code 
 

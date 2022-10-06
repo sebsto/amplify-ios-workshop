@@ -36,10 +36,10 @@ You can safely ackowledge Xcode's message informing you this app has been downlo
 ![Xcode warning](/images/20-20-xcode-warning.png)
 
 3. In Xcode, **Choose** the iOS Simulator you want to use (I am using iPhone 14) and click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
-![First build](/images/20-10-xcode.png)
+![First build](/images/20-20-xcode.png)
 
 After a few seconds, you should see the application running in the iOS simulator.
-![First run](/images/20-10-app-start.png)
+![First run](/images/20-20-app-start.png)
 
 In the following steps, we will guide you through step by step instructions to modify this app to add user authentication and a data-driven API.
 

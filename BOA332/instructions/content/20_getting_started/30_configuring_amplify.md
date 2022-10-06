@@ -45,38 +45,36 @@ amplify init
 
 1. Enter a name for your project: enter **amplifyiosworkshop** and press enter.
 
-2. Enter a name for your environment: enter **dev** and press enter.
+2. Accept all the default values. Accept the default **Yes** and press enter.
 
-3. Choose your default editor:  use the arrow keys to scroll to **None** and press enter.
+3. Select the authentication method you want to use? accept the default **AWS Profile** and press enter.
 
-4. Choose the type of app that you're building: accept the default **ios** and press enter.
+4. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/30_configs.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
 
-5. Do you want to use an AWS profile? accept the default **Yes** and press enter.
+![amplify init](/images/20-30-amplify-init.png)
 
-6. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/30_configs.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
-
-![amplify init](/images/30-10-amplify-init.png)
+5.  Help improve Amplify CLI by sharing non sensitive configurations on failures. I choose to accept toshare information with the Amplify team.  Type **Y** to continue.
 
 Amplify will create a local directory structure to host your project's meta-data.  In addition, it will create the backend resources to host your project : two IAM roles, an S3 bucket and a AWS Cloudformation template.  After 1 or 2 minutes, you should see the below messages:
 
-![amplify init](/images/30-10-amplify-init-ok.png)
+![amplify init](/images/20-30-amplify-init-ok.png)
+
+You might safely ignore the Xcode error message. We will manually add libraries to the source code of the project.
 
 ### Add Amplify configuration files to the project 
 
 Rather than configuring each service through a constructor or constants file, the Amplify and the underlying AWS SDKs for iOS support configuration through centralized files called `awsconfiguration.json` and `amplifyconfiguration.json`. They defines all the regions and service endpoints to communicate. Whenever you run `amplify push`, these files are automatically created allowing you to focus on your Swift application code. On iOS projects the `awsconfiguration.json` and `amplifyconfiguration.json` are located at the root project directory. You have to add them manually to your Xcode project.
 
-In the Finder, drag `awsconfiguration.json` into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
+In the Finder, select `awsconfiguration.json` and `amplifyconfiguration.json` and drag the two files into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
 
 - Clear the **Copy items if needed** check box.
 - Choose **Create groups**, and then choose **Finish**.
 
-![Add awsconfiguration](/images/30-20-add-awsconfiguration.gif)
-
-Repeat the process for `amplifyconfiguration.json`.
+![Add awsconfiguration](/images/20-30-add-awsconfiguration.gif)
 
 Before proceeding to the next step, ensure you have both files added to your project, like one the screenshot below.
 
-![Two configuration files added](/images/30-20-two-configuration-files.png)
+![Two configuration files added](/images/20-30-two-configuration-files.png)
 
 ## Build the project
 

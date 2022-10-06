@@ -68,7 +68,8 @@ Rather than configuring each service through a constructor or constants file, th
 In the Finder, select `awsconfiguration.json` and `amplifyconfiguration.json` and drag the two files into Xcode under the top Project Navigator folder (the folder named *HandleUserInput*). When the *Options* dialog box appears, do the following:
 
 - Clear the **Copy items if needed** check box.
-- Choose **Create groups**, and then choose **Finish**.
+- Choose **Create groups**
+- Select **Add to target: Landmarks**, and then choose **Finish**.
 
 ![Add awsconfiguration](/images/20-30-add-awsconfiguration.gif)
 

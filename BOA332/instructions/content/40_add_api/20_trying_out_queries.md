@@ -1,21 +1,21 @@
-+++
-title = "Trying out some queries"
-chapter = false
-weight = 20
-+++
+---
+title : "Trying out some queries"
+chapter : false
+weight : 20
+---
 
 
 **Open the AWS Console** and **click into the amplifyiosworkshop-dev API**. Now we can start poking around with the API.
 
-{{% tabs %}}
-{{% tab "us-west-2" "North America" %}}
+{{< tabs >}}
+{{% tab name="North America (us-east-2)" %}}
 Link to [AWS AppSync web console in Oregon](https://console.aws.amazon.com/appsync/home?region=us-west-2#/apis)
 {{% /tab %}}
 
-{{% tab  "eu-central-1"  "Europe" %}}
+{{% tab name="Europe (eu-central-1)" %}}
 Link to [AWS AppSync web console in Frankfurt](https://console.aws.amazon.com/appsync/home?region=eu-central-1#/apis)
 {{% /tab %}}
-{{% /tabs %}}
+{{< /tabs >}}
 
 **Click Queries** in the sidebar on the left.
 
@@ -31,27 +31,13 @@ Before we can issue queries, we'll need to authenticate (because our AppSync API
 
 1. **Click the Login with User Pools button** at the top of the query editor.
 
-1. Look up the value for the **ClientId** field.  You can either use the script below or get the client ID in the console. To use the script, in your terminal, type:
+2. **Select the User Pool to authenticate against**. You should have two in the list. Select the one with **_app_clientWeb**. 
 
-```bash
-cd $PROJECT_DIRECTORY
-../../scripts/get_app_client.sh
-```
-    Copy the **Client ID** value returned, for example:
-    ![Client ID](/images/40-20-client-id.png)
+![appsync authentication](/images/40-20-appsync-2.png).
 
-    Alternatively, you can retrieve the ClientID in the Amazon Cognito console:
+4. **Enter your credentials** for the user you created when we added authentication in previous section.
 
-    1.  Click on the link to open the Cognito console in your Region: [Northern America](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=us-east-1#/) or [Europe](https://eu-west-1.console.aws.amazon.com/cognito/users/?region=eu-central-1#/)
-    2.  Select the User Pool named **amplifyiosworkshopxxxxx_userpool_xxxx-dev** (the xxx is generated randomly and will vary)
-    3. Click **App Clients** on the left menu, select the client named **amplifyxxxx_app_clientWeb** and click **Show Details** to reveal both the App client id and the App client secret.  Copy the **App client id**.  The correct app client has no secret key as "App client secret".  
-    ![app client id](/images/40-20-appsync-2.png)
-
-1. Go back to the **AppSync console**, in the **Query** section Paste the value into the **ClientId** field
-
-1. **Enter your credentials** for the user you created when we added authentication
-
-1. **Click Login**
+5. **Click Login**
 
 ![appsync authentication](/images/40-20-appsync-3.png)
 
@@ -91,9 +77,17 @@ Open the **Query Variables** section on the bottom and copy / paste the followin
 }
 ```
 
-Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
+Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query. You should see teh following JSON in the `Logs` pane on the right side.
 
-**Get the Landmark**  we just created by running this query:
+```json
+  "data": {
+    "createLandmarkData": {
+      "id": "9999"
+    }
+  }
+```
+
+Now, **get the Landmark** we just created by running this query:
 
 ```graphql
 query GetLandmark {

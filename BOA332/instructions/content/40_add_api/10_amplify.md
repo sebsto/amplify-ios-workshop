@@ -1,8 +1,8 @@
-+++
-title = "Add a GraphQL API backend"
-chapter = false
-weight = 10
-+++
+---
+title : "Add a GraphQL API backend"
+chapter : false
+weight : 10
+---
 
 Now that we have authenticated users, let's make an API for retrieving Landmarks. The application we started from uses a locally bundled JSON file to list all Landmarks.  You can check that file in *Landmarks/Resources/landmarkData.json*.  We are going to create a database in the cloud to store this list and an API to allow our application to retrieve the list.
 
@@ -23,23 +23,17 @@ amplify add api
 
 1. Please select from one of the below mentioned services.  Use the arrow keys to select **GraphQL** and press enter.
 
-1. Provide API name. Accept the default name (**amplifyiosworkshop**) and press enter.
+2. Use the arrow keys to select **Authorization modes: API key** and press enter.
 
-1. Choose the default authorization type for the API.  Use the arrow keys to select **Amazon Cognito User Pool** and press enter.
+3. Use the arrow keys to select **Amazon Cognito User Pool** and press enter.
 
-1. Do you want to configure advanced settings for the GraphQL API.  Select **Yes, I want to make some additional changes** and press enter.
+4. Configure additional auth types? Accept the default (**No**) and press enter.
 
-1. Configure additional auth types? Accept the default (**No**) and press enter.
+5. Review the proposed values, accept the default (**Continue**) and press enter.
 
-1. Configure conflict detection? Accept the default (**No**) and press enter
+6. Choose a schema template.  Select any proposed schema, we are going to repace it in a next step.  **Press enter**.
 
-1. Do you have an annotated GraphQL schema? Accept the default (**No**) and press enter.
-
-1. Do you want a guided schema creation? Accept the default (**Yes**) and press enter.
-
-1. What best describes your project.  Select any proposed schema, we are going to repace it in a next step.  **Press enter**.
-
-1. Do you want to edit the schema now? Enter **No** and press enter.
+7. Do you want to edit the schema now? Enter **No** and press enter.
 
 `amplify` creates the required resources to depoy your API in the cloud.
 
@@ -51,9 +45,9 @@ Let's edit the GraphQL schema.
 
 Below is a schema that will suit our needs for storing and querying Landmarks.
 
-1. Add the schema to `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`, replacing the example schema content. You can copy / paste the below command:
+11. Copy the below schema to `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`, replacing the example schema content. You can copy / paste the below command:
 
-{{% highlight bash %}}
+```bash
 cd $PROJECT_DIRECTORY
 echo "type LandmarkData
     @model
@@ -77,13 +71,13 @@ type CoordinateData {
     longitude: Float
     latitude: Float
 }" > $PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql
-{{% /highlight %}}
+```
 
 There are a few things to notice about the schema:
 
-- `@model` is a [GraphQL Transformer](https://aws-amplify.github.io/docs/cli-toolchain/graphql).  When this transform is present, Amplify generates a database to store the data and to create Create, Read, Update, Delete and List (CRUDL) operations on this data.
+- `@model` is a [GraphQL Transformer](https://aws-amplify.github.io/docs/cli-toolchain/graphql).  When this transformer is present, Amplify generates a database to store the data and to create Create, Read, Update, Delete and List (CRUDL) operations on this data.
 
-- `@auth` is another [GraphQL Transformer](https://aws-amplify.github.io/docs/cli-toolchain/graphql) used by Amplify.  It tells Amplify to restrict API access to users authenticated with Amazon Cognito User Pools only and to authorize read operations for all authenticated users.
+- `@auth` is another [GraphQL Transformer](https://aws-amplify.github.io/docs/cli-toolchain/graphql) used by Amplify.  The `private` keyword tells Amplify to restrict API access to users authenticated with Amazon Cognito User Pools only and to authorize operations for any authenticated users. You can learn more about [authorizations rules in the Amplify CLI documentation](https://docs.amplify.aws/cli/graphql/authorization-rules/).
 
 - the data schema itself is aligned to the JSON provided in the sample application (in *Landmarks/Resources/landmarkData.json*):
 ![Sample Data](/images/40-10-data-sample.png)
@@ -98,7 +92,7 @@ amplify push
 
 1. Are you sure you want to continue? Review the table and verify an API is being Created.  Accept the default (**Yes**) and press enter.
 
-1. Do you want to generate code for your newly created GraphQL API? Select **No** and press enter.
+2. Do you want to generate code for your newly created GraphQL API? Select **No** and press enter.
 
 ![amplify push](/images/40-10-amplify-3.png)
 
@@ -124,23 +118,23 @@ The script should output the following:
 ```text
 Checking prerequisites
 Getting an access token
-CLIENT_ID=7lxxxxxxxxxxxxxxi5k
-CLIENT_SECRET=fe6xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx7d8s
-AUTHENTICATION=Basic N2wxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZDhz
+CLIENT_ID=t33xxxxxxxxxxxxxxxxxxx3fk
+CLIENT_SECRET=fuhxxxxxxxxxxxxxxxxxxx9c7
+AUTHENTICATION=Basic dDMxxxxxxxxxxxxxxxxxxx5Yzc=
 Importing Data
-Uploading data to https://ncfh3rdww5eqfjpxuwxys2xcsm.appsync-api.eu-west-1.amazonaws.com/graphql
-{"data":{"createLandmark":{"id":1001}}}
-{"data":{"createLandmark":{"id":1002}}}
-{"data":{"createLandmark":{"id":1003}}}
-{"data":{"createLandmark":{"id":1004}}}
-{"data":{"createLandmark":{"id":1005}}}
-{"data":{"createLandmark":{"id":1006}}}
-{"data":{"createLandmark":{"id":1007}}}
-{"data":{"createLandmark":{"id":1008}}}
-{"data":{"createLandmark":{"id":1009}}}
-{"data":{"createLandmark":{"id":1010}}}
-{"data":{"createLandmark":{"id":1011}}}
-{"data":{"createLandmark":{"id":1012}}}
+Uploading data to https://idxxxxxxxxxxxxxxxxxxxkqe.appsync-api.eu-central-1.amazonaws.com/graphql
+{"data":{"createLandmarkData":{"id":"1001"}}}
+{"data":{"createLandmarkData":{"id":"1002"}}}
+{"data":{"createLandmarkData":{"id":"1003"}}}
+{"data":{"createLandmarkData":{"id":"1004"}}}
+{"data":{"createLandmarkData":{"id":"1005"}}}
+{"data":{"createLandmarkData":{"id":"1006"}}}
+{"data":{"createLandmarkData":{"id":"1007"}}}
+{"data":{"createLandmarkData":{"id":"1008"}}}
+{"data":{"createLandmarkData":{"id":"1009"}}}
+{"data":{"createLandmarkData":{"id":"1010"}}}
+{"data":{"createLandmarkData":{"id":"1011"}}}
+{"data":{"createLandmarkData":{"id":"1012"}}}
 Cleaning up
 Done - success
 ```
@@ -157,10 +151,10 @@ The script leverages the GraphQL API we just created to import the data from *la
 
 At high level, the flow of the script is as following :
 
-- create a Cognito Resource Server (this is required when using client_credentials clients) (`aws cognito-idp create-resource-server` line 20)
-- create a Cognito User Pool client of type client_credentials (`aws cognito-idp create-user-pool-client` line 25)
-- retrieve the client id and client secret to authenticate calls to Cognito end point (lines 38-40)
-- use cURL command to get a Cognito token (line 45-52)
-- prepare a GraphQL mutation request and read the data from the application resource file (lines 68-75)
+- create a Cognito Resource Server (this is required when using client_credentials clients) (`aws cognito-idp create-resource-server` line 23)
+- create a Cognito User Pool client of type client_credentials (`aws cognito-idp create-user-pool-client` line 35)
+- retrieve the client id and client secret to authenticate calls to Cognito end point (lines 44-45)
+- use cURL command to get a Cognito token (line 57-64)
+- prepare a GraphQL mutation request and read the data from the application resource file (lines 93-101)
 - for each landmark, merge the JSON data in the GraphQL query and call the AppSync endpoint (passing the Cognito token for authentication) (lines 82-88)
-- cleanup everything (lines 91-95)
+- cleanup everything (lines 105-113)

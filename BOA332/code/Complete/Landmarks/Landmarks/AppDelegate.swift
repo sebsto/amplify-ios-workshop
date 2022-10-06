@@ -1,4 +1,5 @@
 import SwiftUI
+import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
@@ -16,7 +17,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         AppDelegate.instance = self
         
         do {
-            //Amplify.Logging.logLevel = .info
+            // reduce verbosity of AWS SDK
+            SDKLoggingSystem.initialize(logLevel: .warning)
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))

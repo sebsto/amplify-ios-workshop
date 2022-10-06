@@ -22,8 +22,9 @@ To add storage access code, we first add the `AWSS3StoragePlugin` to Amplify's r
 
 As usual, you can safely copy/paste the entire `AppDelegate` from below.  Lines that have been added since last section are highlighted.
 
-```swift {hl_lines=[5,23,"164-185"]}
+```swift {hl_lines=[6,25,"165-186"]}
 import SwiftUI
+import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
@@ -41,7 +42,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         AppDelegate.instance = self
         
         do {
-            //Amplify.Logging.logLevel = .info
+            // reduce verbosity of AWS SDK
+            SDKLoggingSystem.initialize(logLevel: .warning)
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
@@ -212,11 +214,11 @@ extension AppDelegate {
 
 What did we add ?
 
-- line 5 : import the `AWSS3Storage` module
+- line 6 : import the `AWSS3Storage` module
 
-- line 23 : add code to initiliaze the storage plugin 
+- line 25 : add code to initiliaze the storage plugin 
 
-- line 164-185 : add a synchronous method to download files from S3.
+- line 165-186 : add a synchronous method to download files from S3.
 
 Notice that `Amplify.Storage.downloadData()` class is synchronous when using the `await` keyword. 
 

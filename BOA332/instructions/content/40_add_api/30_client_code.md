@@ -86,8 +86,9 @@ with
 
 We modify `AppDelegate.swift` to add code to call the GraphQL API.  You can safely copy/paste the entire file from below to replace the existing file. 
 
-```swift {hl_lines=[4,21,"93-98","137-158"]}
+```swift {hl_lines=[5,23,"95-100","137-161"]}
 import SwiftUI
+import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
 import AWSAPIPlugin
@@ -104,7 +105,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         AppDelegate.instance = self
         
         do {
-            //Amplify.Logging.logLevel = .info
+            // reduce verbosity of AWS SDK
+            SDKLoggingSystem.initialize(logLevel: .warning)
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
@@ -250,13 +252,13 @@ extension AppDelegate {
 
 What we did change ?
 
-- line 4 : import the AWS API module
+- line 5 : import the AWS API module
 
-- line 21 : add the API Amplify plugin.
+- line 23 : add the API Amplify plugin.
 
-- line 93-98 : when authentication status changes to 'signed in' and no landmark data is loaded, trigger the API call.
+- line 95-100 : when authentication status changes to 'signed in' and no landmark data is loaded, trigger the API call.
 
-- line 137-158 : we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the API Query method.  `Amplify.API.query` is called synchronously when using the `await` keyword. The API call returns an array of `LandmarkData` objects. The code transforms this array to an array of `Landmark` objects(as defined in `Landmarks/Models/Landmark.swift`). We use the `map` function to map one array type to another.
+- line 137-161 : we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the API Query method.  `Amplify.API.query` is called synchronously when using the `await` keyword. The API call returns an array of `LandmarkData` objects. The code transforms this array to an array of `Landmark` objects(as defined in `Landmarks/Models/Landmark.swift`). We use the `map` function to map one array type to another.
 
 To allow the creation of the application `Landmark` model object from the API `LandmarkData` generated code, we add the following code to `Landmarks/Models/Landmark.swift`
 

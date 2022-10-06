@@ -40,9 +40,10 @@ final class UserData: ObservableObject {
 
 Add user authentication logic to *Landmarks/AppDelegate.swift*:
 
-```swift {linenos=false,hl_lines=["2-3","16-78","83-123"]}
+```swift {linenos=false,hl_lines=["2-4","17-84","86-126"]}
 import SwiftUI
-import Amplify
+import ClientRuntime
+import Amplifys
 import AWSCognitoAuthPlugin
 
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
@@ -57,6 +58,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         AppDelegate.instance = self
         
         do {
+            // reduce verbosity of AWS SDK
+            SDKLoggingSystem.initialize(logLevel: .warning)
             //Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -168,15 +171,15 @@ extension AppDelegate {
 
 What did we add ?
 
-- line 2-3 : we import Amplify libraries
+- line 2-4 : we import Amplify libraries. ClientRuntime is part of the AWS SDK, it is just required to change the logging verbosity of the AWS SDK for Swift.
 
-- line 19-21 : we initialize Amplify
+- line 23-25 : we initialize Amplify
 
-- line 36-72 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
+- line 41-77 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
 
-- line 93-113 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
+- line 98-119 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
 
-- line 116-122 : we add a `signOut()` method to sign the user out.
+- line 122-129 : we add a `signOut()` method to sign the user out.
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 
@@ -284,7 +287,7 @@ struct LandingView_Previews: PreviewProvider {
 }
 ```
 
-### Update SceneDelegate.swift
+### Update LandmarkApp.swift
 
 Finally, we update `LandmarkApp.swift` to launch our new `LandingView` instead of launching `LandmarkList` when the application starts. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/LandmarkApp.swift* :
 

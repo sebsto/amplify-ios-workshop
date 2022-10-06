@@ -22,19 +22,24 @@ Code View (Cognito) | Landmarks List View
 
 Click **Sign Out** to end the session and, after a short redirection to Cognito's signout page, you return to the `LandingView`.
 
-In the Xcode console, you see some application debugging information: the username and profile of the signed in user as well as its Cognito token.  
+In the Xcode console, you see some application debugging information like the username and profile of the signed in user.  
 
 ```text 
-2020-06-08 17:11:26.908420+0200 Landmarks[86260:7126165] [Amplify] Configuring
-Amplify initialized
-hostedUI()
-2020-06-08 17:11:39.156307+0200 Landmarks[86260:7126165] [Amplify] AWSMobileClient Event listener - signedIn
 Sign in succeeded
 ==HUB== User signed In, update UI
-User attribtues - [Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.unknown("email_verified"), value: "true"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.email, value: "stormacq@amazon.com"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.unknown("sub"), value: "ba12b222-b50c-498e-a911-08f11e53f624")]
-2020-06-08 17:11:46.832938+0200 Landmarks[86260:7126165] [Amplify] AWSMobileClient Event listener - signedOut
-Successfully signed out
-==HUB== User signed Out, update UI
+2022-10-06T10:16:01+0200 info CognitoIdentityProviderClient : [Logging] Request: POST https:443 
+ Path: / 
+ X-Amz-Target: AWSCognitoIdentityProviderService.GetUser, 
+Host: cognito-idp.eu-central-1.amazonaws.com, 
+x-amz-user-agent: aws-sdk-swift/1.0, 
+Content-Length: 1113, 
+Content-Type: application/x-amz-json-1.1, 
+User-Agent: aws-sdk-swift/1.0 api/cognito-identity-provider/1.0 os/iOS/16.0.0 lang/swift/5.7 lib/amplify-ios/1.27.1-swift-sdk-dev-preview.0 
+ Optional([])
+
+... (redacted for brevity) ...
+
+User attribtues - [Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.sub, value: "cab0d396-008a-4131-87ee-4c6ae13436cc"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.emailVerified, value: "true"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.email, value: "stormacq@amazon.com")]
 ```
 
 {{% notice warning %}}

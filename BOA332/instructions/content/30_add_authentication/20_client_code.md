@@ -1,8 +1,8 @@
-+++
-title = "Update application code"
-chapter = false
-weight = 20
-+++
+---
+title : "Update application code"
+chapter : false
+weight : 20
+---
 
 Now that the cloud-based backend is ready, let's modify the application code to add an authentication screen.  We're going to make several changes in the application:
 
@@ -14,51 +14,19 @@ The view navigation will look like this:
 
 {{<mermaid align="left">}}
 graph LR;
-    A(SceneDelegate) -->|entry point| B(LandingView)
+    A(LandmarkApp) -->|entry point| B(LandingView)
     B --> C{is user<br/>authenticated?}
-    C -->|no| D(LoginView)
+    C -->|no| D(UserBadge)
     C -->|Yes| E(LandmarkList)
 {{< /mermaid >}}
 
-We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects.
-
-## Add the AWS Authentication client library
-
-Edit `$PROJECT_DIRECTORY/Podfile` to add the Amplify Authentication dependency.  Your `Podfile` must look like this (you can safely copy/paste the entire file from below):
-
-{{< highlight bash "hl_lines=12 ">}}
-cd $PROJECT_DIRECTORY
-echo "platform :ios, '13.0'
-
-target 'Landmarks' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for Landmarks
-  pod 'Amplify', '~> 1.0'                             # required amplify dependency
-  pod 'Amplify/Tools', '~> 1.0'                       # allows to cal amplify CLI from within Xcode
-
-  pod 'AmplifyPlugins/AWSCognitoAuthPlugin', '~> 1.0' # support for Cognito user authentication
-  
-end" > Podfile
-{{< /highlight >}}
-
-In a Terminal, type the following commands to download and install the dependencies:
-
-```bash
-cd $PROJECT_DIRECTORY
-pod install --repo-update
-```
-
-After one minute, you shoud see the below:
-
-![Pod update](/images/30-20-pod-install-1.png)
+We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects. We use [class extension](https://docs.swift.org/swift-book/LanguageGuide/Extensions.html) mechanism to separate concerns (authentication, file access, API access) and make it possible to split concerns in multipe files. However, for this workshop, we kept all code in the `AppDelegate.swift` class for easy copy / paste.
 
 ## Add authentication code
 
 Let's start to add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
 
-{{< highlight swift "hl_lines=8-8 10">}}
+```swift {linenos=false,hl_lines=[8-8]}
 // Landmarks/Models/UserData.swift
 import Combine
 import SwiftUI
@@ -68,170 +36,147 @@ final class UserData: ObservableObject {
     @Published var landmarks = landmarkData
     @Published var isSignedIn : Bool = false
 }
-{{< /highlight >}}
+```
 
 Add user authentication logic to *Landmarks/AppDelegate.swift*:
 
-{{< highlight swift "hl_lines=9-10 15-15 19-67 89-142" >}}
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-The application delegate.
-*/
-
-import UIKit
+```swift {linenos=false,hl_lines=["2-3","16-78","83-123"]}
+import SwiftUI
 import Amplify
-import AmplifyPlugins
+import AWSCognitoAuthPlugin
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
+    
+    // https://stackoverflow.com/questions/66156857/swiftui-2-accessing-appdelegate
+    static private(set) var instance: AppDelegate! = nil
+    
     public let userData = UserData()
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
+        
+        AppDelegate.instance = self
+        
         do {
-            Amplify.Logging.logLevel = .info
-            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            //Amplify.Logging.logLevel = .info
             
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+
             try Amplify.configure()
             print("Amplify initialized")
             
-            // load data when user is signedin
-            self.checkUserSignedIn()
-
+            // asynchronously
+            Task {
+                
+                // check if user is already signed in from a previous run
+                let session = try await Amplify.Auth.fetchAuthSession()
+                
+                // and update the GUI accordingly
+                await self.updateUI(forSignInStatus: session.isSignedIn)
+            }
+            
             // listen to auth events.
-            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
-            _ = Amplify.Hub.listen(to: .auth) { (payload) in
-
+            // see https://github.com/aws-amplify/amplify-ios/blob/dev-preview/Amplify/Categories/Auth/Models/AuthEventName.swift
+            let _  = Amplify.Hub.listen(to: .auth) { payload in
                 switch payload.eventName {
-
+                    
                 case HubPayload.EventName.Auth.signedIn:
-                    print("==HUB== User signed In, update UI")
-
-                    self.updateUI(forSignInStatus: true)
-
+                    
+                    Task {
+                        print("==HUB== User signed In, update UI")
+                        await self.updateUI(forSignInStatus: true)
+                    }
+                    
                     // if you want to get user attributes
-                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
-                        switch result {
-                        case .success(let attributes):
-                            print("User attribtues - \(attributes)")
-                        case .failure(let error):
-                            print("Fetching user attributes failed with error \(error)")
+                    Task {
+                        let authUserAttributes = try? await Amplify.Auth.fetchUserAttributes()
+                        if let authUserAttributes {
+                            print("User attribtues - \(authUserAttributes)")
+                        } else {
+                            print("Failed fetching user attributes failed")
                         }
                     }
-
-
+                    
                 case HubPayload.EventName.Auth.signedOut:
-                    print("==HUB== User signed Out, update UI")
-                    self.updateUI(forSignInStatus: false)
+                    Task {
+                        print("==HUB== User signed Out, update UI")
+                        await self.updateUI(forSignInStatus: false)
+                    }
                     
                 case HubPayload.EventName.Auth.sessionExpired:
-                    print("==HUB== Session expired, show sign in aui")
-                    self.updateUI(forSignInStatus: false)
-
+                    Task {
+                        print("==HUB== Session expired, show sign in aui")
+                        await self.updateUI(forSignInStatus: false)
+                    }
+                    
                 default:
                     //print("==HUB== \(payload)")
                     break
                 }
             }
-
+            
+        } catch let error as AuthError {
+            print("Authentication error : \(error)")
         } catch {
-            print("Failed to configure Amplify \(error)")
+            print("Error when configuring Amplify \(error)")
         }
-
         return true
     }
+}
 
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
-    // MARK: UISceneSession Lifecycle
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-    // MARK: -- Authentication code
+// MARK: -- Authentication code
+extension AppDelegate {
     
     // change our internal state, this triggers an UI update on the main thread
-    func updateUI(forSignInStatus : Bool) {
-        DispatchQueue.main.async() {
-            self.userData.isSignedIn = forSignInStatus
-        }
-    }
-    
-    // when user is signed in, fetch its details
-    func checkUserSignedIn() {
-
-        // every time auth status changes, let's check if user is signedIn or not
-        // updating userData will automatically update the UI
-        _ = Amplify.Auth.fetchAuthSession { (result) in
-
-            do {
-                let session = try result.get()
-                self.updateUI(forSignInStatus: session.isSignedIn)
-            } catch {
-                print("Fetch auth session failed with error - \(error)")
-            }
-
-        }
+    @MainActor
+    func updateUI(forSignInStatus : Bool) async {
+        self.userData.isSignedIn = forSignInStatus
     }
     
     // signin with Cognito web user interface
-    public func authenticateWithHostedUI() {
-
+    public func authenticateWithHostedUI() async throws {
+        
         print("hostedUI()")
-        _ = Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!) { result in
-            switch result {
-            case .success(_):
-                print("Sign in succeeded")
-            case .failure(let error):
-                print("Sign in failed \(error)")
-            }
+        
+        // UIApplication.shared.windows.first is deprecated on iOS 15
+        // solution from https://stackoverflow.com/questions/57134259/how-to-resolve-keywindow-was-deprecated-in-ios-13-0/57899013
+        
+        let w = UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        
+        let result = try await Amplify.Auth.signInWithWebUI(presentationAnchor: w!)
+        if (result.isSignedIn) {
+            print("Sign in succeeded")
+        } else {
+            print("Signin failed or required a next step")
         }
     }
     
     // signout globally
-    public func signOut() {
-
+    public func signOut() async throws {
+        
         // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
         let options = AuthSignOutRequest.Options(globalSignOut: true)
-        _ = Amplify.Auth.signOut(options: options) { (result) in
-            switch result {
-            case .success:
-                print("Successfully signed out")
-            case .failure(let error):
-                print("Sign out failed with error \(error)")
-            }
-        }
+        let _ = await Amplify.Auth.signOut(options: options)
+        print("Signed Out")
     }
-
 }
-{{< /highlight >}}
+```
 
 What did we add ?
 
-- line 9-10 : we import Amplify libraries
+- line 2-3 : we import Amplify libraries
 
-- line 15 : we move `userData` object from `SceneDelegate` to `AppDelegate` to be able to access it from anywhere in the app (we'll delete it from `SceneDelegate` in a minute)
+- line 19-21 : we initialize Amplify
 
-- line 20-24 : we initialize Amplify
+- line 36-72 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
 
-- line 31-63 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
+- line 93-113 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
 
-- line 116 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
-
-- line 130 : we add a `signOut()` method to sign the user out.
+- line 116-122 : we add a `signOut()` method to sign the user out.
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 
@@ -248,12 +193,13 @@ To add a new Swift class to your project, use Xcode menu and click **File**, the
 
 ![add classes to xcode](/images/30-20-xcode-add-class.gif)
 
+Repeat the operation twice, once for `UserBadge.swift` and once for `LandingView.swift`
+
 ### UserBadge.swift 
 
 The user badge is a very simple graphical view representing a big login button.
 
-{{< highlight swift >}}
-//
+```swift
 //  UserBadge.swift
 //  Landmarks
 
@@ -290,15 +236,15 @@ struct UserBadge_Previews: PreviewProvider {
         UserBadge()
     }
 }
-{{< /highlight >}}
+```
 
 ### LandingView.swift
 
-This `LandingView` selects the view to present based on authentication status.  When user is not authenticated, it shows the `UserBadge`.  Clicking on the `UserBadge` triggers the `authenticate()` method. When user is authenticated, it passes the user object to `LandmarkList`.
+This `LandingView` selects the view to present based on authentication status.  When user is not authenticated, it shows the `UserBadge`.  Clicking on the `UserBadge` triggers the `authenticateWithHostedUI()` method. When user is authenticated, it passes the user object to `LandmarkList`.
 
 Pay attention to the `@ObservedObject` annotation.  This tells SwiftUI to invalidate and redraw the View when the state of the object changes.  When user signs in or signs out, `LandingView` will automatically adjust and render the `UserBadge` or the `LandmarkList` view.
 
-{{< highlight swift >}}
+```swift
 //
 //  LandingView.swift
 //  Landmarks
@@ -336,95 +282,56 @@ struct LandingView_Previews: PreviewProvider {
         return LandingView(user: app.userData)
     }
 }
-{{< /highlight >}}
+```
 
 ### Update SceneDelegate.swift
 
-Finally, we update `SceneDelegate.swift` to launch our new `LandingView` instead of launching `LandmarkList` when the application starts. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/SceneDelegate.swift* :
+Finally, we update `LandmarkApp.swift` to launch our new `LandingView` instead of launching `LandmarkList` when the application starts. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/LandmarkApp.swift* :
 
-{{< highlight swift "hl_lines=14-14 25-25 65" >}}
-/*
-See LICENSE folder for this sample’s licensing information.
+```swift {hl_lines=["14-14"]}
+//
+//  LandmarkApp.swift
+//  Landmarks
 
-Abstract:
-The scene delegate.
-*/
-
-import UIKit
 import SwiftUI
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
-    var window: UIWindow?
-    let app = UIApplication.shared.delegate as! AppDelegate
+@main
+struct LandmarkApp: App {
     
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-
-        // Use a UIHostingController as window root view controller
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            
-            window.rootViewController = UIHostingController(rootView: LandingView(user: app.userData))
-
-            self.window = window
-            window.makeKeyAndVisible()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    var body: some Scene {
+        WindowGroup {
+            LandingView(user: appDelegate.userData)
         }
     }
-
-    func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
-    }
-
-    func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-    }
-
-    func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-    }
-
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-    }
-
 }
-{{< /highlight >}}
+```
 
 ## Add a signout button
 
 To make our tests easier and to allow users to signout and invalidate their session, let's add a signout button on the top of the `LandmarkList` view.  Highlighted lines show the update.  You can copy/paste the whole content to replace `Landmarks/LandmarkList.swift`
 
-{{< highlight swift "hl_lines=10-20 44-44 58" >}}
+```swift {hl_lines=["10-24",48]}
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-A view showing a list of landmarks.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ A view showing a list of landmarks.
+ */
 
 import SwiftUI
 
 struct SignOutButton : View {
-    let app = UIApplication.shared.delegate as! AppDelegate
+    @EnvironmentObject private var appDelegate: AppDelegate
 
     var body: some View {
-        NavigationLink(destination: LandingView(user: app.userData)) {
-            Button(action: { self.app.signOut() }) {
+        NavigationLink(destination: LandingView(user: appDelegate.userData)) {
+            Button(action: {
+                Task {
+                    try await appDelegate.signOut()
+                }
+            }) {
                 Text("Sign Out")
             }
         }
@@ -460,7 +367,7 @@ struct LandmarkList: View {
 
 struct LandmarksList_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(["iPhone SE", "iPhone XS Max"], id: \.self) { deviceName in
+        ForEach(["iPhone 13", "iPhone 14"], id: \.self) { deviceName in
             LandmarkList()
                 .previewDevice(PreviewDevice(rawValue: deviceName))
                 .previewDisplayName(deviceName)
@@ -468,11 +375,11 @@ struct LandmarksList_Previews: PreviewProvider {
         .environmentObject(UserData())
     }
 }
-{{< /highlight >}}
+```
 
 What we did just change ?
 
-- we created a `SignOutButton` struct that has a reference to `AppDelegate` and calls `signOut()` when pressed.  The button is just a text with a navigation link.
+- we created a `SignOutButton` struct that has a reference to `AppDelegate` and calls `signOut()` when pressed.  The button is just a text with a navigation link pointing to `LandingView`
 
 - we added that button as trailing item in the navigation bar.
 
@@ -484,7 +391,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 
 1. In Xcode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
 
-1. Add the following entry in URL scheme:
+2. Add the following entry in URL scheme:
 {{< highlight xml "hl_lines=6-16" >}}
 <plist version="1.0">
 
@@ -509,6 +416,8 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 
+<!--
 ## Summary
 
 The list of all changes we made to the code is visible in [this commit](https://github.com/sebsto/amplify-ios-workshop/commit/675318f3df24b3893ba849e19214ce719a6b7445).
+-->

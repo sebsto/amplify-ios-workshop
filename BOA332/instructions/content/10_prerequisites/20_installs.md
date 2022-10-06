@@ -55,7 +55,7 @@ aws --version
 # aws-cli/2.7.31 Python/3.10.6 Darwin/21.6.0 source/arm64 prompt/off
 
 amplify --version
-# 10.0.0
+# 10.2.2
 ```
 {{% /tab  %}}
 {{< /tabs >}}

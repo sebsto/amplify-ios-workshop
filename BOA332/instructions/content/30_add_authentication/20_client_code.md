@@ -43,7 +43,7 @@ Add user authentication logic to *Landmarks/AppDelegate.swift*:
 ```swift {linenos=false,hl_lines=["2-4","17-84","86-126"]}
 import SwiftUI
 import ClientRuntime
-import Amplifys
+import Amplify
 import AWSCognitoAuthPlugin
 
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
@@ -258,20 +258,21 @@ import SwiftUI
 
 struct LandingView: View {
     @ObservedObject public var user : UserData
-
+    @EnvironmentObject private var appDelegate: AppDelegate
+    
     var body: some View {
         
         return VStack {
             // .wrappedValue is used to extract the Bool from Binding<Bool> type
             if (!$user.isSignedIn.wrappedValue) {
-                
                 Button(action: {
-                            let app = UIApplication.shared.delegate as! AppDelegate
-                            app.authenticateWithHostedUI()
-                        }) {
-                    UserBadge().scaleEffect(0.5)
-                }
 
+                    Task {
+                        try await appDelegate.authenticateWithHostedUI()
+                    }
+                }) {
+                        UserBadge().scaleEffect(0.5)
+                    }
             } else {
                 LandmarkList().environmentObject(user)
             }
@@ -281,8 +282,14 @@ struct LandingView: View {
 
 struct LandingView_Previews: PreviewProvider {
     static var previews: some View {
-        let app = UIApplication.shared.delegate as! AppDelegate
-        return LandingView(user: app.userData)
+        let userDataSignedIn = UserData()
+        userDataSignedIn.isSignedIn = true
+        let userDataSignedOff = UserData()
+        userDataSignedOff.isSignedIn = false
+        return Group {
+            LandingView(user: userDataSignedOff)
+            LandingView(user: userDataSignedIn)
+        }
     }
 }
 ```

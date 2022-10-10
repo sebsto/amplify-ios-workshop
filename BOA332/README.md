@@ -10,7 +10,8 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 **October 10 2022**
 
-- Refactoring workshop instructions to take into account code modifications (sections 1-5)
+- Refactored workshop instructions to take into account code modifications (sections 1-5)  
+- Refactored workshop instructions for Sign in with Apple (sections 1-6)  
 
 **September 14 2022**
 
@@ -39,20 +40,20 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 ## TODO - Instructions 
 
-[] Update instructions to support new AWS Workshop Studio 
-[X] ~~Update instructions to use SPM vs CocoaPods~~
-[X] ~~Update Signin part to use "Signin With Apple" instead of "Login with facebook"~~
-[X] ~~Refactoring workshop instructions for Signin With Apple~~
-[] Update instructions to add custom signin UI
-[] Use Amplify Datastore rather than straigth API calls ?  (if we have time)
+[] Update instructions to support new AWS Workshop Studio  
+[X] ~~Update instructions to use SPM vs CocoaPods~~  
+[X] ~~Update Signin part to use "Signin With Apple" instead of "Login with facebook"~~  
+[X] ~~Refactoring workshop instructions for Signin With Apple~~  
+[] Update instructions to add custom signin UI  
+[] Use Amplify Datastore rather than straigth API calls ?  (if we have time)  
 
 ## TODO - Infrastructure 
 
-[X] refresh hugo version in local docker (run.sh)  
-[X] refresh hugo on Amplify Build (buildspec.yml)  
+[X] ~~refresh hugo version in local docker (run.sh)~  
+[X] ~~refresh hugo on Amplify Build (buildspec.yml)~~  
 [] Deploy on https://workshop.aws  
 [] Add Adbove Analytics tracking to web pages  
-[X] fix error in hugo build  
+[X] ~~fix error in hugo build~~  
 
 <!-- ### Dir Structure
 

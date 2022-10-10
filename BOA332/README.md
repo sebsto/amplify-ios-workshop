@@ -6,7 +6,7 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 ## In progress (status 10/3/2022)
 
-[] Refactoring workshop instructions for Signin With Apple
+[] Refactor instructions for custom login UI
 
 **October 10 2022**
 
@@ -42,6 +42,7 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 [] Update instructions to support new AWS Workshop Studio 
 [X] ~~Update instructions to use SPM vs CocoaPods~~
 [X] ~~Update Signin part to use "Signin With Apple" instead of "Login with facebook"~~
+[X] ~~Refactoring workshop instructions for Signin With Apple~~
 [] Update instructions to add custom signin UI
 [] Use Amplify Datastore rather than straigth API calls ?  (if we have time)
 

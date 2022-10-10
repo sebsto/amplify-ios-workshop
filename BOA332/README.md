@@ -6,7 +6,11 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 ## In progress (status 10/3/2022)
 
-[] Refactoring workshop instructions to take into account code modifications
+[] Refactoring workshop instructions for Signin With Apple
+
+**October 10 2022**
+
+- Refactoring workshop instructions to take into account code modifications (sections 1-5)
 
 **September 14 2022**
 
@@ -31,18 +35,18 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 ## TODO - Code 
 
-[] Resolve TODO left in the code  
+[X] ~~Resolve TODO left in the code~~
 
 ## TODO - Instructions 
 
-[] Update instructions to support new AWS Event Engine  
-[] Update instructions to use SPM vs CocoaPods 
-[] Update Signin part to use "Signin With Apple" instead of "Login with facebook"  
+[] Update instructions to support new AWS Workshop Studio 
+[X] ~~Update instructions to use SPM vs CocoaPods~~
+[X] ~~Update Signin part to use "Signin With Apple" instead of "Login with facebook"~~
+[] Update instructions to add custom signin UI
 [] Use Amplify Datastore rather than straigth API calls ?  (if we have time)
 
 ## TODO - Infrastructure 
 
-[] Deploy on new AWS Event Engine  
 [X] refresh hugo version in local docker (run.sh)  
 [X] refresh hugo on Amplify Build (buildspec.yml)  
 [] Deploy on https://workshop.aws  

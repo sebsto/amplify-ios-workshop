@@ -18,9 +18,9 @@ In this section, we're going to add a "Sign in With Apple" button to our applica
 You must have an account on Apple Developer's portal to continue this section. You can sign in using your Apple ID, the same you are using to connect to iCloud, iMessage, and the likes. Or you can signup and create a free account at [https://appleid.apple.com/account](https://appleid.apple.com/account)
 {{% /notice %}}
 
-## Configure Sign in With Apple on Apple Developer portal
+## Configure Sign in with Apple on Apple Developer portal
 
-This is a multi-steps process.  First, we are going to create an **App Identifier** for our app. Second, we are going to create a Sign in with Apple **Service Identifier** and configure it with the URLs of our Cognito server. Finally, we are going to **create a secret key** to be shared between Apple and Cognito.
+This is a multi-steps process.  First, we are going to create an **App Identifier** for our app. Second, we are going to create a Sign in with Apple **Service Identifier** and configure it with the URLs of our Cognito server. Finally, we are going to **create a secret key** passed to Cognito.
 
 These three steps are done on the Apple Developer's portal.
 
@@ -28,19 +28,19 @@ These three steps are done on the Apple Developer's portal.
 
 - Using your favorite browser, navigate to Apple Developer's portal at [https://developer.apple.com](https://developer.apple.com). Select the **Account** link on the top right side. Authenticate using your Apple ID credentials.
 
-- On the main page, select **Identifiers* (the second option on the second column).
+- On the main page, select **Identifiers** (the second option on the second column).
 
 ![Signin with Apple 01](/images/60-10-signin-apple-01.png)
 
-- Select the ⊕ sign next to **Identifiers** to add an identifier for this app.
+-On the **Certificates, Identifiers & Profile** page, select the ⊕ sign next to **Identifiers** to add an identifier for this app.
 
 ![Signin with Apple 02](/images/60-10-signin-apple-02.png)
 
 - On the **Register a new identifier** page, ensure **App IDs** is selected and select **Continue**.
 
-- On the **Register a new identifier > Select a type** page, ensure **App* is selected (the default), and select **Continue**.
+- On the **Register a new identifier > Select a type** page, ensure **App** is selected (the default), and select **Continue**.
 
-- Enter "Amplify iOS Workshop" as **Description** and "com.yourcompany.amplify.workshop.landmarks" as **Bundle ID**. Bundle IDs must be globally unique, be sure to chose an available name. Typically, it uses your company reverse DNS name.
+- Enter **Amplify iOS Workshop 2022** as **Description** and **com.yourcompany.amplify.workshop.landmarks** as **Bundle ID**. Bundle IDs must be globally unique, be sure to chose an available name. Typically, it uses your company reverse DNS name.
 
 ![Signin with Apple 03](/images/60-10-signin-apple-03.png)
 
@@ -54,7 +54,7 @@ Take note of the **App ID Prefix (Team ID)** as we will pass this value to Ampli
 
 ## Create a Service Identifier 
 
-Now that our app is registered, let's create a Service Identifier for Sigin with Apple.
+Now that our app is registered, let's create a Service Identifier for Sig in with Apple.
 
 - On the **Certificates, Identifiers & Profile** page, select the **App IDs** from down menu on the top right side, then select **Services IDs**.
 
@@ -64,17 +64,17 @@ Now that our app is registered, let's create a Service Identifier for Sigin with
 
 - On the **Register a new identifier** page, select **Services ID** (the second option), the select **Continue**.
 
-- Type "Amplify iOS Workshop" as **Description** and "com.yourcompany.amplify.workshop.landmarks.signin" as **Identifier**. Note that the Service ID here *must be* different than the Application ID created earlier.  I added ".signin" at the end. I then select **Continue**.
+- Type **Amplify iOS Workshop 2022** as **Description** and **com.yourcompany.amplify.workshop.landmarks.signin** as **Identifier**. Note that the Service ID here *must be* different than the Application ID created earlier.  I added `.signin` at the end. I then select **Continue**.
 
 ![Signin with Apple 06](/images/60-10-signin-apple-06.png)
 
 - On the next page, select **Register**.
 
-- On the **Identifiers > Services ID** page, select the newly created service identifier for this workshop. Ensure **Sign in With Apple** is selected. Then select the **Configure** button.
+- On the **Identifiers > Services ID** page, select the newly created service identifier for this workshop. Ensure **Sign In with Apple** is selected. Then select the **Configure** button.
 
 ![Signin with Apple 07](/images/60-10-signin-apple-07.png)
 
-- On the **Web Authentication Configuration** page, select the **Amplify iOS Workshop** for the **Primary App ID**. Then enter the **Domains and Subdomains** value and the **Return URLs**.
+- On the **Web Authentication Configuration** page, select the **Amplify iOS Workshop 2022** for the **Primary App ID**. Then enter the **Domains and Subdomains** value and the **Return URLs**.
 
 Amplify and Cognito shared these values when you added user authentication to the Cognito configuration. You can retrieve them back by typing the `amplify status` command in the project directory.  The value return contains a line like :
 
@@ -94,9 +94,9 @@ Pay attention to these two values, an error will prevent Sign in with Apple to w
 
 - Finally, select **Continue** and **Save** on the next two pages to finalize the Service ID configuration.
 
-## Create a shared private key 
+## Create a private key 
 
-The last step consists in creating a provate key to be shared between Sign in with Apple and Cognito.
+The last step consists in creating a private key to validate the communication between Sign in with Apple and Cognito.
 
 -  On the **Certificates, Identifiers & Profile** page, select the **Keys** section on the left navigation menu.
 
@@ -108,7 +108,7 @@ The last step consists in creating a provate key to be shared between Sign in wi
 
 ![Signin with Apple 10](/images/60-10-signin-apple-10.png)
 
-- On the **Configure Key** page, select the **Amplify iOS Workshop** as **Primary App ID**. Then select **Save**.
+- On the **Configure Key** page, select the **Amplify iOS Workshop 2022** as **Primary App ID**. Then select **Save**.
 
 ![Signin with Apple 11](/images/60-10-signin-apple-11.png)
 
@@ -141,4 +141,4 @@ At the end of this section, you must have kept four values to pass to Amplify co
 
 The values will be different for you.
 
-Next step is to update AWS Amplify's configuration to include Sign in With Apple.
+Next step is to update AWS Amplify's configuration to include Sign in with Apple.

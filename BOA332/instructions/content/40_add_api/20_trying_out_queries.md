@@ -77,7 +77,7 @@ Open the **Query Variables** section on the bottom and copy / paste the followin
 }
 ```
 
-Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query. You should see teh following JSON in the `Logs` pane on the right side.
+Click the orange Play button (▶️) to execute the query. You should see teh following JSON in the `Logs` pane on the right side.
 
 ```json
   "data": {
@@ -109,7 +109,7 @@ query GetLandmark {
 }
 ```
 
-Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
+Click the orange Play button (▶️) to execute the query.
 
 **List all the landmarks** with this query :
 
@@ -136,7 +136,7 @@ query ListLandmarks {
 }
 ```
 
-Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
+Click the orange Play button (▶️) to execute the query.
 
 Finally, **delete the landmark** we created with this query:
 
@@ -160,6 +160,6 @@ mutation DeleteLandmark {
 }
 ```
 
-Click the orange Play button (<i class="far fa-caret-square-right" aria-hidden="true" style="background: orange; color: white;"></i>) to execute the query.
+Click the orange Play button (▶️) to execute the query.
 
 As you can see, we're able to read and write data through GraphQL queries and mutations and AppSync takes care of reading and persisting data (in this case, to DynamoDB).

@@ -9,7 +9,7 @@ struct CustomLoginView : View {
     @State private var username: String = ""
     @State private var password: String = ""
     
-    private let app = UIApplication.shared.delegate as! AppDelegate
+    @EnvironmentObject private var appDelegate: AppDelegate
 
     var body: some View { // The body of the screen view
         VStack {
@@ -37,7 +37,11 @@ struct CustomLoginView : View {
             .background(Color(UIColor.systemFill))
             .padding(.bottom, 10)
 
-            Button(action: { self.app.signIn(username: self.username, password: self.password) }) {
+            Button(action: {
+                Task {
+                    await self.appDelegate.signIn(username: self.username, password: self.password)
+                }
+            }) {
                 HStack() {
                     Spacer()
                     Text("Signin")
@@ -63,7 +67,7 @@ struct KeyboardAdaptive: ViewModifier {
         content
             .padding(.bottom, keyboardHeight)
             .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
-            .animation(.easeOut(duration: 0.5))
+            .animation(.easeOut, value: 0.5)
     }
 }
 

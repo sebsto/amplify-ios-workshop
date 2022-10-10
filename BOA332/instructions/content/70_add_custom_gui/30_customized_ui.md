@@ -1,8 +1,8 @@
-+++
-title = "Bring your own UI"
-chapter = false
-weight = 30
-+++
+---
+title : "Bring your own UI"
+chapter : false
+weight : 30
+---
 
 Amazon Cognito provides low level API allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://docs.amplify.aws/lib/auth/signin/q/platform/ios).
 
@@ -14,27 +14,29 @@ We start by adding a new method in the Application Delegate to sign in through t
 
 Add the `signIn()` function in file *Landmarks/AppDelegate.swift* (you can safely copy/paste the whole file below, modified lines are highlighted):
 
-{{< highlight swift "hl_lines=122-133">}}
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-The application delegate.
-*/
-
-import UIKit
+```swift { hl_lines=["138-151"]}
+import SwiftUI
+import ClientRuntime
 import Amplify
-import AmplifyPlugins
+import AWSCognitoAuthPlugin
+import AWSAPIPlugin
+import AWSS3StoragePlugin
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
+    
+    // https://stackoverflow.com/questions/66156857/swiftui-2-accessing-appdelegate
+    static private(set) var instance: AppDelegate! = nil
+    
     public let userData = UserData()
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
+        
+        AppDelegate.instance = self
+        
         do {
-            Amplify.Logging.logLevel = .info
+            // reduce verbosity of AWS SDK
+            SDKLoggingSystem.initialize(logLevel: .warning)
+            
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             try Amplify.add(plugin: AWSS3StoragePlugin())
@@ -42,193 +44,180 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try Amplify.configure()
             print("Amplify initialized")
             
-            // load data when user is signedin
-            self.checkUserSignedIn()
-
+            // asynchronously 
+            Task {
+                
+                // check if user is already signed in from a previous run
+                let session = try await Amplify.Auth.fetchAuthSession()
+                
+                // and update the GUI accordingly
+                await self.updateUI(forSignInStatus: session.isSignedIn)
+            }
+            
             // listen to auth events.
-            // see https://github.com/aws-amplify/amplify-ios/blob/master/Amplify/Categories/Auth/Models/AuthEventName.swift
-            _ = Amplify.Hub.listen(to: .auth) { (payload) in
-
+            // see https://github.com/aws-amplify/amplify-ios/blob/dev-preview/Amplify/Categories/Auth/Models/AuthEventName.swift
+            let _  = Amplify.Hub.listen(to: .auth) { payload in
                 switch payload.eventName {
-
+                    
                 case HubPayload.EventName.Auth.signedIn:
-                    print("==HUB== User signed In, update UI")
-
-                    self.updateUI(forSignInStatus: true)
-
+                    
+                    Task {
+                        print("==HUB== User signed In, update UI")
+                        await self.updateUI(forSignInStatus: true)
+                    }
+                    
                     // if you want to get user attributes
-                    _ = Amplify.Auth.fetchUserAttributes() { (result) in
-                        switch result {
-                        case .success(let attributes):
-                            print("User attribtues - \(attributes)")
-                        case .failure(let error):
-                            print("Fetching user attributes failed with error \(error)")
+                    Task {
+                        let authUserAttributes = try? await Amplify.Auth.fetchUserAttributes()
+                        if let authUserAttributes {
+                            print("User attribtues - \(authUserAttributes)")
+                        } else {
+                            print("Failed fetching user attributes failed")
                         }
                     }
-
-
+                    
                 case HubPayload.EventName.Auth.signedOut:
-                    print("==HUB== User signed Out, update UI")
-                    self.updateUI(forSignInStatus: false)
+                    Task {
+                        print("==HUB== User signed Out, update UI")
+                        await self.updateUI(forSignInStatus: false)
+                    }
                     
                 case HubPayload.EventName.Auth.sessionExpired:
-                    print("==HUB== Session expired, show sign in aui")
-                    self.updateUI(forSignInStatus: false)
-
+                    Task {
+                        print("==HUB== Session expired, show sign in aui")
+                        await self.updateUI(forSignInStatus: false)
+                    }
+                    
                 default:
                     //print("==HUB== \(payload)")
                     break
                 }
             }
-
+            
+        } catch let error as AuthError {
+            print("Authentication error : \(error)")
         } catch {
-            print("Failed to configure Amplify \(error)")
+            print("Error when configuring Amplify \(error)")
         }
-
         return true
     }
+}
 
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
-    // MARK: UISceneSession Lifecycle
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-    // MARK: -- Authentication code
+// MARK: -- Authentication code
+extension AppDelegate {
     
     // change our internal state, this triggers an UI update on the main thread
-    func updateUI(forSignInStatus : Bool) {
-        DispatchQueue.main.async() {
-            self.userData.isSignedIn = forSignInStatus
-            
-            // only load landmarks at start of app, when user signed in
-            if (forSignInStatus && self.userData.landmarks.isEmpty) {
-                self.queryLandmarks()
-            }
-        }
-    }
-    
-    // when user is signed in, fetch its details
-    func checkUserSignedIn() {
-
-        // every time auth status changes, let's check if user is signedIn or not
-        // updating userData will automatically update the UI
-        _ = Amplify.Auth.fetchAuthSession { (result) in
-
-            do {
-                let session = try result.get()
-                self.updateUI(forSignInStatus: session.isSignedIn)
-            } catch {
-                print("Fetch auth session failed with error - \(error)")
-            }
-
-        }
-    }
-    
-    public func signIn(username: String, password: String) {
-        _ = Amplify.Auth.signIn(username: username, password: password) { result in
-            switch result {
-            case .success(_):
-                print("Sign in succeeded")
-                // nothing else required, the event HUB will trigger the UI refresh
-            case .failure(let error):
-                print("Sign in failed \(error)")
-                // in real life present a message to the user
-            }
+    @MainActor
+    func updateUI(forSignInStatus : Bool) async {
+        self.userData.isSignedIn = forSignInStatus
+        
+        // load landmarks at start of app when user signed in
+        if (forSignInStatus && self.userData.landmarks.isEmpty) {
+            self.userData.landmarks = await self.queryLandmarks()
+        } else {
+            self.userData.landmarks = []
         }
     }
     
     // signin with Cognito web user interface
-    public func authenticateWithHostedUI() {
-
+    public func authenticateWithHostedUI() async throws {
+        
         print("hostedUI()")
-        _ = Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!) { result in
-            switch result {
-            case .success(_):
-                print("Sign in succeeded")
-            case .failure(let error):
-                print("Sign in failed \(error)")
-            }
+        
+        // UIApplication.shared.windows.first is deprecated on iOS 15
+        // solution from https://stackoverflow.com/questions/57134259/how-to-resolve-keywindow-was-deprecated-in-ios-13-0/57899013
+        
+        let w = UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        
+        let result = try await Amplify.Auth.signInWithWebUI(presentationAnchor: w!)
+        if (result.isSignedIn) {
+            print("Sign in succeeded")
+        } else {
+            print("Signin failed or required a next step")
         }
     }
     
     // signout globally
-    public func signOut() {
-
+    public func signOut() async throws {
+        
         // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
         let options = AuthSignOutRequest.Options(globalSignOut: true)
-        _ = Amplify.Auth.signOut(options: options) { (result) in
-            switch result {
-            case .success:
-                print("Successfully signed out")
-            case .failure(let error):
-                print("Sign out failed with error \(error)")
-            }
-        }
-    }
-    
-    // MARK: API Access
-    
-    func queryLandmarks() {
-        print("Query landmarks")
-        
-        _ = Amplify.API.query(request: .list(LandmarkData.self)) { event in
-            switch event {
-            case .success(let result):
-                print("Landmarks query complete.")
-                switch result {
-                case .success(let landmarksData):
-                    print("Successfully retrieved list of landmarks")
-                    for f in landmarksData {
-                        let landmark = Landmark.init(from: f)
-                        DispatchQueue.main.async() {
-                            self.userData.landmarks.append(landmark);
-                        }
-                    }
-                    
-                case .failure(let error):
-                    print("Can not retrieve result : error  \(error.errorDescription)")
-                }
-            case .failure(let error):
-                print("Can not retrieve landmarks : error \(error)")
-            }
-        }
-    }
-    
-    // MARK: AWS S3 & Image Loading
-
-    func image(_ name: String, callback: @escaping (Data) -> Void ) {
-        
-        print("Downloading image : \(name)")
-
-        _ = Amplify.Storage.downloadData(key: "\(name).jpg",
-            progressListener: { progress in
-                // in case you want to monitor progress
-//                    print("Progress: \(progress)")
-            }, resultListener: { (event) in
-                switch event {
-                case let .success(data):
-                    print("Image \(name) loaded")
-                    callback(data)
-                case let .failure(storageError):
-                    print("Can not download image: \(storageError.errorDescription). \(storageError.recoverySuggestion)")
-                }
-            }
-        )
+        let _ = await Amplify.Auth.signOut(options: options)
+        print("Signed Out")
     }
 }
-{{< /highlight >}}
+
+// MARK: CUSTOM AUTHENTICATION
+extension AppDelegate {
+    public func signIn(username: String, password: String) async {
+        
+        do {
+            let _ = try await Amplify.Auth.signIn(username: username, password: password)
+            print("Sign in succeeded")
+            // nothing else required, the event HUB will trigger the UI refresh
+        } catch {
+            print("Sign in failed \(error)")
+            // in real life present a message to the user
+        }
+    }
+}
+
+// MARK: API Access
+extension AppDelegate {
+    
+    func queryLandmarks() async -> [ Landmark ] {
+        print("Query landmarks")
+        
+        do {
+            let queryResult = try await Amplify.API.query(request: .list(LandmarkData.self))
+            print("Successfully retrieved list of landmarks")
+            
+            // convert [ LandmarkData ] to [ LandMark ]
+            let result = try queryResult.get().map { landmarkData in
+                Landmark.init(from: landmarkData)
+            }
+            
+            return result
+            
+        } catch let error as APIError {
+            print("Failed to load data from api : \(error)")
+        } catch {
+            print("Unexpected error while calling API : \(error)")
+        }
+        
+        return []
+    }
+}
+
+// MARK: AWS S3 & Image Loading
+extension AppDelegate {
+
+    func downloadImage(_ name: String) async -> Data {
+                
+        print("Downloading image : \(name)")
+        
+        do {
+            
+            let task = try await Amplify.Storage.downloadData(key: "\(name).jpg")
+            let data = try await task.value
+            print("Image \(name) downloaded")
+            
+            return data
+            
+        } catch let error as StorageError {
+            print("Can not download image \(name): \(error.errorDescription). \(error.recoverySuggestion)")
+        } catch {
+            print("Unknown error when loading image \(name): \(error)")
+        }
+        return Data() // could return a default image
+    }
+}
+```
 
 ## Add a Custom Login Screen
 
@@ -236,7 +225,7 @@ We implement our own custom login screen as a View.  To add a new Swift class to
 
 Copy / paste the code from below:
 
-{{< highlight swift >}}
+```swift
 import SwiftUI
 import Combine
 
@@ -248,7 +237,7 @@ struct CustomLoginView : View {
     @State private var username: String = ""
     @State private var password: String = ""
     
-    private let app = UIApplication.shared.delegate as! AppDelegate
+    @EnvironmentObject private var appDelegate: AppDelegate
 
     var body: some View { // The body of the screen view
         VStack {
@@ -276,7 +265,11 @@ struct CustomLoginView : View {
             .background(Color(UIColor.systemFill))
             .padding(.bottom, 10)
 
-            Button(action: { self.app.signIn(username: self.username, password: self.password) }) {
+            Button(action: {
+                Task {
+                    await self.appDelegate.signIn(username: self.username, password: self.password)
+                }
+            }) {
                 HStack() {
                     Spacer()
                     Text("Signin")
@@ -302,7 +295,7 @@ struct KeyboardAdaptive: ViewModifier {
         content
             .padding(.bottom, keyboardHeight)
             .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
-            .animation(.easeOut(duration: 0.5))
+            .animation(.easeOut, value: 0.5)
     }
 }
 
@@ -341,7 +334,7 @@ static var previews: some View {
     }
 }
 #endif
-{{< /highlight >}}
+```
 
 The code is straigthforward:
 
@@ -370,7 +363,7 @@ if (!$user.isSignedIn.wrappedValue) {
 
 This code is making the `LandingView` code simpler.  It displays `CustomLoginView` when user is not signed in, or `LandmarkList` otherwise.  You can safely copy/paste the full code below to replace the content of *Landmarks/LandingView.swift*:
 
-{{< highlight swift >}}
+```swift
 //
 //  LandingView.swift
 //  Landmarks
@@ -381,19 +374,23 @@ import SwiftUI
 
 struct LandingView: View {
     @ObservedObject public var user : UserData
-
+    @EnvironmentObject private var appDelegate: AppDelegate
+    
     var body: some View {
         
         return VStack {
             // .wrappedValue is used to extract the Bool from Binding<Bool> type
             if (!$user.isSignedIn.wrappedValue) {
-                
+
 //                Button(action: {
-//                            let app = UIApplication.shared.delegate as! AppDelegate
-//                            app.authenticateWithHostedUI()
-//                        }) {
-//                    UserBadge().scaleEffect(0.5)
-//                }
+//
+//                    Task {
+//                        try await appDelegate.authenticateWithHostedUI()
+//                    }
+//
+//                }) {
+//                        UserBadge().scaleEffect(0.5)
+//                    }
                 CustomLoginView()
                 
             } else {
@@ -405,18 +402,24 @@ struct LandingView: View {
 
 struct LandingView_Previews: PreviewProvider {
     static var previews: some View {
-        let app = UIApplication.shared.delegate as! AppDelegate
-        return LandingView(user: app.userData)
+        let userDataSignedIn = UserData()
+        userDataSignedIn.isSignedIn = true
+        let userDataSignedOff = UserData()
+        userDataSignedOff.isSignedIn = false
+        return Group {
+            LandingView(user: userDataSignedOff)
+            LandingView(user: userDataSignedIn)
+        }
     }
 }
-{{< /highlight >}}
+```
 
-You can view the whole code changes for this section [from this commit](https://github.com/sebsto/amplify-ios-workshop/commit/bb8c87d359c8970ff10d5e06cc49786ee5965e4f).
+<!-- You can view the whole code changes for this section [from this commit](https://github.com/sebsto/amplify-ios-workshop/commit/bb8c87d359c8970ff10d5e06cc49786ee5965e4f). -->
 
 ## Build and Test 
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
-![build](/images/20-10-xcode.png)
+![build](/images/20-20-xcode.png)
 
 If you are still authenticated, click **Sign Out** and click the user badge to sign in again. You should see this:
 
@@ -425,5 +428,5 @@ If you are still authenticated, click **Sign Out** and click the user badge to s
 Enter the username and password that you created in section 3 and try to authenticate.  After a second or two, you will see the Landmark list.
 
 {{% notice info %}}
-Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (here is [the one for Facebook](https://developers.facebook.com/docs/facebook-login/ios)) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the most advanced readers.
+Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (the [Authentication Service](https://developer.apple.com/documentation/authenticationservices) framework in the case of Sign in with Apple) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the more advanced readers.
 {{% /notice %}}

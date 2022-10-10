@@ -106,7 +106,18 @@ extension AppDelegate {
     public func authenticateWithHostedUI() async throws {
         
         print("hostedUI()")
-        let result = try await Amplify.Auth.signInWithWebUI(presentationAnchor: UIApplication.shared.windows.first!)
+        
+        // UIApplication.shared.windows.first is deprecated on iOS 15
+        // solution from https://stackoverflow.com/questions/57134259/how-to-resolve-keywindow-was-deprecated-in-ios-13-0/57899013
+        
+        let w = UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        
+        let result = try await Amplify.Auth.signInWithWebUI(presentationAnchor: w!)
         if (result.isSignedIn) {
             print("Sign in succeeded")
         } else {
@@ -121,6 +132,21 @@ extension AppDelegate {
         let options = AuthSignOutRequest.Options(globalSignOut: true)
         let _ = await Amplify.Auth.signOut(options: options)
         print("Signed Out")
+    }
+}
+
+// MARK: CUSTOM AUTHENTICATION
+extension AppDelegate {
+    public func signIn(username: String, password: String) async {
+        
+        do {
+            let _ = try await Amplify.Auth.signIn(username: username, password: password)
+            print("Sign in succeeded")
+            // nothing else required, the event HUB will trigger the UI refresh
+        } catch {
+            print("Sign in failed \(error)")
+            // in real life present a message to the user
+        }
     }
 }
 
@@ -171,7 +197,7 @@ extension AppDelegate {
         } catch {
             print("Unknown error when loading image \(name): \(error)")
         }
-        return Data() // may return a default image
+        return Data() // could return a default image
     }
 }
 

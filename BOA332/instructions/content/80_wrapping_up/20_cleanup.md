@@ -1,8 +1,8 @@
-+++
-title = "Cleaning Up"
-chapter = false
-weight = 20
-+++
+---
+title : "Cleaning Up"
+chapter : false
+weight : 20
+---
 
 ### Deleting via Amplify
 
@@ -21,4 +21,4 @@ amplify delete
 
 ![amplify delete](/images/80-20-amplify-delete.png)
 
-Thank you for having follwed this workshop instruction until the end.  Please le us know your feedback by opening an issue or a pull request on our [GitHub repository](https://TODO).
+Thank you for having follwed this workshop instruction until the end.  Please le us know your feedback by opening an issue or a pull request on our [GitHub repository](https://github.com/sebsto/amplify-ios-workshop/tree/main/BOA332).

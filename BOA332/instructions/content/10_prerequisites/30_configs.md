@@ -16,7 +16,7 @@ Before using `aws` command line, you need to configure a default **region** and 
 
 A best practice is to deploy your infrastructure close to your customers, let's configure a default AWS Region for this workshop : Oregon (*us-west-2*) for North America or Frankfurt (*eu-central-1*) for Europe.
 
-{{< tabs >}}
+{{< tabs groupId="regions"  >}}
 {{% tab name="North America" %}}
 In the Terminal, type:
 

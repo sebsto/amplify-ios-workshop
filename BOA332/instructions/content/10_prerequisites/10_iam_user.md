@@ -1,7 +1,7 @@
 ---
 title : "Create an IAM User"
 chapter : false
-weight : 1
+weight : 10
 ---
 
 {{% notice warning %}}

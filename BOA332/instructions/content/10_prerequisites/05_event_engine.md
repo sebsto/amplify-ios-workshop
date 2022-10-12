@@ -20,8 +20,8 @@ Should you attend this workshop on your own or in a non-AWS event, you can skip 
 3. Click **AWS Console**
 ![link to console](/images/10-05-20.png)
 
-    The screen below has all the information you need to run the workshop:
-    ![open console](/images/10-05-30.png)
+The screen below has all the information you need to run the workshop:
+![open console](/images/10-05-30.png)
 
 4. Please note the region that the event is using. **Only actions in this region are allowed.**
 

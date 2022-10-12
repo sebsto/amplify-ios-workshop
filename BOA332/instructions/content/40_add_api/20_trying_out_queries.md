@@ -7,7 +7,7 @@ weight : 20
 
 **Open the AWS Console** and **click into the amplifyiosworkshop-dev API**. Now we can start poking around with the API.
 
-{{< tabs >}}
+{{< tabs groupId="regions" >}}
 {{% tab name="North America (us-east-2)" %}}
 Link to [AWS AppSync web console in Oregon](https://console.aws.amazon.com/appsync/home?region=us-west-2#/apis)
 {{% /tab %}}

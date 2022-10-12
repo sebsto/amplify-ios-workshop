@@ -1,0 +1,1 @@
+swift run -Xswiftc -enable-bare-slash-regex

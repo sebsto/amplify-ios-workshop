@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug mm",
+            "program": "${workspaceFolder:migrate_markdown}/.build/debug/mm",
+            "args": [],
+            "cwd": "${workspaceFolder:migrate_markdown}",
+            "preLaunchTask": "swift: Build Debug mm"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Release mm",
+            "program": "${workspaceFolder:migrate_markdown}/.build/release/mm",
+            "args": [],
+            "cwd": "${workspaceFolder:migrate_markdown}",
+            "preLaunchTask": "swift: Build Release mm"
+        }
+    ]
+}

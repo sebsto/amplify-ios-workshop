@@ -320,7 +320,7 @@ struct LandmarkApp: App {
 
 ## Add a signout button
 
-To make our tests easier and to allow users to signout and invalidate their session, let's add a signout button on the top of the `LandmarkList` view.  Highlighted lines show the update.  You can copy/paste the whole content to replace `Landmarks/LandmarkList.swift`
+To make our tests easier and to allow users to signout and invalidate their session, let's add a signout button on the top of the `LandmarkList` view.  Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/LandmarkList.swift*.
 
 ```swift {hl_lines=["10-24",48]}
 /*

@@ -84,7 +84,7 @@ with
 
 ## Add client code in the application delegate 
 
-We modify `AppDelegate.swift` to add code to call the GraphQL API.  You can safely copy/paste the entire file from below to replace the existing file. 
+We modify *Landmarks/AppDelegate.swift* to add code to call the GraphQL API.  You can safely copy/paste the entire file from below to replace the existing file. 
 
 ```swift {hl_lines=[5,23,"95-100","137-161"]}
 import SwiftUI
@@ -262,7 +262,7 @@ What we did change ?
 
 To allow the creation of the application `Landmark` model object from the API `LandmarkData` generated code, we add the following code to `Landmarks/Models/Landmark.swift`
 
-Open `Landmarks/Models/Landmark.swift` and copy/paste the code below.
+Open *Landmarks/Models/Landmark.swift* and copy/paste the code below.
 
 ```swift {hl_lines=["46-69"]}
 /*

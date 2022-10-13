@@ -226,7 +226,7 @@ Notice that `Amplify.Storage.downloadData()` class is synchronous when using the
 
 The `ImageStore` class is part of the original code sample we started from. It is located in *Landmarks/Models/Data.swift* file.  This class takes care of caching images in memory to avoid loading them at each access. It also provider a placeholder when the image is not downloaded yet.  The placeholder is an empty white image generated with an extension of the `UIImage` class.
 
-Open `Landmarks/Models/Data.swift` and paste the content below:
+Open *Landmarks/Models/Data.swift* and paste the content below:
 
 ```swift {hl_lines=["39-48","52-60", "63-144"]}
 /*

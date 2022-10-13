@@ -64,8 +64,6 @@ weight : 10
 
 
 
-
-
 * [AWS Temporary Account](/10_prerequisites/05_event_engine.html)
 * [Create an IAM User](/10_prerequisites/10_iam_user.html)
 * [Installs](/10_prerequisites/20_installs.html)

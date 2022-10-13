@@ -14,13 +14,13 @@ At high level, here is how we gonna proceed
 
 ## Modify UserData class
 
-`UserData` holds a hard coded list of landmarks, loaded from a JSON files (*Landmarks/Resources/landmarkData.json*).  The `Landmarks/Models/Data.swift` class loads the JSON file at application startup time using this line:
+`UserData` holds a hard coded list of landmarks, loaded from a JSON file (*Landmarks/Resources/landmarkData.json*).  The `Data.swift` class loads the JSON file at application startup time using this line:
 
 ```swift
 let landmarkData: [Landmark] = load("landmarkData.json")
 ```
 
-Let's replace `UserData.swift` with the below 
+Let's modify `UserData.swift` to initialize the `landmarkData` variable with an empty array `[]` instead. Open *Landmarks/Models/UserData.swift* and copy / paste the code below.
 
 ```swift {hl_lines=[13]}
 /*
@@ -260,7 +260,7 @@ What we did change ?
 
 - line 137-161 : we added `func queryLandmarks()` to call the API.  This function uses the generated code to pass arguments to the API Query method.  `Amplify.API.query` is called synchronously when using the `await` keyword. The API call returns an array of `LandmarkData` objects. The code transforms this array to an array of `Landmark` objects(as defined in `Landmarks/Models/Landmark.swift`). We use the `map` function to map one array type to another.
 
-To allow the creation of the application `Landmark` model object from the API `LandmarkData` generated code, we add the following code to `Landmarks/Models/Landmark.swift`
+To allow the creation of the application `Landmark` model object from the API `LandmarkData` generated code, we add the following code to `Landmark.swift`
 
 Open *Landmarks/Models/Landmark.swift* and copy/paste the code below.
 

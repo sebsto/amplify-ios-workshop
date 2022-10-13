@@ -199,4 +199,21 @@ text
         // then 
         XCTAssertEqual(dst, changed)
     }
+
+    func testButton() {
+
+        // given 
+        let src = """
+{{% button href="/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" icon="fas fa-download" %}}project zip file{{% /button %}}
+"""
+        let dst = """
+:button[project zip file]{href="/static/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" action=download}
+"""
+        // when 
+        let replace = ReplaceButton()
+        let changed = replace.replace(oldContent: src, forFile: URL(fileURLWithPath: "/dummy"))
+
+        // then 
+        XCTAssertEqual(dst, changed)
+    }
 }

@@ -59,7 +59,10 @@ let changes: [Replacement] = [
   ReplaceTitlesAndPreInIndex(),
 
   // Tabs
-  ReplaceTwoTabs()
+  ReplaceTwoTabs(),
+
+  // Download button
+  ReplaceButton(),
 ]
 
 struct Enclosure {
@@ -89,7 +92,7 @@ struct ReplaceEnclosure: Replacement {
 
 struct ReplaceTwoTabs: Replacement {
 
-/**
+  /**
 Example:
 
 {{< tabs groupId="installs" >}}
@@ -110,15 +113,15 @@ The replacement captures the groupID and name values
 
   private func captureGroupName(content: String) -> String {
     guard let captureGroupId = try? Regex("(?s).*{{< tabs groupId=\"(.*?)\" .}}\n.*") else {
-        fatalError("Invalid RegEx")
+      fatalError("Invalid RegEx")
     }
 
     var result = ""
 
     if let resultGroupId = try? captureGroupId.wholeMatch(in: content) {
-        result = String(resultGroupId.output[1].substring!)
-    // } else {
-    //     print("no group match")
+      result = String(resultGroupId.output[1].substring!)
+      // } else {
+      //     print("no group match")
     }
 
     return result
@@ -126,22 +129,25 @@ The replacement captures the groupID and name values
 
   private func captureTabNames(content: String) -> (String, String) {
 
-    // TODO try to do a reccuring capture group 
+    // TODO try to do a reccuring capture group
     // https://regex101.com/r/3zV61W/1
     // guard let captureTabNames = try? Regex("(?s).*?(?:{{% tab name=\"(.*?)\" %}})\n.*?") else {
-    guard let captureTabNames = try? Regex("(?s).*{{% tab name=\"(.*?)\" %}}\n.*{{% tab name=\"(.*?)\" %}}\n.*") else {
-        fatalError("Invalid RegEx")
+    guard
+      let captureTabNames = try? Regex(
+        "(?s).*{{% tab name=\"(.*?)\" %}}\n.*{{% tab name=\"(.*?)\" %}}\n.*")
+    else {
+      fatalError("Invalid RegEx")
     }
 
     var tab1Result = ""
     var tab2Result = ""
 
     if let resultTabName = try? captureTabNames.wholeMatch(in: content) {
-        assert(resultTabName.output.count==3)
-        tab1Result = String(resultTabName.output[1].substring!)
-        tab2Result = String(resultTabName.output[2].substring!)
-    // } else {
-    //     print("no tab match")
+      assert(resultTabName.output.count == 3)
+      tab1Result = String(resultTabName.output[1].substring!)
+      tab2Result = String(resultTabName.output[2].substring!)
+      // } else {
+      //     print("no tab match")
     }
 
     return (tab1Result, tab2Result)
@@ -152,13 +158,63 @@ The replacement captures the groupID and name values
     let groupName = captureGroupName(content: oldContent)
     let (tab1Name, tab2Name) = captureTabNames(content: oldContent)
 
-    let step1 = oldContent.replacingOccurrences(of: "{{< tabs groupId=\"\(groupName)\" >}}", with: "::::tabs{variant=\"\(groupName)\"}")
-    let step2 = step1.replacingOccurrences(of:"{{% tab name=\"\(tab1Name)\" %}}", with: ":::tab{id=\"\(tab1Name)\" label=\"\(tab1Name)\"}")
-    let step3 = step2.replacingOccurrences(of:"{{% tab name=\"\(tab2Name)\" %}}", with: ":::tab{id=\"\(tab2Name)\" label=\"\(tab2Name)\"}")
-    let step4 = step3.replacingOccurrences(of:"{{% /tab %}}", with: ":::")
-    let step5 = step4.replacingOccurrences(of:"{{< /tabs >}}", with: "::::")
+    let step1 = oldContent.replacingOccurrences(
+      of: "{{< tabs groupId=\"\(groupName)\" >}}", with: "::::tabs{variant=\"\(groupName)\"}")
+    let step2 = step1.replacingOccurrences(
+      of: "{{% tab name=\"\(tab1Name)\" %}}",
+      with: ":::tab{id=\"\(tab1Name)\" label=\"\(tab1Name)\"}")
+    let step3 = step2.replacingOccurrences(
+      of: "{{% tab name=\"\(tab2Name)\" %}}",
+      with: ":::tab{id=\"\(tab2Name)\" label=\"\(tab2Name)\"}")
+    let step4 = step3.replacingOccurrences(of: "{{% /tab %}}", with: ":::")
+    let step5 = step4.replacingOccurrences(of: "{{< /tabs >}}", with: "::::")
 
     return step5
+  }
+}
+
+struct ReplaceButton: Replacement {
+
+  /**
+    Example
+
+{{% button href="/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" icon="fas fa-download" %}}project zip file{{% /button %}}
+
+    The replacement captures the path and text values
+
+    */
+  private func captureValues(content: String) -> (String, String) {
+    guard
+      let capturePath = try? Regex(
+        //"(?s).*{{% button href=\"(.*)\" icon=\"fas fa-download\" %}}.*")
+        "(?s).*{{% button href=\"(.*)\" icon=\"fas fa-download\" %}}(.*){{% /button %}}.*")
+    else {
+      fatalError("Invalid RegEx")
+    }
+
+    var pathResult = ""
+    var textResult = ""
+
+    if let resultPathName = try? capturePath.wholeMatch(in: content) {
+      assert(resultPathName.output.count == 3)
+      pathResult = String(resultPathName.output[1].substring!)
+      textResult = String(resultPathName.output[2].substring!)
+    // } else {
+    //   print("no path match")
+    }
+
+    return (pathResult, textResult)
+  }
+
+  func replace(oldContent: String, forFile: URL) -> String {
+
+    let (path, text) = captureValues(content: oldContent)
+
+    let step1 = oldContent.replacingOccurrences(
+        of: "{{% button href=\"\(path)\" icon=\"fas fa-download\" %}}\(text){{% /button %}}",
+        with: ":button[\(text)]{href=\"/static\(path)\" action=download}")
+
+    return step1
   }
 }
 

@@ -4,11 +4,11 @@ chapter : false
 weight : 30
 ---
 
-This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/), an open-source library to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code. You installed the CLI as part of the [prerequisites instructions](/10_prerequisites/20_installs.html#installing-or-updating).  For thsii workshop we will use the Developer Preview of the new Amplify iOS Library. This release is entirely built in Swift and support modern Swift constructs, such as `async` / `await` patterns for concurrent code.
+This workshop proposes to use [AWS Amplify](https://aws.amazon.com/amplify/), an open-source library to create and integrate with a cloud-based backend.  AWS Amplify comprises two components: a [command line tool](https://aws-amplify.github.io/docs/cli-toolchain/quickstart) to easily provision cloud-based services from your laptop and a [library](https://aws-amplify.github.io/docs/ios/start) to access these services from your application code. You installed the CLI as part of the [prerequisites instructions](/10_prerequisites/20_installs.html#installing-or-updating).  For this workshop we will use the [Developer Preview of the new Amplify iOS Library](https://docs.amplify.aws/lib/devpreview/getting-started/q/platform/ios/). This release is entirely built in Swift and support modern Swift constructs, such as `async` / `await` patterns for concurrent code.
 
 ## Add Amplify to your application
 
-Amplify for iOS is distribued with [Swift Package Manager](https://www.swift.org/package-manager/) (SPM) or [Cocoapods](https://cocoapods.org/). In this section, you’ll use SPM to add the required Amplify packages to your project in Xcode.
+Amplify for iOS is distribued with [Swift Package Manager](https://www.swift.org/package-manager/) (SPM) or [Cocoapods](https://cocoapods.org/). In this workshop, we will use SPM to add the required Amplify packages to your project in Xcode.
 
 In Xcode, select **File**, **Add Packages...**
 

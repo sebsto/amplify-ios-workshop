@@ -8,14 +8,14 @@ Nowadays, most applications allow users to sign-in using a third-party identity,
 
 Just as for regular sign in flow, you can chose to present to your customers the Cognito Hosted UI or to build your own.  In this workshop, we chose to use the hosted UI because it handles most of the complexities of the OAuth flow for you.
 
-In this section, we're going to add a "Sign in With Apple" button to our application.  Because we are using the Cognito hosted web user interface, there is no code change required to add "Sign in With Apple" or "Login with xxx". This is a two steps process:
+In this section, we're going to add a "Sign in with Apple" button to our application.  Because we are using the Cognito hosted web user interface, there is no code change required to add "Sign in with Apple" or "Login with xxx". This is a two steps process:
 
-- we use our developer account on Apple Developer's portal and we configure "Sign in With Apple" for this application. This involves registering our app and the Cognito URLs on Apple Developer portal, and generate and download a private key to be included in Cognito's configuration.
+- we use our developer account on Apple Developer's portal and we configure "Sign in with Apple" for this application. This involves registering our app and the Cognito URLs on Apple Developer portal, and generate and download a private key to be included in Cognito's configuration.
 
 - we update the Amplify configuration to add Apple as an identity provider.
 
 {{% notice warning %}}
-You must have an account on Apple Developer's portal to continue this section. You can sign in using your Apple ID, the same you are using to connect to iCloud, iMessage, and the likes. Or you can signup and create a free account at [https://appleid.apple.com/account](https://appleid.apple.com/account)
+You must have an account on Apple Developer's portal to continue this section. You can sign in using your Apple ID, the same you are using to connect to iCloud, iMessage, and the likes. Or you can signup and create an account at [https://appleid.apple.com/account](https://appleid.apple.com/account)
 {{% /notice %}}
 
 ## Configure Sign in with Apple on Apple Developer portal
@@ -32,7 +32,7 @@ These three steps are done on the Apple Developer's portal.
 
 ![Signin with Apple 01](/images/60-10-signin-apple-01.png)
 
--On the **Certificates, Identifiers & Profile** page, select the ⊕ sign next to **Identifiers** to add an identifier for this app.
+- On the **Certificates, Identifiers & Profile** page, select the ⊕ sign next to **Identifiers** to add an identifier for this app.
 
 ![Signin with Apple 02](/images/60-10-signin-apple-02.png)
 
@@ -54,9 +54,9 @@ Take note of the **App ID Prefix (Team ID)** as we will pass this value to Ampli
 
 ## Create a Service Identifier 
 
-Now that our app is registered, let's create a Service Identifier for Sig in with Apple.
+Now that our app is registered, let's create a Service Identifier for Sign in with Apple.
 
-- On the **Certificates, Identifiers & Profile** page, select the **App IDs** from down menu on the top right side, then select **Services IDs**.
+- On the **Certificates, Identifiers & Profile** page, select **App IDs** drop down menu on the top right side, then select **Services IDs**.
 
 ![Signin with Apple 05](/images/60-10-signin-apple-05.png)
 

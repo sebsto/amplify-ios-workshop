@@ -29,7 +29,7 @@ amplify update auth
 
 5. Enter your Key ID for your OAuth flow:  Type your **Key ID** and **press enter** (in my example `3HL6GKYJ5L`)
 
-6. Enter your Private Key for your OAuth flow: Type your **private key as a one-line PEM format** (in my example `-----BEGIN PRIVATE KEY-----MIG  (redacted)  y6P-----END PRIVATE KEY-----%`)
+6. Enter your Private Key for your OAuth flow: Type your **private key as a one-line PEM format** (in my example `-----BEGIN PRIVATE KEY-----MIG  (redacted)  y6P-----END PRIVATE KEY-----`)
 
 `amplify` creates the required resources to deploy the Sign in with Apple configuration in the cloud.
 

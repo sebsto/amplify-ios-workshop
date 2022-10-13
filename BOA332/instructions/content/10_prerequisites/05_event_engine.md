@@ -36,6 +36,9 @@ The screen below has all the information you need to run the workshop:
 # export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 # export AWS_SESSION_TOKEN=AQoDYXdzEJr...<remainder of security token>
 
+# adjust region as desired 
+export AWS_DEFAULT_REGION=us-west-2
+
 # create an AWS CLI profile for this workshop
 # IF YOU ALREADY HAVE A PROFILE NAMED "WORKSHOP" => CHOOSE ANOTHER NAME !
 

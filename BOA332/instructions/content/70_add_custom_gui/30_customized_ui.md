@@ -12,7 +12,7 @@ In this section, we are going to implement our own Login user interface (a custo
 
 We start by adding a new method in the Application Delegate to sign in through the API instead of using the hosted UI.
 
-Add the `signIn()` function in file *Landmarks/AppDelegate.swift* (you can safely copy/paste the whole file below, modified lines are highlighted):
+Add the `signIn()` function in file *Landmarks/AppDelegate.swift* (you can safely copy/paste the whole file below, modified lines are explained right after the code snipet):
 
 ```swift { hl_lines=["138-151"]}
 import SwiftUI
@@ -218,6 +218,10 @@ extension AppDelegate {
     }
 }
 ```
+
+What did we change?
+
+- line 138 - 151 : we add code to call Cognito's `signIn(username, password)` API. This APi call is synchronous because of the `await` keyword.
 
 ## Add a Custom Login Screen
 

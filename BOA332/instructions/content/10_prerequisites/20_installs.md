@@ -47,15 +47,15 @@ If you already have one or several of these dependencies installed, just verify 
 
 ```bash
 brew --version
-# Homebrew 3.6.1
-# Homebrew/homebrew-core (git revision 796afdb1481; last commit 2022-09-16)
-# Homebrew/homebrew-cask (git revision b9570a8169; last commit 2022-09-16)
+# Homebrew 3.6.4
+# Homebrew/homebrew-core (git revision e8477fa641c; last commit 2022-10-04)
+# Homebrew/homebrew-cask (git revision d8c89fb29d; last commit 2022-10-04)
 
 aws --version
-# aws-cli/2.7.31 Python/3.10.6 Darwin/21.6.0 source/arm64 prompt/off
+# aws-cli/2.8.2 Python/3.10.8 Darwin/21.6.0 source/arm64 prompt/off
 
 amplify --version
-# 10.2.2
+# 10.2.3
 ```
 {{% /tab %}}
 {{< /tabs >}}

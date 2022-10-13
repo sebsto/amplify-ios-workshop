@@ -395,7 +395,7 @@ A `LandmarkRow` is a UI row in the landmark table.  We mark the `Landmark` objec
 `ObservedObject` directive is part of the [SwiftUI framework](https://developer.apple.com/documentation/swiftui/observedobject). It is a property wrapper type that subscribes to an observable object and invalidates a view whenever the observable object changes. 
 {{% /notice %}}
 
-You can just add the `@ObservedObject` directive in front of `var landmark: Landmark` line or copy / paste the whole file here:
+Open *Landmarks/LandmarkRow.swift* and add the `@ObservedObject` directive in front of `var landmark: Landmark` line or copy / paste the whole file here:
 
 ```swift {hl_lines=[11]}
 /*
@@ -441,6 +441,8 @@ struct LandmarkRow_Previews: PreviewProvider {
 **Landmark class** 
 
 In order to make `Landmark` observable, we need to transform this `struct` into a full fledged `class`. This implies adding an initializer and a few fields, such as `CodingKeys` to make it conforming to [Decodable](https://developer.apple.com/documentation/swift/codable) protocol.
+
+Open *Landmarks/Models/Landmark.swift* and copy / paste the code below.
 
 ```swift {hl_lines=[11,22,"25-38",41,63,"80-89"]}
 /*
@@ -548,7 +550,7 @@ What we did just change ?
 
 - line 25-38 : we add a new initialiser `init(from: Decoder)` to comply to the `Decodable` protocol. The initiliazer also triggers the image download when an instance of `Landmark` is created.
 
-- line 41 : because `Landmark` is now a class, we moved the initializer created in previosu step to the core class.
+- line 41 : because `Landmark` is now a class, we moved the initializer created in previous step to the core class.
 
 - line 63 : we added the image initialization code to the existing initializer.
 
@@ -568,7 +570,7 @@ After a few seconds, you should see the application running in the iOS simulator
 ![run](/images/40-30-appsync-code-2.png)
 
 {{% notice tip %}}
-When you start the app, you will notice the table's rows are populated as soon as the landmark data are fetched from the API.  At that moment, no image is shown (to be correct, the white square placeholder image is shown). As Amazon S3 downloads finish, images are added asynchronously to the table's rows.
+When you start the app, you will notice the table's rows are populated as soon as the landmark data are fetched from the API.  At that moment, no image is shown (the grey square placeholder image is shown). As Amazon S3 downloads finish, images are added asynchronously to the table's rows.
 {{% /notice %}}
 
 Now that we have the basic building blocks of the app defined, let's explore the options offered to customize the authentication user interface and user experience.

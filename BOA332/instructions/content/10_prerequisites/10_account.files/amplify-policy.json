@@ -16,6 +16,7 @@
                 "cloudformation:DescribeStackSet",
                 "cloudformation:DescribeStackSetOperation",
                 "cloudformation:DescribeStacks",
+                "cloudformation:ListStackResources",
                 "cloudformation:UpdateStack",
                 "cloudformation:UpdateStackSet",
                 "cloudfront:CreateCloudFrontOriginAccessIdentity",
@@ -44,7 +45,7 @@
                 "cognito-idp:UpdateUserPool",
                 "cognito-idp:UpdateUserPoolClient",
                 "cognito-idp:CreateResourceServer",
-                "cognito-idp:DeleteResourceServer",                
+                "cognito-idp:DeleteResourceServer",
                 "cognito-idp:ListUserPoolClients",
                 "dynamodb:CreateTable",
                 "dynamodb:DeleteItem",
@@ -69,10 +70,11 @@
                 "lambda:InvokeAsync",
                 "lambda:InvokeFunction",
                 "lambda:RemovePermission",
+                "lambda:TagResource",
                 "lambda:UpdateFunctionCode",
-                "lambda:UpdateFunctionConfiguration",                
+                "lambda:UpdateFunctionConfiguration",
                 "s3:*",
-                "amplify:*"                
+                "amplify:*"
             ],
             "Resource": "*"
         }

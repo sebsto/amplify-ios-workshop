@@ -24,7 +24,7 @@ We choose to write all AWS specific code in the `AppDelegate` class, to avoid sp
 
 ## Add authentication code
 
-Let's start to add a flag in the `UserData` class to keep track of authentication status. Highlighted lines show the update.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
+Let's start to add a flag in the `UserData` class to keep track of authentication status. We add line height to the existing code.  You can copy/paste the whole content to replace *Landmarks/Models/UserData.swift* :
 
 ```swift {linenos=false,hl_lines=[8-8]}
 // Landmarks/Models/UserData.swift
@@ -173,13 +173,13 @@ What did we add ?
 
 - line 2-4 : we import Amplify libraries. ClientRuntime is part of the AWS SDK, it is just required to change the logging verbosity of the AWS SDK for Swift.
 
-- line 23-25 : we initialize Amplify
+- line 24-25 : we initialize Amplify
 
-- line 41-77 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
+- line 37-75 :  we add an `Amplify.Hub.listen(to: .auth)` switch statement to listen for changes in authentication status. That code calls `self.updateUI()` to update the `isSignedIn` flag inside the `userData` object.  SwiftUI will automatically trigger a user interface refresh when the state of this object changes.  You can learn more about SwiftUI binding in [the SwiftUI documentation](https://developer.apple.com/documentation/swiftui/state_and_data_flow).
 
-- line 98-119 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
+- line 95-116 : we add an `authenticateWithHostedUI()` method to trigger the UI flow using Cognito's [hosted web user interface](https://aws.amazon.com/premiumsupport/knowledge-center/cognito-hosted-web-ui/).
 
-- line 122-129 : we add a `signOut()` method to sign the user out.
+- line 119-125 : we add a `signOut()` method to sign the user out.
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 

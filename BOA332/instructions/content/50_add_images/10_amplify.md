@@ -4,11 +4,11 @@ chapter : false
 weight : 10
 ---
 
-Now that we have the user authentication and API in place, let's tackle the storage of the image.  The current version of the application is loading the landmark's images from a local bundle.  The images are located in *Landmarks/Resources* folder and `Data.swift` has the logic to load the image.  The class `ImageStore` reads the local bundle and maintain an in memory cache to avoid reading the same image from the bundle over and over again.
+Now that we have the user authentication and API in place, let's tackle the storage of the image.  The current version of the application is loading the landmark's images from a local bundle.  The images are located in *Landmarks/Resources* folder and `Data.swift` has the logic to load the images.  The class `ImageStore` reads the local bundle and maintain an in-memory cache to avoid reading the same image from the bundle over and over again.
 
 In addition to providing Authentication and API management, Amplify also offers a [storage service](https://aws-amplify.github.io/docs/ios/storage) for applications.  The Storage service is backed by [Amazon S3](https://docs.aws.amazon.com/en_pv/AmazonS3/latest/gsg/GetStartedWithS3.html) and a set of client classes to easily download and upload files from your applications.  
 
-We're going to follow a similar pattern as the from previous two sections:
+We're going to follow a similar pattern as in the two previous sections:
 
 - we will first use Amplify command line to provision backend resources
 - then we will modify the application code to leverage the storage service.

@@ -353,7 +353,7 @@ After a few seconds, you should see the application running in the iOS simulator
 ![run](/images/40-30-appsync-code-2.png)
 
 {{% notice tip %}}
-If you did not sign out last time you started the application, you are still signed in.  This is expected as the Amplify` library stores the token locally and automatically refreshes the token when it expires.
+If you did not sign out last time you started the application, you are still signed in.  This is expected as the Amplify library stores the token locally and automatically refreshes the token when it expires.
 {{% /notice %}}
 
 At this stage, we have hybrid data sources.  The Landmark list is loaded from the GraphQL API, but the images are still loaded from the local bundle.  In the next section, we are going to move the images to Amazon S3.

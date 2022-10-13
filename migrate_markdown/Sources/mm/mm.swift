@@ -21,20 +21,58 @@ import Foundation
 #endif
 
 protocol Replacement {
-  func replace(oldContent: String) -> String
+  func replace(oldContent: String, forFile: URL) -> String
 }
 let changes: [Replacement] = [
 
+  // notice warning
+  ReplaceEnclosure(
+    src: Enclosure(start: "{{% notice warning %}}\n", end: "\n{{% /notice %}}"),
+    dst: Enclosure(start: "::alert[", end: "]{header=\"Warning\" type=\"warning\"}")
+  ),
+
   // notice info
   ReplaceEnclosure(
-    src: Enclosure(start: "{{% notice info %}}", end: "{{% /notice %}}"),
+    src: Enclosure(start: "{{% notice info %}}\n", end: "\n{{% /notice %}}"),
     dst: Enclosure(start: "::alert[", end: "]{header=\"Info\" type=\"info\"}")
-  )
+  ),
+
+  // notice tip
+  ReplaceEnclosure(
+    src: Enclosure(start: "{{% notice tip %}}\n", end: "\n{{% /notice %}}"),
+    dst: Enclosure(start: "::alert[", end: "]{header=\"Tip\" type=\"sucess\"}")
+  ),
+
+  // notice note
+  ReplaceEnclosure(
+    src: Enclosure(start: "{{% notice note %}}\n", end: "\n{{% /notice %}}"),
+    dst: Enclosure(start: "::alert[", end: "]{header=\"Note\" type=\"info\"}")
+  ),
+
+  // change image URL
+  ReplaceImages(),
+
+  // re:Invent to re:\Invent
+  ReplaceReIvent(),
+
+  // in _index.md, remove titles and pre front matter
+  ReplaceTitlesAndPreInIndex(),
+
+  // Tabs
+  ReplaceTwoTabs()
 ]
 
 struct Enclosure {
   let start: String
   let end: String
+
+  /**
+Example:
+
+{{% notice note %}}
+...
+{{% /notice %}}
+*/
 }
 
 struct ReplaceEnclosure: Replacement {
@@ -42,10 +80,113 @@ struct ReplaceEnclosure: Replacement {
   let src: Enclosure
   let dst: Enclosure
 
-  func replace(oldContent: String) -> String {
+  func replace(oldContent: String, forFile: URL) -> String {
     let step1 = oldContent.replacingOccurrences(of: src.start, with: dst.start)
     let step2 = step1.replacingOccurrences(of: src.end, with: dst.end)
     return step2
+  }
+}
+
+struct ReplaceTwoTabs: Replacement {
+
+/**
+Example:
+
+{{< tabs groupId="installs" >}}
+{{% tab name="Install" %}}
+...
+text
+...
+{{% /tab %}}
+{{% tab name="Verify" %}}
+...
+text
+...
+{{% /tab  %}}
+{{< /tabs >}}
+
+The replacement captures the groupID and name values
+*/
+
+  private func captureGroupName(content: String) -> String {
+    guard let captureGroupId = try? Regex("(?s).*{{< tabs groupId=\"(.*?)\" .}}\n.*") else {
+        fatalError("Invalid RegEx")
+    }
+
+    var result = ""
+
+    if let resultGroupId = try? captureGroupId.wholeMatch(in: content) {
+        result = String(resultGroupId.output[1].substring!)
+    // } else {
+    //     print("no group match")
+    }
+
+    return result
+  }
+
+  private func captureTabNames(content: String) -> (String, String) {
+
+    // TODO try to do a reccuring capture group 
+    // https://regex101.com/r/3zV61W/1
+    // guard let captureTabNames = try? Regex("(?s).*?(?:{{% tab name=\"(.*?)\" %}})\n.*?") else {
+    guard let captureTabNames = try? Regex("(?s).*{{% tab name=\"(.*?)\" %}}\n.*{{% tab name=\"(.*?)\" %}}\n.*") else {
+        fatalError("Invalid RegEx")
+    }
+
+    var tab1Result = ""
+    var tab2Result = ""
+
+    if let resultTabName = try? captureTabNames.wholeMatch(in: content) {
+        assert(resultTabName.output.count==3)
+        tab1Result = String(resultTabName.output[1].substring!)
+        tab2Result = String(resultTabName.output[2].substring!)
+    // } else {
+    //     print("no tab match")
+    }
+
+    return (tab1Result, tab2Result)
+  }
+
+  func replace(oldContent: String, forFile: URL) -> String {
+
+    let groupName = captureGroupName(content: oldContent)
+    let (tab1Name, tab2Name) = captureTabNames(content: oldContent)
+
+    let step1 = oldContent.replacingOccurrences(of: "{{< tabs groupId=\"\(groupName)\" >}}", with: "::::tabs{variant=\"\(groupName)\"}")
+    let step2 = step1.replacingOccurrences(of:"{{% tab name=\"\(tab1Name)\" %}}", with: ":::tab{id=\"\(tab1Name)\" label=\"\(tab1Name)\"}")
+    let step3 = step2.replacingOccurrences(of:"{{% tab name=\"\(tab2Name)\" %}}", with: ":::tab{id=\"\(tab2Name)\" label=\"\(tab2Name)\"}")
+    let step4 = step3.replacingOccurrences(of:"{{% /tab %}}", with: ":::")
+    let step5 = step4.replacingOccurrences(of:"{{< /tabs >}}", with: "::::")
+
+    return step5
+  }
+}
+
+struct ReplaceTitlesAndPreInIndex: Replacement {
+  func replace(oldContent: String, forFile: URL) -> String {
+
+    guard forFile.lastPathComponent == "_index.md" else {
+      return oldContent
+    }
+    let step1 = oldContent.replacing(/### Section.*/, with: "")
+    let step2 = step1.replacing(/## .*/, with: "")
+    let step3 = step2.replacing(/pre : .*/, with: "")
+    return step3
+  }
+}
+
+struct ReplaceReIvent: Replacement {
+  func replace(oldContent: String, forFile: URL) -> String {
+    return oldContent.replacingOccurrences(of: "re:Invent", with: "re\\:Invent")
+  }
+}
+
+struct ReplaceImages: Replacement {
+  func replace(oldContent: String, forFile: URL) -> String {
+    guard let regex = try? Regex("]\\(/images/") else {
+      fatalError("Invalid regex")
+    }
+    return oldContent.replacing(regex, with: "](/static/images/")
   }
 }
 
@@ -72,7 +213,7 @@ public struct mm {
       }
       var newContent: String = oldContent
       for c in changes {
-        newContent = c.replace(oldContent: newContent)
+        newContent = c.replace(oldContent: newContent, forFile: f)
       }
 
       var newFile = newFilePath(oldFilePath: f)
@@ -81,11 +222,11 @@ public struct mm {
         newFile = renameIndexFile(newFile)
       }
 
-      if newContent == oldContent {
+      if newContent != oldContent {
         print("Saving new content to \(newFile)")
         try newContent.data(using: .utf8)!.write(to: newFile)
       }
-      
+
     }
   }
 

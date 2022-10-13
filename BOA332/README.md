@@ -4,14 +4,19 @@ This is the source code for [https://amplify-ios-workshop.go-aws.com/](https://a
 
 Before re:Invent 2022, current builds are available at [https://main.d1p0aatx1581oy.amplifyapp.com/](https://main.d1p0aatx1581oy.amplifyapp.com/)
 
-## In progress (status 10/3/2022)
+## In progress (status 10/13/2022)
 
-[] Refactor instructions for custom login UI
+- Testing 
+
+**October 13 2022**
+
+- automatic migration to Workshop Studio markdow format (see [the migration script](https://github.com/sebsto/amplify-ios-workshop/blob/main/migrate_markdown/Sources/mm/mm.swift) or [the studio branch](https://github.com/sebsto/amplify-ios-workshop/tree/studio))
 
 **October 10 2022**
 
 - Refactored workshop instructions to take into account code modifications (sections 1-5)  
 - Refactored workshop instructions for Sign in with Apple (sections 1-6)  
+- Refactored instructions for custom login UI
 
 **September 14 2022**
 
@@ -40,18 +45,18 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 ## TODO - Instructions 
 
-[] Update instructions to support new AWS Workshop Studio  
+[] Update instructions in Section 1 to support new AWS Workshop Studio  
 [X] ~~Update instructions to use SPM vs CocoaPods~~  
 [X] ~~Update Signin part to use "Signin With Apple" instead of "Login with facebook"~~  
 [X] ~~Refactoring workshop instructions for Signin With Apple~~  
-[] Update instructions to add custom signin UI  
+[X] ~~Update instructions to add custom signin UI~~ 
 [] Use Amplify Datastore rather than straigth API calls ?  (if we have time)  
 
 ## TODO - Infrastructure 
 
 [X] ~~refresh hugo version in local docker (run.sh)~  
 [X] ~~refresh hugo on Amplify Build (buildspec.yml)~~  
-[] Deploy on https://workshop.aws  
+[X] ~~Deploy on https://workshop.aws~~  
 [] Add Adbove Analytics tracking to web pages  
 [X] ~~fix error in hugo build~~  
 

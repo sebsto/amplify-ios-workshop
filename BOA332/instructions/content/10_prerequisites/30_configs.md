@@ -16,7 +16,7 @@ Before using `aws` command line, you need to configure a default **region** and 
 
 A best practice is to deploy your infrastructure close to your customers, let's configure a default AWS Region for this workshop : Oregon (*us-west-2*) for North America or Frankfurt (*eu-central-1*) for Europe.
 
-{{< tabs groupId="regions"  >}}
+{{< tabs groupId="regions" >}}
 {{% tab name="North America" %}}
 In the Terminal, type:
 
@@ -41,13 +41,13 @@ In the Terminal, type:
 
 (if the AWS CLI is already configured, you can create a new profile by typing `aws configure --profile workshop` )
 
-5. At the **AWS Access Key** prompt, enter **the IAM user access key**
+1. At the **AWS Access Key** prompt, enter **the IAM user access key**
 
-6. At the **AWS Secret Access Key** prompt, enter **the IAM user secret access key**
+2. At the **AWS Secret Access Key** prompt, enter **the IAM user secret access key**
 
-7. At the **Default region name**, enter the region close to your customers (in this workshop, we use **eu-central-1** for Europe)
+3. At the **Default region name**, enter the region close to your customers (in this workshop, we use **eu-central-1** for Europe)
 
-8. At the Default output format, keep the defaut **None**
+4. At the Default output format, keep the defaut **None**
 
 {{% /tab %}}
 {{< /tabs >}}

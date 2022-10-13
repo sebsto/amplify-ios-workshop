@@ -34,7 +34,7 @@ In the Terminal, type:
 
 {{% /tab %}}
 
-{{% tab  name="Europe" %}}
+{{% tab name="Europe" %}}
 In the Terminal, type:
 
 `aws configure`

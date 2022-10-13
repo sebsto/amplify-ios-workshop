@@ -57,7 +57,7 @@ aws --version
 amplify --version
 # 10.2.2
 ```
-{{% /tab  %}}
+{{% /tab %}}
 {{< /tabs >}}
 
 {{% notice note %}}

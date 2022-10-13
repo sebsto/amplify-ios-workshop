@@ -226,8 +226,9 @@ struct ReplaceTitlesAndPreInIndex: Replacement {
     }
     let step1 = oldContent.replacing(/### Section.*/, with: "")
     let step2 = step1.replacing(/## .*/, with: "")
-    let step3 = step2.replacing(/pre : .*/, with: "")
-    return step3
+    let step3 = step2.replacing(/# .*/, with: "")
+    let step4 = step3.replacing(/pre : .*/, with: "")
+    return step4
   }
 }
 

@@ -401,8 +401,9 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 
 1. In Xcode, right-click **Info.plist** and then choose **Open As** > **Source Code**.
 
-2. Add the following entry in URL scheme:
-{{< highlight xml "hl_lines=6-16" >}}
+2. Add the following entry (lines 6-16) in URL scheme:
+
+```xml  {hl_lines=["6-16"]} 
 <plist version="1.0">
 
      <dict>
@@ -422,7 +423,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 
      <!-- ... -->
      </dict>
-{{< /highlight >}}
+```
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 

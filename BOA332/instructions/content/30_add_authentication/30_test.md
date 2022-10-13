@@ -25,21 +25,11 @@ Click **Sign Out** to end the session and, after a short redirection to Cognito'
 In the Xcode console, you see some application debugging information like the username and profile of the signed in user.  
 
 ```text 
+Amplify initialized
+hostedUI()
 Sign in succeeded
 ==HUB== User signed In, update UI
-2022-10-06T10:16:01+0200 info CognitoIdentityProviderClient : [Logging] Request: POST https:443 
- Path: / 
- X-Amz-Target: AWSCognitoIdentityProviderService.GetUser, 
-Host: cognito-idp.eu-central-1.amazonaws.com, 
-x-amz-user-agent: aws-sdk-swift/1.0, 
-Content-Length: 1113, 
-Content-Type: application/x-amz-json-1.1, 
-User-Agent: aws-sdk-swift/1.0 api/cognito-identity-provider/1.0 os/iOS/16.0.0 lang/swift/5.7 lib/amplify-ios/1.27.1-swift-sdk-dev-preview.0 
- Optional([])
-
-... (redacted for brevity) ...
-
-User attribtues - [Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.sub, value: "cab0d396-008a-4131-87ee-4c6ae13436cc"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.emailVerified, value: "true"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.email, value: "stormacq@amazon.com")]
+User attribtues - [Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.sub, value: "c132b79e-fcc7-4e63-bc26-f9fe6da27e85"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.emailVerified, value: "true"), Amplify.AuthUserAttribute(key: Amplify.AuthUserAttributeKey.email, value: "stormacq@amazon.com")]
 ```
 
 {{% notice warning %}}

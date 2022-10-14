@@ -1,6 +1,6 @@
 #!/bin/sh -x
 
-SOURCE_DIR="/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/BOA332/instructions"
+SOURCE_DIR="/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/workshop/instructions"
 DESTINATION_DIR="/Users/stormacq/Documents/amazon/te/2022/reinvent/BOA332 iOS workshop/workshop/amplify-ios-workshop"
 docker run --rm -it \
            -v $(pwd):/src \

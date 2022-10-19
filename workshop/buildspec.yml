@@ -7,7 +7,7 @@ frontend:
         - cd BOA332/instructions
         - hugo --enableGitInfo
   artifacts:
-    baseDirectory: BOA332/instructions/public
+    baseDirectory: workshop/instructions/public
     files:
       - '**/*'
   cache:

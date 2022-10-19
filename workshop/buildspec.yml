@@ -4,7 +4,7 @@ frontend:
   phases:
     build:
       commands:
-        - cd BOA332/instructions
+        - cd workshop/instructions
         - hugo --enableGitInfo
   artifacts:
     baseDirectory: workshop/instructions/public

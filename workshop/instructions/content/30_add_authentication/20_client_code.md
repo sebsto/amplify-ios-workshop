@@ -12,13 +12,7 @@ Now that the cloud-based backend is ready, let's modify the application code to 
 
 The view navigation will look like this:
 
-{{<mermaid align="left">}}
-graph LR;
-    A(LandmarkApp) -->|entry point| B(LandingView)
-    B --> C{is user<br/>authenticated?}
-    C -->|no| D(UserBadge)
-    C -->|Yes| E(LandmarkList)
-{{< /mermaid >}}
+![authentication flow diagram](/images/30-20-flow-diagram.png)
 
 We choose to write all AWS specific code in the `AppDelegate` class, to avoid spreading dependencies all over the project. This is a design decision for this project, you may adopt other design for your projects. We use [class extension](https://docs.swift.org/swift-book/LanguageGuide/Extensions.html) mechanism to separate concerns (authentication, file access, API access) and make it possible to split concerns in multipe files. However, for this workshop, we kept all code in the `AppDelegate.swift` class for easy copy / paste.
 

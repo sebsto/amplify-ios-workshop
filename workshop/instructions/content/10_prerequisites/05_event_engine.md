@@ -10,36 +10,48 @@ When attending this workshop during an event organised by AWS, such as [AWS re:I
 Should you attend this workshop on your own or in a non-AWS event, you can skip this section and [proceed to next section](/10_prerequisites/10_iam_user.html#aws-account).
 {{% /notice %}}
 
-## Access AWS Event Engine Account
+## Access AWS Workshop Studio
 
-1. Open your browser and navigate to [https://dashboard.eventengine.run](https://dashboard.eventengine.run)
+1. Open your browser and navigate to [https://catalog.workshops.aws/join](https://catalog.workshops.aws/join).
 
-2. Read the Terms and Conditions and Acceptable Use Policy, then enter the 12 digits hashcode given by AWS instructor.
-![hash code](/images/10-05-10.png)
+2. Authenticate using one the proposed authentication mechanisms.
+![authenticate](/images/10-05-authenticate.png)
 
-3. Click **AWS Console**
-![link to console](/images/10-05-20.png)
+3. Enter the event access code and select **Next** (your instructor will give you the event access code).
+![hash code](/images/10-05-hashcode.png)
 
-The screen below has all the information you need to run the workshop:
-![open console](/images/10-05-30.png)
+4. Read and accept the terms and conditions. Select **I agree with the Terms and Conditions** select **Join event**.
+![terms and conditions](/images/10-05-terms.png)
 
-4. Please note the region that the event is using. **Only actions in this region are allowed.**
+The screen below has all the information you need to run the workshop
+![start](/images/10-05-start.png)
 
-5. Copy and paste the CLI credentials.  You will need these values thorough the workshop. Open a Terminal on your laptop and execute the set of `export` commands you copied from the event engine page:
+5. Select **Get Started** on the right side to access workshop instructions.
+![workshop](/images/10-05-workshop.png)
+
+6. Select **Get AWS CLI Credentials** on the bottom left side to receive the AWS credentials you will use to access the AWS temporary account.
+![credentials](/images/10-05-credentials.png)
+
+
+7. Copy and paste the CLI credentials.  You will need these values thorough the workshop. Open a Terminal on your laptop and execute the set of `export` commands you copied from the event engine page:
 
 ```bash
 # this is a copy paste from event engine console
 
 # !! PASTE THE LINES FROM AWS EVENT ENGINE PAGE !!
 
-# export AWS_ACCESS_KEY_ID=AKIAI44QH8DHBEXAMPLE
-# export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-# export AWS_SESSION_TOKEN=AQoDYXdzEJr...<remainder of security token>
+export AWS_ACCESS_KEY_ID="AS (redacted) 6B"
+export AWS_SECRET_ACCESS_KEY="pR (redacted) qr"
+export AWS_SESSION_TOKEN="IQ (redacted) e94="
+```
 
+8. Finally, execute the following script to finish setting up your environment. 
+
+```bash
 # adjust region as desired 
 export AWS_DEFAULT_REGION=us-west-2
 
-# create an AWS CLI profile for this workshop
+# This will create an AWS CLI profile for this workshop
 # IF YOU ALREADY HAVE A PROFILE NAMED "WORKSHOP" => CHOOSE ANOTHER NAME !
 
 # AFTER EXECUTING THE LINES COPIED FROM EVENT ENGINE, EXECUTE THE LINES BELOW
@@ -60,6 +72,6 @@ export AWS_SECRET_ACCESS_KEY=
 export AWS_SESSION_TOKEN=
 ```
 
-6. Finally, click the **Open AWS Console** button to open the AWS Console.  You can also copy the login link in case you want to return to the console later.
+9. Finally, select the **Open AWS Console** link on the bottom left side to open the AWS Console.  You can also copy the login link in case you want to return to the console later.
 
 Now that you have an AWS Account and a pair of Access Key / Secret Key, let's proceed to [the installation of development tools on your local machine](/10_prerequisites/20_installs.html).

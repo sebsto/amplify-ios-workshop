@@ -4,7 +4,7 @@ This is the source code for [https://amplify-ios-workshop.go-aws.com/](https://a
 
 Before re:Invent 2022, current builds are available at [https://main.d1p0aatx1581oy.amplifyapp.com/](https://main.d1p0aatx1581oy.amplifyapp.com/)
 
-## In progress (status 10/13/2022)
+## In progress (status 10/19/2022)
 
 - Testing 
 
@@ -12,6 +12,7 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 - Rename Amplify iOS Library to Amplify Libraries for Swift
 - Update instruction to add dependencies to Amplify Libraries for Swift 2.0.0
+- add instructions for Workshop studio
 
 **October 13 2022**
 
@@ -51,12 +52,12 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 ## TODO - Instructions 
 
-[] Update instructions in Section 1 to support new AWS Workshop Studio  
+[x] ~Update instructions in Section 1 to support new AWS Workshop Studio~  
 [X] ~~Update instructions to use SPM vs CocoaPods~~  
 [X] ~~Update Signin part to use "Signin With Apple" instead of "Login with facebook"~~  
 [X] ~~Refactoring workshop instructions for Signin With Apple~~  
-[X] ~~Update instructions to add custom signin UI~~ 
-[] Use Amplify Datastore rather than straigth API calls ?  (if we have time)  
+[X] ~~Update instructions to add custom signin UI~~  
+[] Use Amplify Datastore rather than straigth API calls ?  (if we have time) 
 
 ## TODO - Infrastructure 
 

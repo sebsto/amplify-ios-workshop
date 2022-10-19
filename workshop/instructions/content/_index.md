@@ -32,7 +32,7 @@ We divided this workshop in three parts :
 
 ### Audience
 
-This workshop assumes you are familiar with iOS development and tools, the Swift programing language, and typing commands in the Terminal.
+This workshop assumes you are familiar with iOS development and tools: Xcode, the Swift programing language, and typing commands in the Terminal.
 
 This workshop can be completed just with copy / paste - it is not required to type code or even to understand the code you copy/paste to follow instructions. However, familiarity with code will help you to get the most out of this workshop.
 

@@ -46,16 +46,11 @@ brew install jq
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
 
 ```bash
-brew --version
-# Homebrew 3.6.4
-# Homebrew/homebrew-core (git revision e8477fa641c; last commit 2022-10-04)
-# Homebrew/homebrew-cask (git revision d8c89fb29d; last commit 2022-10-04)
-
 aws --version
-# aws-cli/2.8.2 Python/3.10.8 Darwin/21.6.0 source/arm64 prompt/off
+# aws-cli/2.8.3 Python/3.10.8 Darwin/21.6.0 source/arm64 prompt/off
 
 amplify --version
-# 10.2.3
+# 10.3.0
 ```
 {{% /tab %}}
 {{< /tabs >}}

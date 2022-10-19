@@ -8,6 +8,11 @@ Before re:Invent 2022, current builds are available at [https://main.d1p0aatx158
 
 - Testing 
 
+**October 19 2022** 
+
+- Rename Amplify iOS Library to Amplify Libraries for Swift
+- Update instruction to add dependencies to Amplify Libraries for Swift 2.0.0
+
 **October 13 2022**
 
 - automatic migration to Workshop Studio markdow format (see [the migration script](https://github.com/sebsto/amplify-ios-workshop/blob/main/migrate_markdown/Sources/mm/mm.swift) or [the studio branch](https://github.com/sebsto/amplify-ios-workshop/tree/studio))

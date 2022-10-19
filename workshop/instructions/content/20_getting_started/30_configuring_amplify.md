@@ -14,7 +14,7 @@ In Xcode, select **File**, **Add Packages...**
 
 ![xcode add packages](/images/20-30-add-packages.png)
 
-In the top right search bar, type `https://github.com/aws-amplify/amplify-ios`. For **Dependency Rules**, select **Up to Next Major Version** and type `2.0.0` as branch name. Then, select **Add Package** button on the bottom right.
+In the top right search bar, type `https://github.com/aws-amplify/amplify-ios`. For **Dependency Rules**, select **Up to Next Major Version** and type `2.0.0` as version. Then, select **Add Package** button on the bottom right.
 
 ![xcode add amplify packages](/images/20-30-add-amplify-packages.png)
 

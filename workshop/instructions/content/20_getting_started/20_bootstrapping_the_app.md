@@ -6,15 +6,17 @@ weight : 20
 
 The starting point for the workshop is the [Apple Swift UI tutorial](https://developer.apple.com/tutorials/swiftui/tutorials) at the "Handling User Input" step. I slightly modified the app to make it a SwiftUI-only application. Start with the ZIP file provided below.
 
-1. Download the {{% button href="/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" icon="fas fa-download" %}}project zip file{{% /button %}}  
+1. Download the {{% button href="/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip" icon="fas fa-download" %}}project zip file{{% /button %}}
+
 The file has the following directory structure
+
 ![Directory Structure](/images/20-10-directory-structure.png)
 
 2. This workshop will start from the *Complete* version of the tutorial project.  In the remaining part of this workshop, `$PROJECT_DIRECTORY` will refer to `~/Downloads/amplify-ios-workshop/Complete/Landmarks`.  
 
     Unzip the file and open the Xcode project:
 
- ```bash
+```bash  
  # download the workshop ZIP file
  # TODO update download URL when final
  # curl -o ~/Downloads/HandlingUserInput.zip https://amplify-ios-workshop-new.go-aws.com/20_getting_started/20_bootstrapping_the_app.files/HandlingUserInput.zip

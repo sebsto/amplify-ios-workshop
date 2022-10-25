@@ -47,7 +47,7 @@ You should now be able to try out the following mutations and queries. Press the
 
 **Add a new Landmark** by copy/pasting the following and running the query:
 
-```graphql
+```graphql 
 mutation CreateLandmark($input: CreateLandmarkDataInput!) {
     createLandmarkData(input: $input) {
         id
@@ -57,7 +57,7 @@ mutation CreateLandmark($input: CreateLandmarkDataInput!) {
 
 Open the **Query Variables** section on the bottom and copy / paste the following data:
 
-```json
+```json 
 { "input" :
     {
         "name": "Lake Umbagog",
@@ -79,7 +79,7 @@ Open the **Query Variables** section on the bottom and copy / paste the followin
 
 Click the orange Play button (▶️) to execute the query. You should see teh following JSON in the `Logs` pane on the right side.
 
-```json
+```json 
   "data": {
     "createLandmarkData": {
       "id": "9999"
@@ -89,7 +89,7 @@ Click the orange Play button (▶️) to execute the query. You should see teh f
 
 Now, **get the Landmark** we just created by running this query:
 
-```graphql
+```graphql 
 query GetLandmark {
     getLandmarkData(id: 9999) {
         id
@@ -113,7 +113,7 @@ Click the orange Play button (▶️) to execute the query.
 
 **List all the landmarks** with this query :
 
-```graphql
+```graphql 
 query ListLandmarks {
     listLandmarkData {
         items {
@@ -140,7 +140,7 @@ Click the orange Play button (▶️) to execute the query.
 
 Finally, **delete the landmark** we created with this query:
 
-```graphql
+```graphql 
 mutation DeleteLandmark {
   deleteLandmarkData(input: { id: 9999 }) {
     id

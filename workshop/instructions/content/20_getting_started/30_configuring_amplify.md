@@ -38,7 +38,7 @@ The first time you use AWS Amplify in a project, Amplify needs to initialise you
 
 In a Terminal, type the following commands:
 
-```bash
+```bash  
 cd $PROJECT_DIRECTORY
 amplify init
 ```

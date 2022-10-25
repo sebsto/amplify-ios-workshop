@@ -16,7 +16,7 @@ Just like we added an authentication backend in the previous section, we use `am
 
 In a Terminal, type:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 amplify add api
 ```
@@ -47,7 +47,7 @@ Below is a schema that will suit our needs for storing and querying Landmarks.
 
 11. Copy the below schema to `$PROJECT_DIRECTORY/amplify/backend/api/amplifyiosworkshop/schema.graphql`, replacing the example schema content. You can copy / paste the below command:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 echo "type LandmarkData
     @model
@@ -86,7 +86,7 @@ There are a few things to notice about the schema:
 
 In a Terminal, assuming you are still in your project directory, type:
 
-```bash
+```bash 
 amplify push
 ```
 
@@ -108,14 +108,14 @@ The sample application we started from uses a local file (*Landmarks/Resources/l
 
 In a Terminal, type:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 ../../scripts/init_db.sh
 ```
 
 The script should output the following:
 
-```text
+```text no_copy
 Checking prerequisites
 Getting an access token
 CLIENT_ID=t33xxxxxxxxxxxxxxxxxxx3fk

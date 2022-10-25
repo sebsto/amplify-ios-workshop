@@ -9,7 +9,7 @@ Before we begin coding, there are a few things we need to install, update, and c
 ### Apple Software
 
 In order to develop native applications for iOS, you need to have [Xcode](https://apple.com/xcode) installed on your laptop.
-You can download and install Xcode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~2Gb, so it might take up to one hour depending on your network connection.
+You can download and install Xcode from [Apple's App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12).  The download is ~7Gb, so it might take up to one hour depending on your network connection.
 
 {{% notice note %}}
 This workshop requires at least [Swift 5.7](https://swift.org) and [Swift UI](https://developer.apple.com/xcode/swiftui/) framework.  These are provided by [Xcode 14](https://apple.com/xcode) or more recent.
@@ -24,7 +24,7 @@ You need different command line tools to be installed : `aws`, `amplify`, and `j
 
 Follow these instructions to install the prerequisites using [HomeBrew](https://brew.sh/) package manager. 
 
-```bash
+```bash  
 # install brew itself
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -45,7 +45,7 @@ brew install jq
 
 If you already have one or several of these dependencies installed, just verify you have the latest version.  Here are the versions we tested the workshop instructions with.  Any more recent version should work as well.
 
-```bash
+```bash  
 aws --version
 # aws-cli/2.8.3 Python/3.10.8 Darwin/21.6.0 source/arm64 prompt/off
 

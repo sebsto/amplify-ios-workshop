@@ -78,7 +78,7 @@ Now that our app is registered, let's create a Service Identifier for Sign in wi
 
 Amplify and Cognito shared these values when you added user authentication to the Cognito configuration. You can retrieve them back by typing the `amplify status` command in the project directory.  The value return contains a line like :
 
-```bash
+```bash 
 Hosted UI Endpoint: https://landmarks214c303c-214c303c-dev.auth.eu-central-1.amazoncognito.com/
 ```
 
@@ -126,7 +126,7 @@ The `.p8` file you just downloaded contains a private key in PEM format. This is
 
 To convert the `.p8` file content to a single line, you may use this bash command and paste the rwsult in the text editor.
 
-```bash
+```bash 
 cat ~/Downloads/AuthKey_*.p8 | tr -d '\n' | pbcopy 
 ```
 

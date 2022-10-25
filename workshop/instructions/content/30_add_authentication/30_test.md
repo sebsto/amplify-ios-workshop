@@ -24,7 +24,7 @@ Click **Sign Out** to end the session and, after a short redirection to Cognito'
 
 In the Xcode console, you see some application debugging information like the username and profile of the signed in user.  
 
-```text 
+```text no_copy
 Amplify initialized
 hostedUI()
 Sign in succeeded

@@ -35,7 +35,7 @@ The screen below has all the information you need to run the workshop
 
 7. Copy and paste the CLI credentials.  You will need these values thorough the workshop. Open a Terminal on your laptop and execute the set of `export` commands you copied from the event engine page:
 
-```bash
+```bash  
 # this is a copy paste from event engine console
 
 # !! PASTE THE LINES FROM AWS EVENT ENGINE PAGE !!
@@ -47,7 +47,7 @@ export AWS_SESSION_TOKEN="IQ (redacted) e94="
 
 8. Finally, execute the following script to finish setting up your environment. 
 
-```bash
+```bash  
 # adjust region as desired 
 export AWS_DEFAULT_REGION=us-west-2
 

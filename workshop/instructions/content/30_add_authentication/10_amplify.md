@@ -16,7 +16,7 @@ You can learn more about the Hosted UI experience in the [Amplify documentation]
 
 In a Terminal, type the following commands:
 
-```bash
+```bash  
 cd $PROJECT_DIRECTORY
 amplify add auth
 ```
@@ -43,7 +43,7 @@ amplify add auth
 
 Amplify generates configuration files in `$PROJECT_DIRECTORY/amplify`. To actually create the backend resources, type the following command:
 
-```bash
+```bash  
 amplify push
 ```
 

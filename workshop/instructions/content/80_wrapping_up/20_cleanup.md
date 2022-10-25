@@ -10,7 +10,7 @@ Amplify does a pretty good job of removing the cloud resources we've provisioned
 
 Let's amplify delete everything.  Open a Terminal and type:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 
 # let amplify delete the backend infrastructure

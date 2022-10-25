@@ -229,7 +229,7 @@ We implement our own custom login screen as a View.  To add a new Swift class to
 
 Copy / paste the code from below:
 
-```swift
+```swift 
 import SwiftUI
 import Combine
 
@@ -356,7 +356,7 @@ The `LandingView` is the view displayed when the application starts.  It routes 
 
 We update `LandingView` to make use of `CustomLoginView` with this code update:
 
-```swift
+```swift 
 // .wrappedValue is used to extract the Bool from Binding<Bool> type
 if (!$user.isSignedIn.wrappedValue) {
     CustomLoginView()
@@ -367,7 +367,7 @@ if (!$user.isSignedIn.wrappedValue) {
 
 This code is making the `LandingView` code simpler.  It displays `CustomLoginView` when user is not signed in, or `LandmarkList` otherwise.  You can safely copy/paste the full code below to replace the content of *Landmarks/LandingView.swift*:
 
-```swift
+```swift 
 //
 //  LandingView.swift
 //  Landmarks

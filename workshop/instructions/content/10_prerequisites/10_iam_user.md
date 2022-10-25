@@ -34,7 +34,7 @@ Once you have an AWS account, create an **IAM user** by following these steps:
 4. Click **JSON** tab and replace the policy with the one below, then click **Review Policy**
 ![Add Policy](/images/10-10-add-policy.png)
 
-```json
+```json  
 {
     "Version": "2012-10-17",
     "Statement": [

@@ -16,7 +16,7 @@ At high level, here is how we gonna proceed
 
 `UserData` holds a hard coded list of landmarks, loaded from a JSON file (*Landmarks/Resources/landmarkData.json*).  The `Data.swift` class loads the JSON file at application startup time using this line:
 
-```swift
+```swift 
 let landmarkData: [Landmark] = load("landmarkData.json")
 ```
 
@@ -48,7 +48,7 @@ Thanks to the strongly typed nature of GraphQL, Amplify generates Swift code to 
 
 In a Terminal, type the following commands to generate Swift code based on your GraphQL model:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 amplify codegen models
 ```
@@ -72,13 +72,13 @@ This is required until this [issue](https://github.com/aws-amplify/amplify-ios/i
 
 In *Landmarks/Models/LandmarkData+Schema.swift*, on line 32, replace 
 
-```swift
+```swift 
 model.pluralName = "LandmarkData" // BAD TO BE REMOVED
 ```
 
 with 
 
-```swift
+```swift 
     model.listPluralName = "LandmarkData"
 ```
 

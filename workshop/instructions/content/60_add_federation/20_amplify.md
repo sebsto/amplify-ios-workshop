@@ -14,7 +14,7 @@ There are four values to be collected from previous step.  Be sure you have it a
 
 In a terminal, type:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 amplify update auth
 ```
@@ -39,7 +39,7 @@ amplify update auth
 
 In a Terminal, assuming you are still in your project directory, type:
 
-```bash
+```bash 
 amplify push
 ```
 
@@ -47,7 +47,7 @@ amplify push
 
 Amplify updates the backend infrastructure, it adds the federation configuration to Amazon Cognito.  After a while, you should see the familiar message :
 
-```text
+```text 
 Deployment completed.
 ```
 

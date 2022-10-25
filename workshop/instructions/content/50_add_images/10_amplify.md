@@ -19,7 +19,7 @@ Just like we added the authentication and API, we use the `amplify` command line
 
 In a Terminal, type:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 amplify add storage
 ```
@@ -44,11 +44,11 @@ amplify add storage
 
 In a Terminal, assuming you are still in your project directory, type:
 
-```bash
-amplify push
+```bash 
+amplify push 
 ```
 
-7. Are you sure you want to continue? Review the table and verify the Storage service is being Created.  Accept the default (**Yes**) and press enter.
+1. Are you sure you want to continue? Review the table and verify the Storage service is being Created.  Accept the default (**Yes**) and press enter.
 
 Amplify creates the backend infrastructure : an Amazon S3 bucket.  After a while, the command should return with no error.
 
@@ -61,14 +61,14 @@ The sample application we started from uses local iamges (*Landmarks/Resources/.
 
 In a Terminal, type:
 
-```bash
+```bash 
 cd $PROJECT_DIRECTORY
 ../../scripts/init_s3.sh
 ```
 
 The script should output the following:
 
-```text 
+```text no_copy
 Uploading project images to your S3 bucket : amplifyiosworkshop06635f502f9649ddba87c7d388ca674008-dev/public
 upload: Landmarks/Resources/landmarkData.json to s3://amplifyiosworkshop06635f502f9649ddba87c7d388ca674008-dev/public/landmarkData.json
 upload: Landmarks/Resources/chincoteague.jpg to s3://amplifyiosworkshop06635f502f9649ddba87c7d388ca674008-dev/public/chincoteague.jpg
@@ -91,7 +91,7 @@ Now that the storage is in place and the images are in the cloud, let's modify t
 
 The `init_s3.sh` script is much shorter than the previous one we used to initialise the database.  The script uses the `aws` command line tool to synchronize the local resources directory with the Amazon S3 bucket.
 
-```bash
+```bash no_copy
 #
 # The code below is an extract from the script 'init_s3.sh'
 # Check the full script in $PROJECT_DIRECTORY/../../../

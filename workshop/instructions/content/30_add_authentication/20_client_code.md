@@ -196,7 +196,7 @@ Repeat the operation twice, once for `UserBadge.swift` and once for `LandingView
 
 The user badge is a very simple graphical view representing a big login button.
 
-```swift
+```swift 
 //  UserBadge.swift
 //  Landmarks
 
@@ -241,7 +241,7 @@ This `LandingView` selects the view to present based on authentication status.  
 
 Pay attention to the `@ObservedObject` annotation.  This tells SwiftUI to invalidate and redraw the View when the state of the object changes.  When user signs in or signs out, `LandingView` will automatically adjust and render the `UserBadge` or the `LandmarkList` view.
 
-```swift
+```swift 
 //
 //  LandingView.swift
 //  Landmarks
@@ -397,10 +397,7 @@ To do this, we add `landmarks://` to the app’s URL schemes:
 
 2. Add the following entry (lines 6-16) in URL scheme:
 
-```xml  {hl_lines=["6-16"]} 
-<plist version="1.0">
-
-     <dict>
+```xml  {hl_lines=["5-14"]}
      <!-- YOUR OTHER PLIST ENTRIES HERE -->
 
      <!-- ADD AN ENTRY TO CFBundleURLTypes for Cognito Auth -->
@@ -414,10 +411,10 @@ To do this, we add `landmarks://` to the app’s URL schemes:
              </array>
          </dict>
      </array>
-
-     <!-- ... -->
-     </dict>
 ```
+The complete file structure should look like this (redacted for brevity).
+
+![info.plist](/images/30-20-info-plist.png)
 
 Before proceeding to the next steps, **build** (&#8984;B) the project to ensure there is no compilation error.
 

@@ -4,7 +4,7 @@ import Foundation
 
   // when running inside docker
   // docker run --rm -it -v $(pwd):/src \
-  //            -v /Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/BOA332/instructions:/workshop-src \
+  //            -v /Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/workshop/instructions:/workshop-src \
   //            -v /Users/stormacq/Documents/amazon/te/2022/reinvent/BOA332\ iOS\ workshop/workshop/amplify-ios-workshop:/workshop-dst \
   //            swift:5.7-amazonlinux2 /bin/bash
   let SRC_FILE_PATH = "/workshop-src/content"
@@ -25,28 +25,31 @@ protocol Replacement {
 }
 let changes: [Replacement] = [
 
+  //code
+  ReplaceCode(),
+
   // notice warning
   ReplaceEnclosure(
     src: Enclosure(start: "{{% notice warning %}}\n", end: "\n{{% /notice %}}"),
-    dst: Enclosure(start: "::alert[", end: "]{header=\"Warning\" type=\"warning\"}")
+    dst: Enclosure(start: ":::alert{header=\"Warning\" type=\"warning\"}\n", end: "\n:::")
   ),
 
   // notice info
   ReplaceEnclosure(
     src: Enclosure(start: "{{% notice info %}}\n", end: "\n{{% /notice %}}"),
-    dst: Enclosure(start: "::alert[", end: "]{header=\"Info\" type=\"info\"}")
+    dst: Enclosure(start: ":::alert{header=\"Info\" type=\"info\"}\n", end: "\n:::")
   ),
 
   // notice tip
   ReplaceEnclosure(
     src: Enclosure(start: "{{% notice tip %}}\n", end: "\n{{% /notice %}}"),
-    dst: Enclosure(start: "::alert[", end: "]{header=\"Tip\" type=\"sucess\"}")
+    dst: Enclosure(start: ":::alert{header=\"Tip\" type=\"success\"}\n", end: "\n:::")
   ),
 
   // notice note
   ReplaceEnclosure(
     src: Enclosure(start: "{{% notice note %}}\n", end: "\n{{% /notice %}}"),
-    dst: Enclosure(start: "::alert[", end: "]{header=\"Note\" type=\"info\"}")
+    dst: Enclosure(start: ":::alert{header=\"Note\" type=\"info\"}\n", end: "\n:::")
   ),
 
   // change image URL
@@ -64,6 +67,77 @@ let changes: [Replacement] = [
   // Download button
   ReplaceButton(),
 ]
+
+struct ReplaceCode: Replacement {
+
+  /**
+
+```language {highlight} no_copy
+code
+```
+
+to
+
+:::code{language=language showCopyAction=false}
+code
+:::
+
+{highlight} if present is ignored
+{no_copy} if present is transformed to showCopyAction=false
+*/
+  private func captureLanguageName(content: String) -> String {
+    guard let captureLanguageName = try? Regex("^```(.*?) (.*)$") else {
+      fatalError("Invalid RegEx")
+    }
+
+    var result = ""
+
+    if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
+      result = String(captureLanguageName.output[1].substring!)
+      // print(result)
+      // } else {
+      //   print("no group match")
+    }
+
+    return result
+  }
+
+  private func captureNoCopy(content: String) -> Bool {
+    guard let captureLanguageName = try? Regex("^```.*(no_copy).*$") else {
+      fatalError("Invalid RegEx")
+    }
+
+    var result = ""
+
+    if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
+      result = String(captureLanguageName.output[1].substring!)
+      print(result)
+      // } else {
+      //   print("no group match")
+    }
+
+    return result == "no_copy"
+  }
+
+  func replace(oldContent: String, forFile: URL) -> String {
+
+    var result: String = ""
+    for line in oldContent.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline) {
+      let languageName = captureLanguageName(content: String(line))
+      let hasNoCopy = captureNoCopy(content: String(line))
+
+      guard let expressionToReplace = try? Regex("^```\(languageName) .*$") else {
+        fatalError("Invalid RegEx")
+      }
+      let noCopy = hasNoCopy ? " showCopyAction=false" : ""
+      let step1 = line.replacing(expressionToReplace, with: ":::code{language=\(languageName)\(noCopy)}")
+      result += "\(step1)\n"
+    }
+    let step2 = result.replacingOccurrences(of: "```", with: ":::")
+    return step2
+  }
+
+}
 
 struct Enclosure {
   let start: String
@@ -199,8 +273,8 @@ struct ReplaceButton: Replacement {
       assert(resultPathName.output.count == 3)
       pathResult = String(resultPathName.output[1].substring!)
       textResult = String(resultPathName.output[2].substring!)
-    // } else {
-    //   print("no path match")
+      // } else {
+      //   print("no path match")
     }
 
     return (pathResult, textResult)
@@ -211,8 +285,8 @@ struct ReplaceButton: Replacement {
     let (path, text) = captureValues(content: oldContent)
 
     let step1 = oldContent.replacingOccurrences(
-        of: "{{% button href=\"\(path)\" icon=\"fas fa-download\" %}}\(text){{% /button %}}",
-        with: ":button[\(text)]{href=\"/static\(path)\" action=download}")
+      of: "{{% button href=\"\(path)\" icon=\"fas fa-download\" %}}\(text){{% /button %}}",
+      with: ":button[\(text)]{href=\"/static\(path)\" action=download}")
 
     return step1
   }

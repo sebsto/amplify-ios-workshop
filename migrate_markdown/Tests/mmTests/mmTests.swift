@@ -172,6 +172,106 @@ text
 
     }
 
+    func testReplaceCode() {
+
+        // given
+        let src = 
+"""
+...
+```swift {linenos=false,hl_lines=[8-8]}
+// Landmarks/Models/UserData.swift
+import Combine
+import SwiftUI
+
+final class UserData: ObservableObject {
+    @Published var showFavoritesOnly = false
+    @Published var landmarks = landmarkData
+    @Published var isSignedIn : Bool = false
+}
+```
+...
+```xml  {hl_lines=["5-14"]} no_copy
+     <!-- YOUR OTHER PLIST ENTRIES HERE -->
+
+     <!-- ADD AN ENTRY TO CFBundleURLTypes for Cognito Auth -->
+     <!-- IF YOU DO NOT HAVE CFBundleURLTypes, YOU CAN COPY THE WHOLE BLOCK BELOW -->
+     <key>CFBundleURLTypes</key>
+     <array>
+         <dict>
+             <key>CFBundleURLSchemes</key>
+             <array>
+                 <string>landmarks</string>
+             </array>
+         </dict>
+     </array>
+```
+...
+```bash
+# this is a copy paste from event engine console
+
+# !! PASTE THE LINES FROM AWS EVENT ENGINE PAGE !!
+
+export AWS_ACCESS_KEY_ID="AS (redacted) 6B"
+export AWS_SECRET_ACCESS_KEY="pR (redacted) qr"
+export AWS_SESSION_TOKEN="IQ (redacted) e94="
+```
+...
+"""
+
+        let dst = 
+"""
+...
+:::code{language=swift}
+// Landmarks/Models/UserData.swift
+import Combine
+import SwiftUI
+
+final class UserData: ObservableObject {
+    @Published var showFavoritesOnly = false
+    @Published var landmarks = landmarkData
+    @Published var isSignedIn : Bool = false
+}
+:::
+...
+:::code{language=xml showCopyAction=false}
+     <!-- YOUR OTHER PLIST ENTRIES HERE -->
+
+     <!-- ADD AN ENTRY TO CFBundleURLTypes for Cognito Auth -->
+     <!-- IF YOU DO NOT HAVE CFBundleURLTypes, YOU CAN COPY THE WHOLE BLOCK BELOW -->
+     <key>CFBundleURLTypes</key>
+     <array>
+         <dict>
+             <key>CFBundleURLSchemes</key>
+             <array>
+                 <string>landmarks</string>
+             </array>
+         </dict>
+     </array>
+:::
+...
+:::code{language=bash}
+# this is a copy paste from event engine console
+
+# !! PASTE THE LINES FROM AWS EVENT ENGINE PAGE !!
+
+export AWS_ACCESS_KEY_ID="AS (redacted) 6B"
+export AWS_SECRET_ACCESS_KEY="pR (redacted) qr"
+export AWS_SESSION_TOKEN="IQ (redacted) e94="
+:::
+
+"""
+
+        // when 
+        let replace = ReplaceCode()
+        let changed = replace.replace(oldContent: src, forFile: URL(fileURLWithPath: "/dummy"))
+
+        // then 
+        XCTAssertEqual(dst, changed)
+        // try! dst.data(using: .utf8)!.write(to:  URL(fileURLWithPath:"/tmp/dst"))
+        // try! changed.data(using: .utf8)!.write(to: URL(fileURLWithPath:"/tmp/changed"))
+
+    }
+
     func testReplaceFilePath() {
         
         // given 

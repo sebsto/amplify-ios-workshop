@@ -14,7 +14,7 @@ import Foundation
 
   // when running on OSX (requires Xcode 14 and macOS 13)
   let SRC_FILE_PATH =
-    "/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/BOA332/instructions/content"
+    "/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/workshop/instructions/content"
   let DST_FILE_PATH =
     "/Users/stormacq/Documents/amazon/te/2022/reinvent/BOA332 iOS workshop/workshop/amplify-ios-workshop/content"
 

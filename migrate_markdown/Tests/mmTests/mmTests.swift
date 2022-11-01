@@ -206,7 +206,7 @@ final class UserData: ObservableObject {
      </array>
 ```
 ...
-```bash
+```bash  
 # this is a copy paste from event engine console
 
 # !! PASTE THE LINES FROM AWS EVENT ENGINE PAGE !!
@@ -258,6 +258,7 @@ export AWS_ACCESS_KEY_ID="AS (redacted) 6B"
 export AWS_SECRET_ACCESS_KEY="pR (redacted) qr"
 export AWS_SESSION_TOKEN="IQ (redacted) e94="
 :::
+...
 
 """
 
@@ -275,8 +276,8 @@ export AWS_SESSION_TOKEN="IQ (redacted) e94="
     func testReplaceFilePath() {
         
         // given 
-        let src : URL = URL(fileURLWithPath: "/workshop-src/content/index.md")
-        let dst : URL = URL(fileURLWithPath: "/workshop-dst/content/index.md")
+        let src : URL = URL(fileURLWithPath: "\(SRC_FILE_PATH)/index.md")
+        let dst : URL = URL(fileURLWithPath: "\(DST_FILE_PATH)/index.md")
 
         // when 
         let changed = mm().newFilePath(oldFilePath: src)
@@ -288,8 +289,8 @@ export AWS_SESSION_TOKEN="IQ (redacted) e94="
 
     func testRenameIndex() {
         // given 
-        let src : URL = URL(fileURLWithPath: "/workshop-src/content/_index.md")
-        let dst : URL = URL(fileURLWithPath: "/workshop-src/content/index.en.md")
+        let src : URL = URL(fileURLWithPath: "\(DST_FILE_PATH)/_index.md")
+        let dst : URL = URL(fileURLWithPath: "\(DST_FILE_PATH)/index.en.md")
 
         // when 
         let changed = mm().renameIndexFile(src)

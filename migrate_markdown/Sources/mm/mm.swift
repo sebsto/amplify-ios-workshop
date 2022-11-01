@@ -16,7 +16,7 @@ import Foundation
   let SRC_FILE_PATH =
     "/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/workshop/instructions/content"
   let DST_FILE_PATH =
-    "/Users/stormacq/Documents/amazon/te/2022/reinvent/BOA332 iOS workshop/workshop/amplify-ios-workshop/content"
+    "/Users/stormacq/Documents/amazon/te/2022/reinvent/BOA332iOSworkshop/workshop/amplify-ios-workshop/content"
 
 #endif
 
@@ -111,7 +111,7 @@ code
 
     if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
       result = String(captureLanguageName.output[1].substring!)
-      print(result)
+      //print(result)
       // } else {
       //   print("no group match")
     }

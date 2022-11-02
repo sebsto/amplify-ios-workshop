@@ -298,10 +298,10 @@ struct ReplaceTitlesAndPreInIndex: Replacement {
     guard forFile.lastPathComponent == "_index.md" else {
       return oldContent
     }
-    let step1 = oldContent.replacing(/\n### Section.*/, with: "")
-    let step2 = step1.replacing(/\n## .*/, with: "")
-    let step3 = step2.replacing(/\n# .*/, with: "")
-    let step4 = step3.replacing(/pre : .*/, with: "")
+      let step1 = oldContent.replacing(#/\n### Section.*/#, with: "")
+      let step2 = step1.replacing(#/\n## .*/#, with: "")
+      let step3 = step2.replacing(#/\n# .*/#, with: "")
+      let step4 = step3.replacing(#/pre : .*/#, with: "")
     return step4
   }
 }
@@ -363,7 +363,7 @@ public struct mm {
 
   private func getMarkdownFiles() -> [URL] {
 
-    let markdownFiles = /.md$/
+    let markdownFiles = #/.md$/#
     let files = listFiles(
       startAt: SRC_FILE_PATH,
       forFiles: markdownFiles)

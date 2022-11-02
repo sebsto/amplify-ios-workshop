@@ -18,6 +18,9 @@ let package = Package(
         .executableTarget(
             name: "mm",
             dependencies: []
+
+//            cxxSettings: [.unsafeFlags(["-Xswiftc -enable-bare-slash-regex"]) ],
+
 //            linkerSettings: [
 //                .linkedLibrary("libswift_StringProcessing")
 //            ]

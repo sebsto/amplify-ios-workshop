@@ -203,7 +203,7 @@ extension AppDelegate {
         
         do {
             
-            let task = try await Amplify.Storage.downloadData(key: "\(name).jpg")
+            let task = Amplify.Storage.downloadData(key: "\(name).jpg")
             let data = try await task.value
             print("Image \(name) downloaded")
             

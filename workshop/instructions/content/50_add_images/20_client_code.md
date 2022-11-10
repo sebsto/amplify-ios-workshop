@@ -196,7 +196,7 @@ extension AppDelegate {
         
         do {
             
-            let task = try await Amplify.Storage.downloadData(key: "\(name).jpg")
+            let task = Amplify.Storage.downloadData(key: "\(name).jpg")
             let data = try await task.value
             print("Image \(name) downloaded")
             
@@ -220,7 +220,7 @@ What did we add ?
 
 - line 165-186 : add a synchronous method to download files from S3.
 
-Notice that `Amplify.Storage.downloadData()` class is synchronous when using the `await` keyword. 
+Notice that `task.value()` call is where the download happens. It is synchronous, hence using the `await` keyword. 
 
 ## Update ImageStore class
 

@@ -4,10 +4,10 @@ frontend:
   phases:
     build:
       commands:
-        - cd workshop/instructions
+        - cd workshop-hugo/instructions
         - hugo --enableGitInfo
   artifacts:
-    baseDirectory: workshop/instructions/public
+    baseDirectory: workshop-hugo/instructions/public
     files:
       - '**/*'
   cache:

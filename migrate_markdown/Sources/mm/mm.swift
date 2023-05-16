@@ -13,10 +13,11 @@ import Foundation
 #elseif os(macOS)
 
   // when running on OSX (requires Xcode 14 and macOS 13)
+  let SRC_BASE_PATH="/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop"
   let SRC_FILE_PATH =
-    "/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop/workshop/instructions/content"
+    "\(SRC_BASE_PATH)/workshop-hugo/instructions/content"
   let DST_FILE_PATH =
-    "/Users/stormacq/Documents/amazon/te/2022/reinvent/BOA332iOSworkshop/workshop/amplify-ios-workshop/content"
+    "\(SRC_BASE_PATH)/workshop-aws/amplify-ios-workshop/content"
 
 #endif
 
@@ -331,6 +332,9 @@ public struct mm {
   private func main() throws {
 
     let files = getMarkdownFiles()
+    if files.isEmpty {
+      print("No markdown files in \(SRC_FILE_PATH)")
+    }
 
     for f in files {
       print("")

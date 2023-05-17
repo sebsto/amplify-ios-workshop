@@ -1,14 +1,14 @@
 ---
-title : "Bring your own UI"
+title : "Use the Amplify UI Authenticator component for Swift"
 chapter : false
 weight : 30
 ---
 
 The Amazon Cognito web hosted authentication screen is not the only option to authenticate your customers. Amazon Cognito provides low-level APIs allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://docs.amplify.aws/lib/auth/signin/q/platform/ios).
 
-But building your own UI for all authentication flows is time-consuming and undifferentiated. Amplify UI is a collection of UI components you can reuse in your applications and customise according to your own graphic charter.
+But building your own UI for all authentication flows is time-consuming and undifferentiated. This is why we built the [Amplify UI library](https://ui.docs.amplify.aws/). Amplify UI is a collection of UI components you can reuse in your applications and customise according to your own graphic charter.
 
-In this section, you are going to use the [Amplify UI Authenticator component](https://ui.docs.amplify.aws/swift/connected-components/authenticator) to provide our customers with a SwiftUI native authentication screen. The component immplements signin, signup, confirm signup, forget passowrd and other authentication-related flows.
+In this section, you are going to use the [Amplify UI Authenticator component](https://ui.docs.amplify.aws/swift/connected-components/authenticator) to provide your customers with a SwiftUI native authentication screen. The component implements signin, signup, confirm signup, forget password and other authentication-related flows.
 
 ## Add the Authenticator UI library
 
@@ -18,11 +18,11 @@ In Xcode, select **File**, **Add Packages...**
 
 ![xcode add packages](/images/20-30-add-packages.png)
 
-In the top right search bar, type `https://github.com/aws-amplify/amplify-ui-swift-authenticator`. For **Dependency Rules**, select **Up to Next Major Version** and type `1.0.0-dev-preview` as version. Then, select **Add Package** button on the bottom right.
+In the top right search bar, type `https://github.com/aws-amplify/amplify-ui-swift-authenticator`. For **Dependency Rules**, select **Up to Next Major Version** and type `1.0.0` as version. Then, select **Add Package** button on the bottom right.
 
 ![xcode add amplify packages](/images/70-30-add-authenticator-package.png)
 
-Depending on the internet bandwidth and the model of your laptop, it might take a few minutes to download and verify Amplify and its dependencies.
+Depending on the internet bandwidth and the model of your laptop, it might take a few minutes to download and verify the Amplify UI component.
 
 ![xcode download amplify packages](/images/70-30-download-authenticator-package.png)
 
@@ -32,9 +32,9 @@ Select the `Authenticator` library provided by the package, then select **Add Pa
 
 ## Add the Amplify Authenticator Component
 
-The Amplify Authenticator component wraps the views you want to place behind an authentication wall. It passes a `state` object that contains the current user profile, when the user is signed in. It also contains a `signOut()` method, allowing to you trigger the signout without expsoing the `Amplify` package itself.
+The Amplify UI Authenticator component wraps the views you want to place behind an authentication wall. It passes a `state` object that contains the current user profile, when the user is signed in. It also contains a `signOut()` method, allowing to you trigger the signout without exposing the `Amplify` package itself.
 
-In *LandingView.swift* we will wrap our `LandMarkList` view with the `Authenticator` conponent.
+Let's wrap our `LandMarkList` view with the `Authenticator` conponent in *LandingView.swift*.
 
 Select *LandingView.swift* and replace its content with the following code. You can safely copy / paste the code from below:
 
@@ -63,8 +63,8 @@ struct LandingView: View {
 
 The code is straigthforward:
 
-- Line 8 : I import the `Authenticator` amplify library 
-- Line 16 : I wrap the main view of the application (`LandmarkList`) with the `Authenticator` component. The `state` variable allows the code to know about the currently authenticated user, when needed. 
+- Line 8 : import the `Authenticator` amplify library 
+- Line 16 : wrap the main view of the application (`LandmarkList`) with the `Authenticator` component. The `state` variable allows the code to know about the currently authenticated user, when needed. 
 
 <!-- You can view the whole code changes for this section [from this commit](https://github.com/sebsto/amplify-ios-workshop/commit/bb8c87d359c8970ff10d5e06cc49786ee5965e4f). -->
 
@@ -74,7 +74,7 @@ Build and launch the application to verify everything is working as expected. Cl
 
 ![build](/images/20-20-xcode.png)
 
-If you are still authenticated, click **Sign Out** and click the user badge to sign in again. You should see this:
+If you are still authenticated, click **Sign Out** and you should see this:
 
 ![customized drop in UI](/images/70-30-authenticator-component.png)
 
@@ -96,7 +96,7 @@ You can use [themes](https://ui.docs.amplify.aws/swift/connected-components/auth
 
 As a last exercise, you may want to customise the Authenticator UI theme to change the colors and fonts.  Here is the code I use in *LandingView.swift*:
 
-```swift
+```swift 
 //
 //  LandingView.swift
 //  Landmarks

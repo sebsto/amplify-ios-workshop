@@ -204,7 +204,7 @@ The replacement captures the groupID and name values
 
   private func captureTabNames(content: String) -> (String, String) {
 
-    // TODO try to do a reccuring capture group
+    // TODO try to do a recurring capture group
     // https://regex101.com/r/3zV61W/1
     // guard let captureTabNames = try? Regex("(?s).*?(?:{{% tab name=\"(.*?)\" %}})\n.*?") else {
     guard

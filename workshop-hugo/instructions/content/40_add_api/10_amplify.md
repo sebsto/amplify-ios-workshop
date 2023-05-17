@@ -23,7 +23,7 @@ amplify add api
 
 1. Please select from one of the below mentioned services.  Use the arrow keys to select **GraphQL** and press enter.
 
-2. Use the arrow keys to select **Authorization modes: API key** and press enter.
+2. Use the arrow keys to select the current authentication mode **Authorization modes: API key** and press enter to change it.
 
 3. Use the arrow keys to select **Amazon Cognito User Pool** and press enter.
 

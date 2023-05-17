@@ -347,9 +347,11 @@ The list of all changes we made to the code is visible in [this commit](https://
 ## Launch the app
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
+
 ![build](/images/20-20-xcode.png)
 
 After a few seconds, you should see the application running in the iOS simulator.
+
 ![run](/images/40-30-appsync-code-2.png)
 
 {{% notice tip %}}

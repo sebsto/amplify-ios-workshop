@@ -9,4 +9,4 @@ pre : "<b>7. </b>"
 
 ## Customize the Login User Interface
 
-* [Bring your own UI](/70_add_custom_gui/30_customized_ui.html)
+* [Use the Amplify UI Authenticator component](/70_add_custom_gui/30_customized_ui.html) for Swift.

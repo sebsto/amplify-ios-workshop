@@ -4,368 +4,39 @@ chapter : false
 weight : 30
 ---
 
-Amazon Cognito provides low level API allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://docs.amplify.aws/lib/auth/signin/q/platform/ios).
+The Amazon Cognito web hosted authentication screen is not the only option to authenticate your customers. Amazon Cognito provides low-level APIs allowing you to implement your custom authentication flows, when needed.  It allows to build your own Signin, Signup, Forgot Password Views or to build your own flows.  Check the available APIs in the [Amplify documentation](https://docs.amplify.aws/lib/auth/signin/q/platform/ios).
 
-In this section, we are going to implement our own Login user interface (a custom SwiftUI View) and interact with the `Amplify.Auth.signIn()` API instead of using the Cognito hosted UI.
+But building your own UI for all authentication flows is time-consuming and undifferentiated. Amplify UI is a collection of UI components you can reuse in your applications and customise according to your own graphic charter.
 
-## Add API based signin in Application Delegate
+In this section, you are going to use the [Amplify UI Authenticator component](https://ui.docs.amplify.aws/swift/connected-components/authenticator) to provide our customers with a SwiftUI native authentication screen. The component immplements signin, signup, confirm signup, forget passowrd and other authentication-related flows.
 
-We start by adding a new method in the Application Delegate to sign in through the API instead of using the hosted UI.
+## Add the Authenticator UI library
 
-Add the `signIn()` function in file *Landmarks/AppDelegate.swift* (you can safely copy/paste the whole file below, modified lines are explained right after the code snipet):
+Let's start by adding the Authenticator UI library dependency to our project.
 
-```swift { hl_lines=["138-151"]}
-import SwiftUI
-import ClientRuntime
-import Amplify
-import AWSCognitoAuthPlugin
-import AWSAPIPlugin
-import AWSS3StoragePlugin
+In Xcode, select **File**, **Add Packages...**
 
-class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
-    
-    // https://stackoverflow.com/questions/66156857/swiftui-2-accessing-appdelegate
-    static private(set) var instance: AppDelegate! = nil
-    
-    public let userData = UserData()
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        AppDelegate.instance = self
-        
-        do {
-            // reduce verbosity of AWS SDK
-            SDKLoggingSystem.initialize(logLevel: .warning)
-            
-            try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
-            try Amplify.add(plugin: AWSS3StoragePlugin())
+![xcode add packages](/images/20-30-add-packages.png)
 
-            try Amplify.configure()
-            print("Amplify initialized")
-            
-            // asynchronously 
-            Task {
-                
-                // check if user is already signed in from a previous run
-                let session = try await Amplify.Auth.fetchAuthSession()
-                
-                // and update the GUI accordingly
-                await self.updateUI(forSignInStatus: session.isSignedIn)
-            }
-            
-            // listen to auth events.
-            // see https://github.com/aws-amplify/amplify-ios/blob/dev-preview/Amplify/Categories/Auth/Models/AuthEventName.swift
-            let _  = Amplify.Hub.listen(to: .auth) { payload in
-                switch payload.eventName {
-                    
-                case HubPayload.EventName.Auth.signedIn:
-                    
-                    Task {
-                        print("==HUB== User signed In, update UI")
-                        await self.updateUI(forSignInStatus: true)
-                    }
-                    
-                    // if you want to get user attributes
-                    Task {
-                        let authUserAttributes = try? await Amplify.Auth.fetchUserAttributes()
-                        if let authUserAttributes {
-                            print("User attribtues - \(authUserAttributes)")
-                        } else {
-                            print("Failed fetching user attributes failed")
-                        }
-                    }
-                    
-                case HubPayload.EventName.Auth.signedOut:
-                    Task {
-                        print("==HUB== User signed Out, update UI")
-                        await self.updateUI(forSignInStatus: false)
-                    }
-                    
-                case HubPayload.EventName.Auth.sessionExpired:
-                    Task {
-                        print("==HUB== Session expired, show sign in aui")
-                        await self.updateUI(forSignInStatus: false)
-                    }
-                    
-                default:
-                    //print("==HUB== \(payload)")
-                    break
-                }
-            }
-            
-        } catch let error as AuthError {
-            print("Authentication error : \(error)")
-        } catch {
-            print("Error when configuring Amplify \(error)")
-        }
-        return true
-    }
-}
+In the top right search bar, type `https://github.com/aws-amplify/amplify-ui-swift-authenticator`. For **Dependency Rules**, select **Up to Next Major Version** and type `1.0.0-dev-preview` as version. Then, select **Add Package** button on the bottom right.
 
-// MARK: -- Authentication code
-extension AppDelegate {
-    
-    // change our internal state, this triggers an UI update on the main thread
-    @MainActor
-    func updateUI(forSignInStatus : Bool) async {
-        self.userData.isSignedIn = forSignInStatus
-        
-        // load landmarks at start of app when user signed in
-        if (forSignInStatus && self.userData.landmarks.isEmpty) {
-            self.userData.landmarks = await self.queryLandmarks()
-        } else {
-            self.userData.landmarks = []
-        }
-    }
-    
-    // signin with Cognito web user interface
-    public func authenticateWithHostedUI() async throws {
-        
-        print("hostedUI()")
-        
-        // UIApplication.shared.windows.first is deprecated on iOS 15
-        // solution from https://stackoverflow.com/questions/57134259/how-to-resolve-keywindow-was-deprecated-in-ios-13-0/57899013
-        
-        let w = UIApplication
-            .shared
-            .connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-        
-        let result = try await Amplify.Auth.signInWithWebUI(presentationAnchor: w!)
-        if (result.isSignedIn) {
-            print("Sign in succeeded")
-        } else {
-            print("Signin failed or required a next step")
-        }
-    }
-    
-    // signout globally
-    public func signOut() async throws {
-        
-        // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
-        let options = AuthSignOutRequest.Options(globalSignOut: true)
-        let _ = await Amplify.Auth.signOut(options: options)
-        print("Signed Out")
-    }
-}
+![xcode add amplify packages](/images/70-30-add-authenticator-package.png)
 
-// MARK: CUSTOM AUTHENTICATION
-extension AppDelegate {
-    public func signIn(username: String, password: String) async {
-        
-        do {
-            let _ = try await Amplify.Auth.signIn(username: username, password: password)
-            print("Sign in succeeded")
-            // nothing else required, the event HUB will trigger the UI refresh
-        } catch {
-            print("Sign in failed \(error)")
-            // in real life present a message to the user
-        }
-    }
-}
+Depending on the internet bandwidth and the model of your laptop, it might take a few minutes to download and verify Amplify and its dependencies.
 
-// MARK: API Access
-extension AppDelegate {
-    
-    func queryLandmarks() async -> [ Landmark ] {
-        print("Query landmarks")
-        
-        do {
-            let queryResult = try await Amplify.API.query(request: .list(LandmarkData.self))
-            print("Successfully retrieved list of landmarks")
-            
-            // convert [ LandmarkData ] to [ LandMark ]
-            let result = try queryResult.get().map { landmarkData in
-                Landmark.init(from: landmarkData)
-            }
-            
-            return result
-            
-        } catch let error as APIError {
-            print("Failed to load data from api : \(error)")
-        } catch {
-            print("Unexpected error while calling API : \(error)")
-        }
-        
-        return []
-    }
-}
+![xcode download amplify packages](/images/70-30-download-authenticator-package.png)
 
-// MARK: AWS S3 & Image Loading
-extension AppDelegate {
+Select the `Authenticator` library provided by the package, then select **Add Package**.
 
-    func downloadImage(_ name: String) async -> Data {
-                
-        print("Downloading image : \(name)")
-        
-        do {
-            
-            let task = Amplify.Storage.downloadData(key: "\(name).jpg")
-            let data = try await task.value
-            print("Image \(name) downloaded")
-            
-            return data
-            
-        } catch let error as StorageError {
-            print("Can not download image \(name): \(error.errorDescription). \(error.recoverySuggestion)")
-        } catch {
-            print("Unknown error when loading image \(name): \(error)")
-        }
-        return Data() // could return a default image
-    }
-}
-```
+![xcode add amplify libraries](/images/70-30-add-authenticator-library.png)
 
-What did we change?
+## Add the Amplify Authenticator Component
 
-- line 138 - 151 : we add code to call Cognito's `signIn(username, password)` API. This APi call is synchronous because of the `await` keyword.
+The Amplify Authenticator component wraps the views you want to place behind an authentication wall. It passes a `state` object that contains the current user profile, when the user is signed in. It also contains a `signOut()` method, allowing to you trigger the signout without expsoing the `Amplify` package itself.
 
-## Add a Custom Login Screen
+In *LandingView.swift* we will wrap our `LandMarkList` view with the `Authenticator` conponent.
 
-We implement our own custom login screen as a View.  To add a new Swift class to your project, use Xcode menu and click **File**, then **New** or press **&#8984;N** and then enter the file name : *CustomLoginView.swift*:
-
-Copy / paste the code from below:
-
-```swift 
-import SwiftUI
-import Combine
-
-//
-// this is a custom view to capture username and password
-//
-struct CustomLoginView : View {
-    
-    @State private var username: String = ""
-    @State private var password: String = ""
-    
-    @EnvironmentObject private var appDelegate: AppDelegate
-
-    var body: some View { // The body of the screen view
-        VStack {
-            Image("turtlerock")
-            .resizable()
-            .aspectRatio(contentMode: ContentMode.fit)
-            .padding(Edge.Set.bottom, 20)
-            
-            Text(verbatim: "Login").bold().font(.title)
-            
-            Text(verbatim: "Explore Landmarks of the world")
-            .font(.subheadline)
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 70, trailing: 0))
-                                
-            TextField("Username", text: $username)
-            .autocapitalization(.none) //avoid autocapitalization of the first letter
-            .padding()
-            .cornerRadius(4.0)
-            .background(Color(UIColor.systemFill))
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 15, trailing: 0))
-            
-            SecureField("Password", text: $password)
-            .padding()
-            .cornerRadius(4.0)
-            .background(Color(UIColor.systemFill))
-            .padding(.bottom, 10)
-
-            Button(action: {
-                Task {
-                    await self.appDelegate.signIn(username: self.username, password: self.password)
-                }
-            }) {
-                HStack() {
-                    Spacer()
-                    Text("Signin")
-                        .foregroundColor(Color.white)
-                        .bold()
-                    Spacer()
-                }
-                                
-            }.padding().background(Color.green).cornerRadius(4.0)
-        }.padding()
-        .keyboardAdaptive() // Apply the scroll on keyboard height
-    }
-}
-
-
-// The code below
-// scrolls the view when the keyboard appears
-// thanks to https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/
-struct KeyboardAdaptive: ViewModifier {
-    @State private var keyboardHeight: CGFloat = 0
-
-    func body(content: Content) -> some View {
-        content
-            .padding(.bottom, keyboardHeight)
-            .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
-            .animation(.easeOut, value: 0.5)
-    }
-}
-
-extension View {
-    func keyboardAdaptive() -> some View {
-        ModifiedContent(content: self, modifier: KeyboardAdaptive())
-    }
-}
-
-extension Publishers {
-    // 1.
-    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
-        // 2.
-        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
-            .map { $0.keyboardHeight }
-        
-        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
-            .map { _ in CGFloat(0) }
-        
-        // 3.
-        return MergeMany(willShow, willHide)
-            .eraseToAnyPublisher()
-    }
-}
-
-extension Notification {
-    var keyboardHeight: CGFloat {
-        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
-    }
-}
-
-#if DEBUG
-struct ContentView_Previews : PreviewProvider {
-static var previews: some View {
-        CustomLoginView() // Renders your UI View on the Xcode preview
-    }
-}
-#endif
-```
-
-The code is straigthforward:
-
-- the UI is structured around a vertical stack.  It has an Image, a title and subtitle.  There are two `TextField` controls allowing users to enter their username and password.  These text fields are bound to corresponding private variables.  At the bottom of the stack, there is a Login button.
-
-- the Login button as an `action` code block.  The code calls the `AppDelegate.signIn()` function we added in the previous step.
-
-- the last part of the code is shamelessy [copied from a blog post I found](https://www.vadimbulavin.com/how-to-move-swiftui-view-when-keyboard-covers-text-field/). It allows to scroll the View up when the keyboard appears.
-
-The last step consists of using this `CustomLoginView` instead of the the hosted UI.
-
-## Update LandingView 
-
-The `LandingView` is the view displayed when the application starts.  It routes toward a login screen or the Landmark list based on user signin attribute.  
-
-We update `LandingView` to make use of `CustomLoginView` with this code update:
-
-```swift 
-// .wrappedValue is used to extract the Bool from Binding<Bool> type
-if (!$user.isSignedIn.wrappedValue) {
-    CustomLoginView()
-} else {
-    LandmarkList().environmentObject(user)
-}
-```
-
-This code is making the `LandingView` code simpler.  It displays `CustomLoginView` when user is not signed in, or `LandmarkList` otherwise.  You can safely copy/paste the full code below to replace the content of *Landmarks/LandingView.swift*:
+Select *LandingView.swift* and replace its content with the following code. You can safely copy / paste the code from below:
 
 ```swift 
 //
@@ -375,6 +46,7 @@ This code is making the `LandingView` code simpler.  It displays `CustomLoginVie
 // Landmarks/LandingView.swift
 
 import SwiftUI
+import Authenticator
 
 struct LandingView: View {
     @ObservedObject public var user : UserData
@@ -382,55 +54,83 @@ struct LandingView: View {
     
     var body: some View {
         
-        return VStack {
-            // .wrappedValue is used to extract the Bool from Binding<Bool> type
-            if (!$user.isSignedIn.wrappedValue) {
-
-//                Button(action: {
-//
-//                    Task {
-//                        try await appDelegate.authenticateWithHostedUI()
-//                    }
-//
-//                }) {
-//                        UserBadge().scaleEffect(0.5)
-//                    }
-                CustomLoginView()
-                
-            } else {
+        Authenticator { state in
                 LandmarkList().environmentObject(user)
-            }
-        }
-    }
-}
-
-struct LandingView_Previews: PreviewProvider {
-    static var previews: some View {
-        let userDataSignedIn = UserData()
-        userDataSignedIn.isSignedIn = true
-        let userDataSignedOff = UserData()
-        userDataSignedOff.isSignedIn = false
-        return Group {
-            LandingView(user: userDataSignedOff)
-            LandingView(user: userDataSignedIn)
         }
     }
 }
 ```
+
+The code is straigthforward:
+
+- Line 8 : I import the `Authenticator` amplify library 
+- Line 16 : I wrap the main view of the application (`LandmarkList`) with the `Authenticator` component. The `state` variable allows the code to know about the currently authenticated user, when needed. 
 
 <!-- You can view the whole code changes for this section [from this commit](https://github.com/sebsto/amplify-ios-workshop/commit/bb8c87d359c8970ff10d5e06cc49786ee5965e4f). -->
 
 ## Build and Test 
 
 Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
+
 ![build](/images/20-20-xcode.png)
 
 If you are still authenticated, click **Sign Out** and click the user badge to sign in again. You should see this:
 
-![customized drop in UI](/images/70-30-1.png)
+![customized drop in UI](/images/70-30-authenticator-component.png)
 
 Enter the username and password that you created in section 3 and try to authenticate.  After a second or two, you will see the Landmark list.
 
+Try the **Create account** flow and create a second account to discover the signup flow.
+
 {{% notice info %}}
-Implementing Social Signin with a Custom View requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (the [Authentication Service](https://developer.apple.com/documentation/authenticationservices) framework in the case of Sign in with Apple) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the more advanced readers.
+Implementing Social Signin with the Authenticator component requires a bit more work on your side. When the Social Provider authentication flow completes, the Social Identity provider issues a redirect to your app.  So far, the redirection was made to Amazon Cognito hosted UI and Cognito implemented the token exchange. When using a Custom View, such as the one provided by the Authenticator component, you need to handle these details in your code.  The easiest is probably to use the Social Provider platform specific SDK (the [Authentication Service](https://developer.apple.com/documentation/authenticationservices) framework in the case of Sign in with Apple) and use the [Cognito SDK](https://docs.amplify.aws/sdk/auth/federated-identities/q/platform/ios) `federatedSignIn()` method. I am proposing this as an exercise for the more advanced readers.
 {{% /notice %}}
+
+## Customize the Authenticator component
+
+The Amplify Authenticator UI component for Swift can be heavily customised to match your application design charter.
+
+You can decide to show or hide the **sign up** button and decide wich fields are proposed during the sign up flow. [Check the Authenticator component documentation to learn more](https://ui.docs.amplify.aws/swift/connected-components/authenticator/configuration).
+
+You can use [themes](https://ui.docs.amplify.aws/swift/connected-components/authenticator/customization#theming) for simple UI customization, you can provide [internationalized strings](https://ui.docs.amplify.aws/swift/connected-components/authenticator/customization#internationalization-i18n) to accomodate multiple languages, or add [headers and footers](https://ui.docs.amplify.aws/swift/connected-components/authenticator/customization#headers--footers) to all views.  For deeper customizations, [you may provide your own views](https://ui.docs.amplify.aws/swift/connected-components/authenticator/customization#full-ui-customization) to replace the ones proposed by default, making the Authenticator component fully customisable.
+
+As a last exercise, you may want to customise the Authenticator UI theme to change the colors and fonts.  Here is the code I use in *LandingView.swift*:
+
+```swift
+//
+//  LandingView.swift
+//  Landmarks
+
+// Landmarks/LandingView.swift
+
+import SwiftUI
+import Authenticator
+
+struct LandingView: View {
+    @ObservedObject public var user : UserData
+
+    private let theme = AuthenticatorTheme()
+
+    var body: some View {
+        
+        Authenticator { state in
+                LandmarkList().environmentObject(user)
+        }
+        .authenticatorTheme(theme)
+        .onAppear {
+            theme.fonts.title = .custom("Impact", size: 40)
+            theme.components.authenticator.spacing.vertical = 15
+            theme.colors.background.interactive = .red
+            theme.colors.foreground.primary = .red
+            theme.colors.foreground.secondary = .pink
+            theme.colors.foreground.interactive = .pink
+        }
+    }
+}
+```
+
+Build and launch the application to verify everything is working as expected. Click the **build** icon <i class="far fa-caret-square-right"></i> or press **&#8984;R**.
+
+You should see the new look of the Authenticator component.
+
+![build](/images/70-30-authenticator-component-theme.png)

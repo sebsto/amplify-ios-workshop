@@ -49,7 +49,7 @@ amplify init
 
 3. Select the authentication method you want to use? accept the default **AWS Profile** and press enter.
 
-4. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/30_configs.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
+4. Please choose the profile you want to use: accept the default **default** or type the name of the profile you created during [step 1.3](/10_prerequisites/10_bring_your_own_account.html#configuring-the-aws-command-line) (such as **workshop**) and press enter.
 
 ![amplify init](/images/20-30-amplify-init.png)
 

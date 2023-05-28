@@ -1,5 +1,5 @@
 ---
-title : "Installs"
+title : "Install Dependencies"
 chapter : false
 weight : 20
 ---

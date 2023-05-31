@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7.1
+// swift-tools-version: 5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -17,13 +17,12 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
             name: "mm",
-            dependencies: []
-
-//            cxxSettings: [.unsafeFlags(["-Xswiftc -enable-bare-slash-regex"]) ],
-
-//            linkerSettings: [
-//                .linkedLibrary("libswift_StringProcessing")
-//            ]
+            dependencies: [],
+            // see https://www.swift.org/blog/using-upcoming-feature-flags/
+            swiftSettings:
+                [.enableUpcomingFeature("ConciseMagicFile"),
+                 .enableUpcomingFeature("BareSlashRegexLiterals"),
+                 .enableUpcomingFeature("ExistentialAny")]
         ),
         .testTarget(
             name: "mmTests",

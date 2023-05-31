@@ -13,7 +13,7 @@ import Foundation
 #elseif os(macOS)
 
   // when running on OSX (requires Xcode 14 and macOS 13)
-  let SRC_BASE_PATH="/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop"
+  let SRC_BASE_PATH = "/Users/stormacq/Documents/amazon/code/amplify/amplify-ios-workshop"
   let SRC_FILE_PATH =
     "\(SRC_BASE_PATH)/workshop-hugo/instructions/content"
   let DST_FILE_PATH =
@@ -24,7 +24,7 @@ import Foundation
 protocol Replacement {
   func replace(oldContent: String, forFile: URL) -> String
 }
-let changes: [Replacement] = [
+let changes: [any Replacement] = [
 
   //code
   ReplaceCode(),
@@ -87,34 +87,45 @@ code
 {no_copy} if present is transformed to showCopyAction=false
 */
   private func captureLanguageName(content: String) -> String {
-    guard let captureLanguageName = try? Regex("^```(.*?) (.*)$") else {
-      fatalError("Invalid RegEx")
-    }
 
     var result = ""
 
-    if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
-      result = String(captureLanguageName.output[1].substring!)
-      // print(result)
-      // } else {
-      //   print("no group match")
-    }
+    // see https://www.swift.org/blog/using-upcoming-feature-flags/
+    #if compiler(>=5.8)
+      #if hasFeature(BareSlashRegexLiterals)
+        let captureLanguageName = /^```(.*?) (.*)$/
+        if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
+        result = String(captureLanguageName.output.1)
+        // print(result)
+        // } else {
+        //   print("no group match")
+      }
+      #else
+        fatalError("Compile with Swift 5.8")
+        // let captureLanguageName = #/^```(.*?) (.*)$/#
+      #endif
+    #else
+      guard let captureLanguageName = try? Regex("^```(.*?) (.*)$") else {
+        fatalError("Invalid RegEx")  
+      }
+      if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
+        result = String(captureLanguageName.output[1].substring!)
+        // print(result)
+        // } else {
+        //   print("no group match")
+      }
+    #endif
 
     return result
   }
 
   private func captureNoCopy(content: String) -> Bool {
-    guard let captureLanguageName = try? Regex("^```.*(no_copy).*$") else {
-      fatalError("Invalid RegEx")
-    }
+    let captureLanguageName = /^```.*(no_copy).*$/
 
     var result = ""
 
     if let captureLanguageName = try? captureLanguageName.wholeMatch(in: content) {
-      result = String(captureLanguageName.output[1].substring!)
-      //print(result)
-      // } else {
-      //   print("no group match")
+      result = String(captureLanguageName.output.1)
     }
 
     return result == "no_copy"
@@ -131,7 +142,8 @@ code
         fatalError("Invalid RegEx")
       }
       let noCopy = hasNoCopy ? " showCopyAction=false" : ""
-      let step1 = line.replacing(expressionToReplace, with: ":::code{language=\(languageName)\(noCopy)}")
+      let step1 = line.replacing(
+        expressionToReplace, with: ":::code{language=\(languageName)\(noCopy)}")
       result += "\(step1)\n"
     }
     let step2 = result.replacingOccurrences(of: "```", with: ":::")
@@ -207,20 +219,21 @@ The replacement captures the groupID and name values
     // TODO try to do a recurring capture group
     // https://regex101.com/r/3zV61W/1
     // guard let captureTabNames = try? Regex("(?s).*?(?:{{% tab name=\"(.*?)\" %}})\n.*?") else {
-    guard
-      let captureTabNames = try? Regex(
-        "(?s).*{{% tab name=\"(.*?)\" %}}\n.*{{% tab name=\"(.*?)\" %}}\n.*")
-    else {
-      fatalError("Invalid RegEx")
-    }
+    // guard
+    //   let captureTabNames = try? Regex(
+    //     "(?s).*{{% tab name=\"(.*?)\" %}}\n.*{{% tab name=\"(.*?)\" %}}\n.*")
+    // else {
+    //   fatalError("Invalid RegEx")
+    // }
+    let captureTabNames = /(?s).*{{% tab name=\"(.*?)\" %}}\n.*{{% tab name=\"(.*?)\" %}}\n.*/
 
     var tab1Result = ""
     var tab2Result = ""
 
     if let resultTabName = try? captureTabNames.wholeMatch(in: content) {
-      assert(resultTabName.output.count == 3)
-      tab1Result = String(resultTabName.output[1].substring!)
-      tab2Result = String(resultTabName.output[2].substring!)
+      // assert(resultTabName.output.count == 3)
+      tab1Result = String(resultTabName.output.1)
+      tab2Result = String(resultTabName.output.2)
       // } else {
       //     print("no tab match")
     }
@@ -259,23 +272,16 @@ struct ReplaceButton: Replacement {
 
     */
   private func captureValues(content: String) -> (String, String) {
-    guard
-      let capturePath = try? Regex(
-        //"(?s).*{{% button href=\"(.*)\" icon=\"fas fa-download\" %}}.*")
-        "(?s).*{{% button href=\"(.*)\" icon=\"fas fa-download\" %}}(.*){{% /button %}}.*")
-    else {
-      fatalError("Invalid RegEx")
-    }
-
+    //"(?s).*{{% button href=\"(.*)\" icon=\"fas fa-download\" %}}.*")
+    let capturePath = #/(?s).*{{% button href=\"(.*)\" icon=\"fas fa-download\" %}}(.*){{% /button %}}.*/#
+    
     var pathResult = ""
     var textResult = ""
 
     if let resultPathName = try? capturePath.wholeMatch(in: content) {
-      assert(resultPathName.output.count == 3)
-      pathResult = String(resultPathName.output[1].substring!)
-      textResult = String(resultPathName.output[2].substring!)
-      // } else {
-      //   print("no path match")
+      // assert(resultPathName.output.count == 3)
+      pathResult = String(resultPathName.output.1)
+      textResult = String(resultPathName.output.2)
     }
 
     return (pathResult, textResult)
@@ -299,10 +305,10 @@ struct ReplaceTitlesAndPreInIndex: Replacement {
     guard forFile.lastPathComponent == "_index.md" else {
       return oldContent
     }
-      let step1 = oldContent.replacing(#/\n### Section.*/#, with: "")
-      let step2 = step1.replacing(#/\n## .*/#, with: "")
-      let step3 = step2.replacing(#/\n# .*/#, with: "")
-      let step4 = step3.replacing(#/pre : .*/#, with: "")
+    let step1 = oldContent.replacing(#/\n### Section.*/#, with: "")
+    let step2 = step1.replacing(#/\n## .*/#, with: "")
+    let step3 = step2.replacing(#/\n# .*/#, with: "")
+    let step4 = step3.replacing(#/pre : .*/#, with: "")
     return step4
   }
 }
